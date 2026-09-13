@@ -15,6 +15,8 @@ src/
 │       └── presentation/
 └── shared/              reusable, product-agnostic infrastructure and UI
     ├── config/
+    ├── errors/
+    ├── logger/
     └── theme/
 ```
 
