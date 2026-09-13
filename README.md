@@ -95,5 +95,10 @@ Application code follows the dependency rules in
 [docs/architecture.md](docs/architecture.md). CI runs the architecture boundary
 check as part of `npm run verify`.
 
+Typed navigation conventions are documented in
+[docs/navigation.md](docs/navigation.md). Review the
+[dependency risk register](docs/security/dependency-risk-register.md) before
+enabling deep links or upgrading core dependencies.
+
 After pushing the repository to GitHub, apply
 [the branch protection checklist](docs/branch-protection.md).

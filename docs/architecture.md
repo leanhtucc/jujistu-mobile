@@ -8,7 +8,7 @@ architecture.
 
 ```text
 src/
-├── app/                 application composition and providers
+├── app/                 application composition, navigation, and providers
 ├── features/            user-facing capabilities grouped by feature
 │   └── home/
 │       ├── index.ts     public API
@@ -34,6 +34,9 @@ app ──────> features ──────> shared
 
 Run `npm run architecture:check` to enforce these rules. It is also part of
 `npm run verify` and therefore the `Quality` CI job.
+
+Navigation conventions and the current route contract are documented in
+`docs/navigation.md`.
 
 ## Import aliases
 

@@ -1,8 +1,8 @@
-import { HomeScreen } from '@jujistu/features/home';
 import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
 import { StatusBar } from 'react-native';
 
 import { bootstrapApp } from './bootstrap/bootstrapApp';
+import { RootNavigator } from './navigation/RootNavigator';
 import { AppProviders } from './providers/AppProviders';
 
 bootstrapApp();
@@ -13,7 +13,7 @@ function AppContent() {
   return (
     <>
       <StatusBar barStyle={theme.statusBarStyle} />
-      <HomeScreen />
+      <RootNavigator />
     </>
   );
 }
