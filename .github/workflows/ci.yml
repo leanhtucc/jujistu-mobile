@@ -15,6 +15,7 @@ concurrency:
 
 env:
   CI: true
+  JUJISTU_ENV: development
 
 jobs:
   quality:

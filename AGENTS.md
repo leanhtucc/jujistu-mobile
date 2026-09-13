@@ -5,7 +5,8 @@ Before modifying this repository, read:
 1. `README.md`
 2. `CONTRIBUTING.md`
 3. `docs/adr/0001-project-foundation.md`
-4. any ADR relevant to the requested change
+4. `docs/architecture.md`
+5. any ADR relevant to the requested change
 
 Treat those files as the canonical project rules. Do not duplicate them into
 tool-specific instruction trees.

@@ -14,6 +14,7 @@ src/
 │       ├── index.ts     public API
 │       └── presentation/
 └── shared/              reusable, product-agnostic infrastructure and UI
+    ├── config/
     └── theme/
 ```
 

@@ -40,6 +40,10 @@ npm run android
 
 The Android build requires JDK 17 and Android SDK/Build Tools 37.
 
+Use `npm run android:staging` or `npm run android:production` to select a non-default
+application environment. See
+[environment configuration](docs/environment-configuration.md) before adding URLs.
+
 ## iOS
 
 A Mac with Xcode is required. Install native dependencies before the first build and
@@ -52,6 +56,9 @@ bundle exec pod install
 cd ..
 npm run ios
 ```
+
+Staging and production environment scripts are also available for iOS. Stop Metro
+before switching environments.
 
 ## Quality checks
 
