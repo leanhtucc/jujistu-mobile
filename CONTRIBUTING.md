@@ -46,8 +46,8 @@
 - Shared code must not import application or feature modules.
 - Do not create empty folders or abstractions without a current responsibility.
 
-These boundaries will be automated when the application source architecture is
-introduced. Until then, reviewers must reject violations.
+These boundaries are enforced by `npm run architecture:check`. Reviewers must still
+check semantic violations that static analysis cannot identify.
 
 ## Required checks
 

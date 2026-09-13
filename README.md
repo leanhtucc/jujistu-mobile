@@ -84,5 +84,9 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing code. Project-generation
 initial validation details are in
 [docs/scaffold-validation.md](docs/scaffold-validation.md).
 
+Application code follows the dependency rules in
+[docs/architecture.md](docs/architecture.md). CI runs the architecture boundary
+check as part of `npm run verify`.
+
 After pushing the repository to GitHub, apply
 [the branch protection checklist](docs/branch-protection.md).

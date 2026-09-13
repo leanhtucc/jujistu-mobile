@@ -1,5 +1,12 @@
 {
   "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "paths": {
+      "@jujistu/app/*": ["./src/app/*"],
+      "@jujistu/features/*": ["./src/features/*"],
+      "@jujistu/shared/*": ["./src/shared/*"]
+    }
+  },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }
