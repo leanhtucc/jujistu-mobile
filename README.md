@@ -71,10 +71,18 @@ npm run test:ci
 ```
 
 Android and iOS native builds are additional required checks and will be enforced by
-CI once the repository host is configured.
+GitHub Actions. The workflow runs `Quality`, `Android debug build`, and
+`iOS simulator build` for pull requests and pushes to `main`.
+
+The iOS pipeline currently resolves gems from `Gemfile`. Generate and commit a
+verified `Gemfile.lock` from macOS before dependency versions are changed or the
+project is released.
 
 ## Contribution workflow
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing code. Project-generation and
 initial validation details are in
 [docs/scaffold-validation.md](docs/scaffold-validation.md).
+
+After pushing the repository to GitHub, apply
+[the branch protection checklist](docs/branch-protection.md).

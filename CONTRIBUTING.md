@@ -60,6 +60,15 @@ npm run verify
 Changes affecting Android must also pass a debug Android build. Changes affecting
 iOS or native dependencies must pass a clean iOS simulator build on macOS.
 
+Every pull request must pass these GitHub Actions checks before merge:
+
+- `Quality`
+- `Android debug build`
+- `iOS simulator build`
+
+If a check is skipped because its prerequisite failed, fix the first failure and
+rerun the workflow. Do not merge by bypassing a required check.
+
 ## Definition of done
 
 A change is done only when:
