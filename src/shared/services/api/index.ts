@@ -13,6 +13,8 @@ export { refreshAccessToken, resetRefreshState } from './refresh-token';
 export {
   tokenManager,
   setTokenStorage,
+  KeychainTokenStorage,
+  InMemoryTokenStorage,
   type TokenPair,
   type TokenStorage,
 } from './token-manager';

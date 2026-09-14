@@ -8,20 +8,34 @@ introduced without a dedicated upgrade review.
 
 ```text
 src/app/navigation/
-├── NavigationFallback.tsx
-├── RootNavigator.tsx
-├── routes.ts
-└── types.ts
+├── AuthNavigator.tsx        stack navigator for unauthenticated flows (Login, Register)
+├── MainNavigator.tsx        stack navigator for authenticated flows (Home)
+├── NavigationFallback.tsx   accessible loading state during session resolution
+├── RootNavigator.tsx        root container conditionally rendering Auth or Main
+├── routes.ts                centralized ROOT_ROUTES, AUTH_ROUTES, MAIN_ROUTES constants
+└── types.ts                 typed RootStackParamList, AuthStackParamList, MainStackParamList
 ```
 
-Only the existing `Home` route is registered. Authentication, tabs, deep links,
-notification navigation, and an imperative navigation ref are deferred until their
-flows and ownership are defined.
+## Navigation flow
+
+The application root determines navigation branch reactively based on authentication
+state (`useAuthState`):
+
+```text
+RootNavigator (NavigationContainer)
+├── [unauthenticated] AuthNavigator (Stack)
+│   ├── Login
+│   └── Register
+│
+└── [authenticated] MainNavigator (Stack)
+    └── Home (prepared for future BottomTabs when >= 2 business features are confirmed)
+```
 
 ## Rules
 
-- Route names come from `ROOT_ROUTES`; do not repeat string literals in screens.
-- Every route and its parameters must be represented in `RootStackParamList`.
+- Route names come from `ROOT_ROUTES`, `AUTH_ROUTES`, or `MAIN_ROUTES`; do not repeat
+  string literals in screens.
+- Every route and its parameters must be represented in its corresponding param list.
 - Application composition owns navigators; features export screens through their
   public `index.ts` API.
 - Business logic must not import navigation objects.

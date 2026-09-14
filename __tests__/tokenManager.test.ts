@@ -1,6 +1,7 @@
 import {
   tokenManager,
   setTokenStorage,
+  KeychainTokenStorage,
   type TokenPair,
   type TokenStorage,
 } from '@jujistu/shared/services/api/token-manager';
@@ -68,5 +69,24 @@ describe('tokenManager', () => {
 
     setTokenStorage(storageB);
     expect(await tokenManager.getTokens()).toBeNull();
+  });
+});
+
+describe('KeychainTokenStorage', () => {
+  it('saves and retrieves tokens using Keychain mock', async () => {
+    const keychainStorage = new KeychainTokenStorage();
+    const tokens: TokenPair = {
+      accessToken: 'kc-access-test',
+      refreshToken: 'kc-refresh-test',
+    };
+
+    await keychainStorage.saveTokens(tokens);
+    const retrieved = await keychainStorage.getTokens();
+
+    expect(retrieved).toEqual(tokens);
+
+    await keychainStorage.clearTokens();
+    const afterClear = await keychainStorage.getTokens();
+    expect(afterClear).toBeNull();
   });
 });

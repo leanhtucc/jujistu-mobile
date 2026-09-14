@@ -10,15 +10,18 @@ architecture.
 src/
 ├── app/                 application composition, navigation, and providers
 ├── features/            user-facing capabilities grouped by feature
-│   └── home/
-│       ├── index.ts     public API
-│       └── presentation/
+│   ├── auth/            authentication flows, query hooks, and screens
+│   └── home/            home dashboard
 └── shared/              reusable, product-agnostic infrastructure and UI
-    ├── config/
-    ├── errors/
-    ├── logger/
-    └── theme/
+    ├── config/          typed runtime environment configuration
+    ├── errors/          structured AppError hierarchy
+    ├── logger/          tagged logger with automatic PII/credential redaction
+    ├── services/        infrastructure services
+    │   └── api/         api-client, query-client, token-manager, refresh-lock
+    └── theme/           colors and design tokens
 ```
+
+## Dependency direction and data flow
 
 The allowed dependency direction is:
 
@@ -32,13 +35,36 @@ app ──────> features ──────> shared
 - A feature must not import `app` or another feature.
 - `shared` must not import `app` or any feature.
 - `app` imports a feature through that feature's `index.ts` public API.
-- Screen components do not call `fetch` or a shared API client directly.
+- Screen components do not call `fetch`, `axios`, or a shared API client directly.
+
+The standard data flow for remote operations is:
+
+```text
+Screen / UI Component
+        ↓
+Feature Query / Mutation Hook
+        ↓
+Feature API Module
+        ↓
+Shared API Client (fetch)
+        ↓
+Backend
+```
 
 Run `npm run architecture:check` to enforce these rules. It is also part of
 `npm run verify` and therefore the `Quality` CI job.
 
 Navigation conventions and the current route contract are documented in
 `docs/navigation.md`.
+
+## State ownership
+
+- **Server State**: Managed exclusively through TanStack Query v5 (`@tanstack/react-query`).
+  Query hooks live in `<feature>/queries/`. Query keys are centralized per feature.
+- **Client State**: Local component state (`useState`, `useReducer`) for UI state.
+- **Credential Storage**: Access and refresh tokens are stored in `react-native-keychain`
+  behind the `tokenManager` abstraction. Credentials must never be stored in Redux
+  or TanStack Query cache.
 
 ## Import aliases
 
