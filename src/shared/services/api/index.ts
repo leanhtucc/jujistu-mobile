@@ -1,5 +1,32 @@
-export { apiClient } from './api-client';
-export { getApiBaseUrl, API_TIMEOUT_MS } from './api-config';
+export {
+  apiRequest,
+  apiClient,
+  setApiAccessTokenProvider,
+  setApiUnauthorizedHandler,
+  buildApiUrl,
+  getApiBaseUrl,
+  SKIP_ACCESS_TOKEN_HEADER,
+  SKIP_UNAUTHORIZED_HANDLER_HEADER,
+} from './http-client';
+export { AUTH_API_PATHS, USER_API_PATHS, SYSTEM_API_PATHS } from './paths';
+export type {
+  ApiEnvelope,
+  AuthTokenDataApi,
+  UserProfileDataApi,
+  AuthLoginRequestApi,
+  AuthRegisterRequestApi,
+  AuthRefreshTokenRequestApi,
+} from './schema';
+export { ApiError, type ApiErrorBody, type ApiRequestOptions } from './types';
+export { hasMockApiResponse, mockApiRequest } from './mock-api';
+export {
+  trackApiRequestActivity,
+  getActiveApiRequestCount,
+  suppressApiLoadingOverlay,
+  getIsApiLoadingOverlaySuppressed,
+  useActiveApiRequestCount,
+  useIsApiLoadingOverlaySuppressed,
+} from './request-activity';
 export {
   ForbiddenError,
   NotFoundError,
