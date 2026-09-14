@@ -6,6 +6,6 @@ module.exports = {
     '^@jujistu/shared/(.*)$': '<rootDir>/src/shared/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(@react-native|react-native|@react-navigation)/)',
+    'node_modules/(?!(@react-native|react-native|@react-navigation|@tanstack)/)',
   ],
 };
