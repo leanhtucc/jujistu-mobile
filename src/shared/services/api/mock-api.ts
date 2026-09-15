@@ -25,7 +25,7 @@ function ok<TData>(message: string, data?: TData): ApiEnvelope<TData> {
 const MOCK_USER: UserProfileDataApi = {
   id: 'usr_jujistu_mock_1',
   email: 'athlete@jujistu.app',
-  displayName: 'JUJISTU Athlete',
+  displayName: 'Jujitsu Athlete',
   avatarUrl: null,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),

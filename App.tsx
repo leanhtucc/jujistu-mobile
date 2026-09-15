@@ -4,4 +4,6 @@
  * @format
  */
 
+import './global.css';
+
 export { default } from '@jujistu/app/App';

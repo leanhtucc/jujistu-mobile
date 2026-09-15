@@ -1,3 +1,5 @@
+import { semanticColors } from './semantic/colors';
+
 export const lightColors = {
   background: '#FFFFFF',
   surface: '#F3F4F6',
@@ -9,11 +11,11 @@ export const lightColors = {
 } as const;
 
 export const darkColors = {
-  background: '#000000',
-  surface: '#1F2937',
-  text: '#F9FAFB',
-  textSecondary: '#9CA3AF',
-  border: '#374151',
-  primary: '#60A5FA',
-  error: '#EF4444',
+  background: semanticColors.background.canvas,
+  surface: semanticColors.background.surface,
+  text: semanticColors.text.primary,
+  textSecondary: semanticColors.text.secondary,
+  border: semanticColors.border.default,
+  primary: semanticColors.action.primary,
+  error: semanticColors.status.error,
 } as const;

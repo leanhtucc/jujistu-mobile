@@ -12,7 +12,13 @@ src/
 ├── features/            user-facing capabilities grouped by feature
 │   ├── auth/            authentication flows, query hooks, and screens
 │   └── home/            home dashboard
-└── shared/              reusable, product-agnostic infrastructure and UI
+├── ui/                  product UI design system
+│   ├── atoms/           smallest reusable visual primitives
+│   ├── molecules/       compositions of atoms
+│   ├── organisms/       larger reusable UI sections
+│   ├── templates/       reusable screen-level layouts
+│   └── utils/           UI-only helpers
+└── shared/              reusable, product-agnostic infrastructure
     ├── config/          typed runtime environment configuration
     ├── errors/          structured AppError hierarchy
     ├── logger/          tagged logger with automatic PII/credential redaction
@@ -26,14 +32,17 @@ src/
 The allowed dependency direction is:
 
 ```text
-app ──────> features ──────> shared
- └────────────────────────> shared
+app ──────> features ──────> ui ──────> shared
+ │             └──────────────────────> shared
+ ├───────────────────────> ui
+ └───────────────────────────────────> shared
 ```
 
-- `app` may compose features and shared infrastructure.
-- A feature may import its own files and `shared`.
+- `app` may compose features, UI, and shared infrastructure.
+- A feature may import its own files, `ui`, and `shared`.
 - A feature must not import `app` or another feature.
-- `shared` must not import `app` or any feature.
+- `ui` may import `shared`, but must not import `app` or a feature.
+- `shared` must not import `ui`, `app`, or any feature.
 - `app` imports a feature through that feature's `index.ts` public API.
 - Screen components do not call `fetch`, `axios`, or a shared API client directly.
 
@@ -70,6 +79,7 @@ Navigation conventions and the current route contract are documented in
 
 Use these aliases when crossing a layer boundary:
 
+- `@jujistu/ui` for the public design-system API
 - `@jujistu/app/*`
 - `@jujistu/features/*`
 - `@jujistu/shared/*`
@@ -78,6 +88,10 @@ Relative imports are appropriate inside one small module. Alias resolution is ke
 in sync across TypeScript, Metro, and Jest. When an alias changes, update all three
 configurations in the same pull request.
 
+`src/ui/index.ts` is the supported UI entry point for application and feature
+consumers. It exposes category barrels for atoms, molecules, organisms, and
+templates. Internal registries and component recipes remain private to `src/ui`.
+
 ## Feature growth
 
 A feature starts with a public `index.ts` and only the folder needed by its current
@@ -85,5 +99,17 @@ code. Add `domain`, `data`, or `application` folders later when real business ru
 data adapters, or use cases exist. Do not add generic repositories, services, or
 base classes in anticipation of future requirements.
 
-Shared code is promoted only after genuine reuse. Code used by one feature remains
-owned by that feature even when it might become reusable later.
+Shared code is promoted only after genuine reuse. Reusable visual components belong
+to `ui`; non-visual infrastructure, services, configuration, and design tokens
+belong to `shared`. Code used by one feature remains owned by that feature even when
+it might become reusable later.
+
+## Styling and design tokens
+
+The project uses **NativeWind v4** and **Tailwind CSS v3** as its styling foundation:
+
+- Directives live in `global.css` at the project root.
+- Metro processes CSS via `withNativeWind` in `metro.config.js`.
+- Design tokens and extended palette are configured in `tailwind.config.js`.
+- UI components apply layout, spacing, and typography using utility `className` strings.
+- See `docs/adr/0003-nativewind-styling-foundation.md` for architectural context.

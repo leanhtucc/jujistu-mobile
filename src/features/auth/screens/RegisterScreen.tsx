@@ -1,4 +1,5 @@
 import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
+import { AppInputField } from '@jujistu/ui';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
@@ -6,7 +7,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -55,7 +55,7 @@ export function RegisterScreen() {
           Create Account
         </Text>
         <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-          Join JUJISTU today
+          Join Jujitsu today
         </Text>
 
         {registerMutation.isError && (
@@ -77,62 +77,38 @@ export function RegisterScreen() {
           <Text style={[styles.label, { color: theme.colors.text }]}>
             Full Name
           </Text>
-          <TextInput
+          <AppInputField
             accessibilityLabel="Full name input"
+            containerStyle={styles.inputLayout}
             onChangeText={setDisplayName}
             placeholder="John Doe"
-            placeholderTextColor={theme.colors.textSecondary}
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-              },
-            ]}
             value={displayName}
           />
 
           <Text style={[styles.label, { color: theme.colors.text }]}>
             Email
           </Text>
-          <TextInput
+          <AppInputField
             accessibilityLabel="Email input"
             autoCapitalize="none"
             autoComplete="email"
+            containerStyle={styles.inputLayout}
             keyboardType="email-address"
             onChangeText={setEmail}
             placeholder="name@example.com"
-            placeholderTextColor={theme.colors.textSecondary}
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-              },
-            ]}
             value={email}
           />
 
           <Text style={[styles.label, { color: theme.colors.text }]}>
             Password
           </Text>
-          <TextInput
+          <AppInputField
             accessibilityLabel="Password input"
             autoCapitalize="none"
+            containerStyle={styles.inputLayout}
             onChangeText={setPassword}
             placeholder="••••••••"
-            placeholderTextColor={theme.colors.textSecondary}
             secureTextEntry
-            style={[
-              styles.input,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-                color: theme.colors.text,
-              },
-            ]}
             value={password}
           />
 
@@ -212,13 +188,8 @@ const styles = StyleSheet.create({
   form: {
     width: '100%',
   },
-  input: {
-    borderRadius: 8,
-    borderWidth: 1,
-    fontSize: 16,
+  inputLayout: {
     marginBottom: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
   },
   label: {
     fontSize: 14,

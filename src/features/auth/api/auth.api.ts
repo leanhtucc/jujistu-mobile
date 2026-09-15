@@ -47,7 +47,7 @@ function normalizeSession(
     : {
         id: 'usr_default',
         email: 'user@jujistu.app',
-        displayName: 'JUJISTU Athlete',
+        displayName: 'Jujitsu Athlete',
         avatarUrl: null,
       };
 

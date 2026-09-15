@@ -5,6 +5,7 @@ const ts = require('typescript');
 const projectRoot = path.resolve(__dirname, '..');
 const sourceRoot = path.join(projectRoot, 'src');
 const aliases = new Map([
+  ['@jujistu/ui', path.join(sourceRoot, 'ui')],
   ['@jujistu/app', path.join(sourceRoot, 'app')],
   ['@jujistu/features', path.join(sourceRoot, 'features')],
   ['@jujistu/shared', path.join(sourceRoot, 'shared')],
@@ -106,10 +107,21 @@ for (const fileName of collectSourceFiles(sourceRoot)) {
 
     if (
       importer.layer === 'shared' &&
-      (imported.layer === 'app' || imported.layer === 'features')
+      ['app', 'features', 'ui'].includes(imported.layer)
     ) {
       violations.push(
         `${locationOf(sourceFile, node)} shared cannot import ${
+          imported.layer
+        }: ${value}`,
+      );
+    }
+
+    if (
+      importer.layer === 'ui' &&
+      (imported.layer === 'app' || imported.layer === 'features')
+    ) {
+      violations.push(
+        `${locationOf(sourceFile, node)} ui cannot import ${
           imported.layer
         }: ${value}`,
       );

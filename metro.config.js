@@ -1,5 +1,8 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const { withNativeWind } = require('nativewind/metro');
 const path = require('node:path');
+
+const defaultConfig = getDefaultConfig(__dirname);
 
 /**
  * Metro configuration
@@ -10,6 +13,7 @@ const path = require('node:path');
 const config = {
   resolver: {
     extraNodeModules: {
+      '@jujistu/ui': path.resolve(__dirname, 'src/ui'),
       '@jujistu/app': path.resolve(__dirname, 'src/app'),
       '@jujistu/features': path.resolve(__dirname, 'src/features'),
       '@jujistu/shared': path.resolve(__dirname, 'src/shared'),
@@ -17,4 +21,6 @@ const config = {
   },
 };
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = withNativeWind(mergeConfig(defaultConfig, config), {
+  input: './global.css',
+});
