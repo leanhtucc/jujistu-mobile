@@ -6,6 +6,8 @@
  */
 
 export const AUTH_API_PATHS = {
+  requestOtp: '/api/auth/request-otp',
+  verifyOtp: '/api/auth/verify-otp',
   login: '/api/auth/login',
   register: '/api/auth/register',
   refreshToken: '/api/auth/refresh-token',

@@ -3,8 +3,12 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 import { AUTH_ROUTES, MAIN_ROUTES, ROOT_ROUTES } from './routes';
 
 export type AuthStackParamList = {
+  [AUTH_ROUTES.WELCOME]: undefined;
   [AUTH_ROUTES.LOGIN]: undefined;
-  [AUTH_ROUTES.REGISTER]: undefined;
+  [AUTH_ROUTES.OTP]: {
+    challengeId: string;
+    email: string;
+  };
 };
 
 export type MainStackParamList = {

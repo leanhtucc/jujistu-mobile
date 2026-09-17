@@ -1,4 +1,5 @@
 import { semanticColors } from './semantic/colors';
+import { semanticGradients } from './semantic/gradients';
 import { componentTypography, typography } from './semantic/typography';
 import {
   borderWidth,
@@ -16,6 +17,7 @@ import {
 
 export const theme = {
   colors: semanticColors,
+  gradients: semanticGradients,
   primitives: {
     colors: primitiveColors,
     fontFamilies,

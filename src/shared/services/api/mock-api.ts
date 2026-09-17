@@ -42,6 +42,8 @@ export function hasMockApiResponse(path: string): boolean {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
   switch (normalizedPath) {
+    case AUTH_API_PATHS.requestOtp:
+    case AUTH_API_PATHS.verifyOtp:
     case AUTH_API_PATHS.login:
     case AUTH_API_PATHS.register:
     case AUTH_API_PATHS.refreshToken:
@@ -63,6 +65,30 @@ export async function mockApiRequest<TResponse>(
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
   switch (normalizedPath) {
+    case AUTH_API_PATHS.requestOtp:
+      return ok('OTP sent', {
+        challenge_id: 'jujistu-mock-otp-challenge',
+        expires_in: 30,
+      }) as unknown as TResponse;
+
+    case AUTH_API_PATHS.verifyOtp: {
+      const body = options.body as
+        | { code?: string; email?: string }
+        | undefined;
+
+      if (body?.code !== '123456') {
+        throw new Error('Mã OTP không đúng hoặc đã hết hạn.');
+      }
+
+      return ok('OTP verified', {
+        ...MOCK_TOKENS,
+        user: {
+          ...MOCK_USER,
+          email: body.email || MOCK_USER.email,
+        },
+      }) as unknown as TResponse;
+    }
+
     case AUTH_API_PATHS.login: {
       const body = options.body as { email?: string } | undefined;
       return ok('Login successful', {

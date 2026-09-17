@@ -59,11 +59,17 @@ function findSvgFiles(dir) {
 }
 
 /**
- * Detect foreground colors used in fill/stroke attributes.
+ * Analyze SVG content for colors, constructs, and visual classification.
+ * Under JUJISTU Pipeline V2:
+ * - MONOCHROME_VECTOR: Pure vector with <= 1 foreground color and no embedded raster.
+ * - FIXED_VISUAL: Multicolor vector, embedded base64 raster images (<image>), or complex artwork.
  */
-function analyzeSvgColors(svgContent) {
+function analyzeSvg(rawSvgContent) {
+  // Strip XML comments before analysis
+  const stripped = rawSvgContent.replace(/<!--[\s\S]*?-->/g, '');
+
   const matches =
-    svgContent.match(/(?:fill|stroke|stop-color)="([^"]+)"/gi) || [];
+    stripped.match(/(?:fill|stroke|stop-color)="([^"]+)"/gi) || [];
   const colors = new Set();
 
   for (const match of matches) {
@@ -83,12 +89,23 @@ function analyzeSvgColors(svgContent) {
     }
   }
 
-  const hasEmbeddedImage = /<image\b/i.test(svgContent);
+  const hasEmbeddedImage = /<image\b/i.test(stripped);
+  const hasFilter = /<filter\b/i.test(stripped);
+  const hasMask = /<mask\b/i.test(stripped);
+  const hasUnsupported = /<(?:style|script|foreignObject)\b/i.test(stripped);
+
+  // Embedded raster and multicolor artwork are strictly FIXED_VISUAL
+  const isMonochrome = !hasEmbeddedImage && colors.size <= 1;
+  const classification = isMonochrome ? 'MONOCHROME_VECTOR' : 'FIXED_VISUAL';
 
   return {
     colors: Array.from(colors),
-    isMonochrome: colors.size <= 1,
+    isMonochrome,
+    classification,
     hasEmbeddedImage,
+    hasFilter,
+    hasMask,
+    hasUnsupported,
   };
 }
 
@@ -128,20 +145,35 @@ async function generateGlyph(svgPath, prettierConfig) {
     .replace(/\s*xmlns(:[a-z0-9]+)?="[^"]*"/gi, '')
     .replace(/\s*style="[^"]*"/gi, '');
 
-  const { colors, isMonochrome, hasEmbeddedImage } =
-    analyzeSvgColors(svgContent);
+  const analysis = analyzeSvg(rawSvgContent);
 
-  if (hasEmbeddedImage) {
+  // Warnings for constructs that may affect fidelity or platform behavior (warning != block)
+  if (analysis.hasEmbeddedImage) {
     console.warn(
-      `[WARN] EMBEDDED_BITMAP_IMAGE_DETECTED: "${relativeSvgPath}" contains bitmap <image> element.`,
+      `[WARN: RASTER_BACKED_SVG_WARNING] "${relativeSvgPath}": Contains embedded raster <image> element. Preserving renderability as FIXED_VISUAL.`,
+    );
+  }
+  if (analysis.hasFilter) {
+    console.warn(
+      `[WARN: FILTER_EFFECTS_WARNING] "${relativeSvgPath}": Contains <filter> element which may not fully render in react-native-svg.`,
+    );
+  }
+  if (analysis.hasMask) {
+    console.warn(
+      `[WARN: COMPLEX_MASK_WARNING] "${relativeSvgPath}": Contains <mask> element. Verify visual fidelity on device.`,
+    );
+  }
+  if (analysis.hasUnsupported) {
+    console.warn(
+      `[WARN: UNSUPPORTED_CONSTRUCT_WARNING] "${relativeSvgPath}": Contains construct (<style>, <script>, or <foreignObject>) that may require manual inspection.`,
     );
   }
 
   const replaceAttrValues = {};
 
-  if (isMonochrome) {
-    if (colors.length === 1) {
-      const monoColor = colors[0];
+  if (analysis.isMonochrome) {
+    if (analysis.colors.length === 1) {
+      const monoColor = analysis.colors[0];
       replaceAttrValues[monoColor] = '{color}';
       replaceAttrValues[monoColor.toLowerCase()] = '{color}';
     } else {
@@ -150,9 +182,9 @@ async function generateGlyph(svgPath, prettierConfig) {
       replaceAttrValues['#000000'] = '{color}';
       replaceAttrValues.black = '{color}';
     }
-  } else {
-    console.warn(
-      `[MULTICOLOR_REVIEW_REQUIRED] "${relativeSvgPath}": Multiple foreground colors detected (${colors.join(
+  } else if (!analysis.hasEmbeddedImage) {
+    console.log(
+      `[INFO: FIXED_VISUAL] "${relativeSvgPath}": Multicolor artwork detected (${analysis.colors.join(
         ', ',
       )}). Preserving original colors.`,
     );
@@ -228,8 +260,9 @@ export function ${variables.componentName}({ size, color }: GlyphProps) {
     source: relativeSvgPath,
     target: path.relative(projectRoot, targetFile).replace(/\\/g, '/'),
     componentName,
-    isMonochrome,
-    colors,
+    isMonochrome: analysis.isMonochrome,
+    classification: analysis.classification,
+    colors: analysis.colors,
   };
 }
 
@@ -257,9 +290,7 @@ async function main() {
     const res = await generateGlyph(file, prettierConfig);
     results.push(res);
     console.log(
-      `Generated: ${res.source} -> ${res.target} (${res.componentName}) [${
-        res.isMonochrome ? 'Monochrome' : 'Multicolor'
-      }]`,
+      `Generated: ${res.source} -> ${res.target} (${res.componentName}) [${res.classification}]`,
     );
   }
 

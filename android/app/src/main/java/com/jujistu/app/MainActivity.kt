@@ -16,6 +16,7 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "JUJISTU"
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    setTheme(R.style.AppTheme)
     supportFragmentManager.fragmentFactory = RNScreensFragmentFactory()
     super.onCreate(savedInstanceState)
   }

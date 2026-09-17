@@ -76,6 +76,33 @@ describe('AppInputField', () => {
       borderWidth: 1,
     });
     expect(resolveInputFieldSizeRecipe('md').height).toBe(52);
+    expect(resolveInputFieldSizeRecipe('lg').height).toBe(62);
+  });
+
+  it('accepts the neutral/error status API while preserving error precedence', () => {
+    const tree = renderInput({ status: 'error', value: 'invalid' });
+
+    expect(
+      StyleSheet.flatten(getSurface(tree).props.style).backgroundColor,
+    ).toBe('#FF3A5E');
+    expect(
+      resolveInputVisualState({
+        disabled: true,
+        error: true,
+        focused: true,
+        value: 'invalid',
+      }),
+    ).toBe('error');
+  });
+
+  it('makes disabled fields non-editable and ignores change callbacks', () => {
+    const onChangeText = jest.fn();
+    const input = getInput(renderInput({ disabled: true, onChangeText }));
+
+    expect(input.props.editable).toBe(false);
+    expect(input.props.onChangeText).toBeUndefined();
+    expect(input.props.accessibilityState).toEqual({ disabled: true });
+    expect(onChangeText).not.toHaveBeenCalled();
   });
 
   it('applies exact padding, radius, gap, stroke width and typography', () => {
@@ -346,7 +373,7 @@ describe('AppInputField', () => {
       HasInputStyle,
     ] = [
       false,
-      false,
+      true,
       false,
       false,
       false,
@@ -358,6 +385,18 @@ describe('AppInputField', () => {
       false,
     ];
 
-    expect(unsupported.every(value => value === false)).toBe(true);
+    expect(unsupported).toEqual([
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
   });
 });

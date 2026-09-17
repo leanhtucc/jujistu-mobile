@@ -50,13 +50,25 @@ export const HEADER_ACTION_GRADIENT = {
 export const HEADER_ICON_SIZES: Record<IconName, number> = {
   chevronLeft: 24,
   logOut: 20,
+  settings: 24,
+  gem: 20,
+  coin: 20,
+  balanceAdd: 14,
+  // Tab nav icons — not used in the Header but IconName is exhaustive
+  homeActive: 24,
+  homeInactive: 24,
+  shopActive: 24,
+  shopInactive: 24,
+  tournamentActive: 24,
+  tournamentInactive: 24,
+  missionActive: 24,
+  missionInactive: 24,
+  friendsActive: 24,
+  friendsInactive: 24,
 };
 
 export function resolveHeaderIconSize(icon: IconName): number {
-  if (icon === 'logOut') {
-    return HEADER_ICON_SIZES.logOut;
-  }
-  return HEADER_ICON_SIZES.chevronLeft;
+  return HEADER_ICON_SIZES[icon] ?? HEADER_ICON_SIZES.chevronLeft;
 }
 
 export function resolveHeaderBackgroundColor(

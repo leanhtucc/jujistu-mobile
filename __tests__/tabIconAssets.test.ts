@@ -18,66 +18,94 @@ describe('Bottom Navigation Tab Icon Assets Contract', () => {
     expect(keys).toHaveLength(5);
   });
 
-  it('defines valid active and inactive image assets for every destination', () => {
+  it('defines valid active and inactive SVG icon slots for every destination', () => {
     expectedKeys.forEach(key => {
       const asset = TAB_ICON_ASSETS[key];
       expect(asset).toBeDefined();
 
-      // Active state checks
+      // Active slot — must carry iconName and size
       expect(asset.active).toBeDefined();
-      expect(asset.active.source).toBeDefined();
-      expect(typeof asset.active.width).toBe('number');
-      expect(typeof asset.active.height).toBe('number');
-      expect(asset.active.width).toBeGreaterThan(0);
-      expect(asset.active.height).toBeGreaterThan(0);
+      expect(typeof asset.active.iconName).toBe('string');
+      expect(asset.active.iconName.length).toBeGreaterThan(0);
+      expect(typeof asset.active.size).toBe('number');
+      expect(asset.active.size).toBeGreaterThan(0);
 
-      // Inactive state checks
+      // Inactive slot — must carry iconName and size
       expect(asset.inactive).toBeDefined();
-      expect(asset.inactive.source).toBeDefined();
-      expect(typeof asset.inactive.width).toBe('number');
-      expect(typeof asset.inactive.height).toBe('number');
-      expect(asset.inactive.width).toBeGreaterThan(0);
-      expect(asset.inactive.height).toBeGreaterThan(0);
+      expect(typeof asset.inactive.iconName).toBe('string');
+      expect(asset.inactive.iconName.length).toBeGreaterThan(0);
+      expect(typeof asset.inactive.size).toBe('number');
+      expect(asset.inactive.size).toBeGreaterThan(0);
     });
   });
 
-  it('enforces verified Figma logical render dimensions for home (27x23)', () => {
-    expect(TAB_ICON_ASSETS.home.active.width).toBe(27);
-    expect(TAB_ICON_ASSETS.home.active.height).toBe(23);
-    expect(TAB_ICON_ASSETS.home.inactive.width).toBe(27);
-    expect(TAB_ICON_ASSETS.home.inactive.height).toBe(23);
+  it('enforces verified Figma logical render size for home (27)', () => {
+    expect(TAB_ICON_ASSETS.home.active.iconName).toBe('homeActive');
+    expect(TAB_ICON_ASSETS.home.active.size).toBe(27);
+    expect(TAB_ICON_ASSETS.home.inactive.iconName).toBe('homeInactive');
+    expect(TAB_ICON_ASSETS.home.inactive.size).toBe(27);
   });
 
-  it('enforces verified Figma logical render dimensions for shop (20x20)', () => {
-    expect(TAB_ICON_ASSETS.shop.active.width).toBe(20);
-    expect(TAB_ICON_ASSETS.shop.active.height).toBe(20);
-    expect(TAB_ICON_ASSETS.shop.inactive.width).toBe(20);
-    expect(TAB_ICON_ASSETS.shop.inactive.height).toBe(20);
+  it('enforces verified Figma logical render size for shop (20)', () => {
+    expect(TAB_ICON_ASSETS.shop.active.iconName).toBe('shopActive');
+    expect(TAB_ICON_ASSETS.shop.active.size).toBe(20);
+    expect(TAB_ICON_ASSETS.shop.inactive.iconName).toBe('shopInactive');
+    expect(TAB_ICON_ASSETS.shop.inactive.size).toBe(20);
   });
 
-  it('enforces verified Figma logical render dimensions for tournament (36x20)', () => {
-    expect(TAB_ICON_ASSETS.tournament.active.width).toBe(36);
-    expect(TAB_ICON_ASSETS.tournament.active.height).toBe(20);
-    expect(TAB_ICON_ASSETS.tournament.inactive.width).toBe(36);
-    expect(TAB_ICON_ASSETS.tournament.inactive.height).toBe(20);
-  });
-
-  it('enforces verified Figma logical render dimensions for friends (24x22)', () => {
-    expect(TAB_ICON_ASSETS.friends.active.width).toBe(24);
-    expect(TAB_ICON_ASSETS.friends.active.height).toBe(22);
-    expect(TAB_ICON_ASSETS.friends.inactive.width).toBe(24);
-    expect(TAB_ICON_ASSETS.friends.inactive.height).toBe(22);
-  });
-
-  it('preserves the distinct active vs inactive height for mission (active 26x26 vs inactive 26x24)', () => {
-    expect(TAB_ICON_ASSETS.mission.active.width).toBe(26);
-    expect(TAB_ICON_ASSETS.mission.active.height).toBe(26);
-
-    expect(TAB_ICON_ASSETS.mission.inactive.width).toBe(26);
-    expect(TAB_ICON_ASSETS.mission.inactive.height).toBe(24);
-
-    expect(TAB_ICON_ASSETS.mission.active.height).not.toBe(
-      TAB_ICON_ASSETS.mission.inactive.height,
+  it('enforces verified Figma logical render size for tournament (36)', () => {
+    expect(TAB_ICON_ASSETS.tournament.active.iconName).toBe('tournamentActive');
+    expect(TAB_ICON_ASSETS.tournament.active.size).toBe(36);
+    expect(TAB_ICON_ASSETS.tournament.inactive.iconName).toBe(
+      'tournamentInactive',
     );
+    expect(TAB_ICON_ASSETS.tournament.inactive.size).toBe(36);
+  });
+
+  it('enforces verified Figma logical render size for friends (24)', () => {
+    expect(TAB_ICON_ASSETS.friends.active.iconName).toBe('friendsActive');
+    expect(TAB_ICON_ASSETS.friends.active.size).toBe(24);
+    expect(TAB_ICON_ASSETS.friends.inactive.iconName).toBe('friendsInactive');
+    expect(TAB_ICON_ASSETS.friends.inactive.size).toBe(24);
+  });
+
+  it('enforces verified Figma logical render size for mission (26)', () => {
+    expect(TAB_ICON_ASSETS.mission.active.iconName).toBe('missionActive');
+    expect(TAB_ICON_ASSETS.mission.active.size).toBe(26);
+    expect(TAB_ICON_ASSETS.mission.inactive.iconName).toBe('missionInactive');
+    expect(TAB_ICON_ASSETS.mission.inactive.size).toBe(26);
+  });
+
+  it('active and inactive iconNames are distinct for every destination', () => {
+    expectedKeys.forEach(key => {
+      expect(TAB_ICON_ASSETS[key].active.iconName).not.toBe(
+        TAB_ICON_ASSETS[key].inactive.iconName,
+      );
+    });
+  });
+
+  it('MONOCHROME_VECTOR icons (shop, friends) carry color for active/inactive distinction', () => {
+    // shop and friends are vector icons — they need explicit color to differentiate states
+    expect(TAB_ICON_ASSETS.shop.active.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.shop.inactive.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.shop.active.color).not.toBe(
+      TAB_ICON_ASSETS.shop.inactive.color,
+    );
+
+    expect(TAB_ICON_ASSETS.friends.active.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.friends.inactive.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.friends.active.color).not.toBe(
+      TAB_ICON_ASSETS.friends.inactive.color,
+    );
+  });
+
+  it('FIXED_VISUAL icons (home, tournament, mission) do not carry color — artwork is self-contained', () => {
+    // FIXED_VISUAL glyphs embed raster artwork; color prop is meaningless for them
+    expect(TAB_ICON_ASSETS.home.active.color).toBeUndefined();
+    expect(TAB_ICON_ASSETS.home.inactive.color).toBeUndefined();
+    expect(TAB_ICON_ASSETS.tournament.active.color).toBeUndefined();
+    expect(TAB_ICON_ASSETS.tournament.inactive.color).toBeUndefined();
+    expect(TAB_ICON_ASSETS.mission.active.color).toBeUndefined();
+    expect(TAB_ICON_ASSETS.mission.inactive.color).toBeUndefined();
   });
 });

@@ -26,6 +26,21 @@ export interface LoginCredentials {
   readonly password: string;
 }
 
+export interface RequestOtpPayload {
+  readonly email: string;
+}
+
+export interface OtpChallenge {
+  readonly challengeId: string;
+  readonly expiresInSeconds: number;
+}
+
+export interface VerifyOtpPayload {
+  readonly challengeId: string;
+  readonly code: string;
+  readonly email: string;
+}
+
 export interface RegisterPayload {
   readonly email: string;
   readonly password: string;

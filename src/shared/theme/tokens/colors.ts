@@ -17,6 +17,7 @@ export const primitiveColors = {
   red: {
     400: '#FF3A5E',
     500: '#BA2025',
+    700: '#A70100',
   },
 
   orange: {

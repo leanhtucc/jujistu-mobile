@@ -1,200 +1,140 @@
-import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
-import { AppInputField } from '@jujistu/ui';
-import { useNavigation } from '@react-navigation/native';
+import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
+import { AppButton, AppInputField } from '@jujistu/ui';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  Pressable,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useLoginMutation } from '../queries/use-login-mutation';
+import { AuthBackground } from '../components/AuthBackground';
+import { AuthHero } from '../components/AuthHero';
+import { useRequestOtpMutation } from '../queries/use-request-otp-mutation';
 
-export function LoginScreen() {
+type LoginScreenProps = {
+  onOtpRequested: (params: { challengeId: string; email: string }) => void;
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const insets = useSafeAreaInsets();
-  const theme = useAppTheme();
-  const navigation = useNavigation<any>();
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const requestOtpMutation = useRequestOtpMutation();
+  const normalizedEmail = email.trim().toLowerCase();
+  const errorMessage = validationError ?? requestOtpMutation.error?.message;
 
-  const loginMutation = useLoginMutation();
-
-  const handleLogin = () => {
-    if (!email.trim() || !password.trim()) {
+  const handleSubmit = () => {
+    Keyboard.dismiss();
+    if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      setValidationError('Định dạng email không đúng. Vui lòng kiểm tra lại');
       return;
     }
-    loginMutation.mutate({ email: email.trim(), password });
+
+    setValidationError(null);
+    requestOtpMutation.mutate(
+      { email: normalizedEmail },
+      {
+        onSuccess: challenge => {
+          onOtpRequested({
+            challengeId: challenge.challengeId,
+            email: normalizedEmail,
+          });
+        },
+      },
+    );
   };
 
-  const isPending = loginMutation.isPending;
+  const handleBlur = () => {
+    if (normalizedEmail.length > 0 && !EMAIL_PATTERN.test(normalizedEmail)) {
+      setValidationError('Định dạng email không đúng. Vui lòng kiểm tra lại');
+    }
+  };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.background,
-          paddingTop: insets.top + 24,
-          paddingBottom: insets.bottom + 24,
-        },
-      ]}
-    >
-      <View style={styles.content}>
-        <Text
-          accessibilityRole="header"
-          style={[styles.title, { color: theme.colors.text }]}
+    <AuthBackground>
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardAvoidingView}
         >
-          Jujitsu
-        </Text>
-        <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-          Sign in to your account
-        </Text>
-
-        {loginMutation.isError && (
-          <View
-            accessibilityLiveRegion="polite"
-            style={[
-              styles.errorBanner,
-              { backgroundColor: theme.colors.surface },
-            ]}
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
           >
-            <Text style={[styles.errorText, { color: theme.colors.error }]}>
-              {loginMutation.error?.message ||
-                'Login failed. Please try again.'}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.form}>
-          <Text style={[styles.label, { color: theme.colors.text }]}>
-            Email
-          </Text>
-          <AppInputField
-            accessibilityLabel="Email input"
-            autoCapitalize="none"
-            autoComplete="email"
-            containerStyle={styles.inputLayout}
-            keyboardType="email-address"
-            onChangeText={setEmail}
-            placeholder="name@example.com"
-            value={email}
-          />
-
-          <Text style={[styles.label, { color: theme.colors.text }]}>
-            Password
-          </Text>
-          <AppInputField
-            accessibilityLabel="Password input"
-            autoCapitalize="none"
-            containerStyle={styles.inputLayout}
-            onChangeText={setPassword}
-            placeholder="••••••••"
-            secureTextEntry
-            value={password}
-          />
-
-          <Pressable
-            accessibilityLabel="Sign in"
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isPending }}
-            disabled={isPending}
-            onPress={handleLogin}
-            style={[
-              styles.button,
-              { backgroundColor: theme.colors.primary },
-              isPending && styles.buttonDisabled,
-            ]}
-          >
-            {isPending ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              <Text style={styles.buttonText}>Sign In</Text>
-            )}
-          </Pressable>
-
-          <Pressable
-            accessibilityLabel="Navigate to registration"
-            accessibilityRole="button"
-            onPress={() => navigation.navigate('Register')}
-            style={styles.switchAuthButton}
-          >
-            <Text
-              style={[
-                styles.switchAuthText,
-                { color: theme.colors.textSecondary },
-              ]}
-            >
-              Don't have an account?{' '}
-              <Text style={{ color: theme.colors.primary }}>Sign Up</Text>
-            </Text>
-          </Pressable>
-        </View>
-      </View>
-    </View>
+            <AuthHero compact />
+            <View style={styles.form}>
+              <AppInputField
+                accessibilityLabel="Email"
+                autoCapitalize="none"
+                autoComplete="email"
+                autoFocus
+                error={Boolean(errorMessage)}
+                keyboardType="email-address"
+                onBlur={handleBlur}
+                onChangeText={value => {
+                  setEmail(value);
+                  if (validationError) setValidationError(null);
+                  if (requestOtpMutation.isError) requestOtpMutation.reset();
+                }}
+                placeholder="Email"
+                size="lg"
+                value={email}
+              />
+              {errorMessage ? (
+                <Text accessibilityLiveRegion="polite" style={styles.error}>
+                  {errorMessage}
+                </Text>
+              ) : null}
+              <AppButton
+                accessibilityLabel="Gửi mã OTP"
+                containerStyle={styles.button}
+                disabled={email.trim().length === 0}
+                label="Đăng Nhập"
+                loading={requestOtpMutation.isPending}
+                onPress={handleSubmit}
+                size="lg"
+              />
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </AuthBackground>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    alignItems: 'center',
-    borderRadius: 8,
-    justifyContent: 'center',
-    marginTop: 16,
-    paddingVertical: 14,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  errorBanner: {
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  errorText: {
-    fontSize: 14,
-  },
-  form: {
+    marginTop: 24,
     width: '100%',
   },
-  inputLayout: {
-    marginBottom: 16,
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 6,
+  error: {
+    color: semanticColors.text.error,
+    fontFamily: fontFamilies.primary.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    marginLeft: 4,
+    marginTop: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 24,
+  form: {
+    marginTop: 32,
+    width: '100%',
   },
-  switchAuthButton: {
-    alignItems: 'center',
-    marginTop: 20,
-    padding: 8,
+  keyboardAvoidingView: {
+    flex: 1,
   },
-  switchAuthText: {
-    fontSize: 14,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-    marginBottom: 8,
+  safeArea: {
+    flex: 1,
   },
 });

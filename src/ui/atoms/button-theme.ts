@@ -1,4 +1,5 @@
 import {
+  borderWidth,
   opacity,
   primitiveColors,
   radius,
@@ -6,7 +7,11 @@ import {
   spacing,
 } from '@jujistu/shared/theme';
 
-import type { ButtonSize, ButtonVariant } from './button.types';
+import type {
+  ButtonAppearance,
+  ButtonSize,
+  ButtonVariant,
+} from './button.types';
 
 const buttonComponentTokens = {
   primary: {
@@ -29,6 +34,8 @@ export interface AppButtonVisualRecipe {
     left: string;
     right: string;
   };
+  borderColor?: string;
+  borderWidth?: number;
   opacity: number;
 }
 
@@ -44,8 +51,49 @@ export interface AppButtonSizeRecipe {
 export function resolveAppButtonVisualRecipe(
   variant: ButtonVariant,
   disabled: boolean,
+  appearance: ButtonAppearance = 'filled',
+  pressed = false,
 ): AppButtonVisualRecipe {
-  const resolvedOpacity = disabled ? opacity.disabled : opacity.full;
+  const resolvedOpacity = disabled
+    ? opacity.disabled
+    : pressed
+    ? 0.8
+    : opacity.full;
+  const defaultForeground =
+    variant === 'primary'
+      ? semanticColors.text.accent
+      : semanticColors.text.primary;
+
+  if (appearance === 'outline') {
+    return {
+      backgroundColor: 'transparent',
+      borderColor:
+        variant === 'primary'
+          ? semanticColors.border.accent
+          : variant === 'secondaryDark'
+          ? semanticColors.border.strong
+          : primitiveColors.neutral[0],
+      borderWidth: borderWidth.thin,
+      foregroundColor: defaultForeground,
+      opacity: resolvedOpacity,
+    };
+  }
+
+  if (appearance === 'ghost') {
+    return {
+      backgroundColor: 'transparent',
+      foregroundColor: defaultForeground,
+      opacity: resolvedOpacity,
+    };
+  }
+
+  if (appearance === 'soft') {
+    return {
+      backgroundColor: semanticColors.background.surfaceSubtle,
+      foregroundColor: defaultForeground,
+      opacity: resolvedOpacity,
+    };
+  }
 
   if (variant === 'primary') {
     return {
@@ -82,6 +130,17 @@ export function resolveAppButtonSizeRecipe(
   size: ButtonSize,
   hasIcon: boolean,
 ): AppButtonSizeRecipe {
+  if (size === 'lg') {
+    return {
+      height: 56,
+      paddingHorizontal: spacing[12],
+      paddingVertical: spacing[8],
+      gap: spacing[3],
+      borderRadius: radius.xs,
+      iconSize: 20,
+    };
+  }
+
   if (size === 'md') {
     return {
       height: 48,

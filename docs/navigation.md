@@ -8,7 +8,7 @@ introduced without a dedicated upgrade review.
 
 ```text
 src/app/navigation/
-├── AuthNavigator.tsx        stack navigator for unauthenticated flows (Login, Register)
+├── AuthNavigator.tsx        stack navigator for unauthenticated email OTP flows
 ├── MainNavigator.tsx        stack navigator for authenticated flows (Home)
 ├── NavigationFallback.tsx   accessible loading state during session resolution
 ├── RootNavigator.tsx        root container conditionally rendering Auth or Main
@@ -24,8 +24,9 @@ state (`useAuthState`):
 ```text
 RootNavigator (NavigationContainer)
 ├── [unauthenticated] AuthNavigator (Stack)
+│   ├── Welcome
 │   ├── Login
-│   └── Register
+│   └── Otp (transparent modal)
 │
 └── [authenticated] MainNavigator (Stack)
     └── Home (prepared for future BottomTabs when >= 2 business features are confirmed)

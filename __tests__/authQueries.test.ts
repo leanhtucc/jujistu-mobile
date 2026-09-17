@@ -26,6 +26,72 @@ describe('authApi', () => {
     jest.clearAllMocks();
   });
 
+  it('requests an OTP challenge for an email address', async () => {
+    (apiRequest as jest.Mock).mockResolvedValueOnce({
+      data: { challenge_id: 'challenge-1', expires_in: 30 },
+      message: 'OTP sent',
+      status: 200,
+      success: true,
+    });
+
+    const result = await authApi.requestOtp({ email: 'test@example.com' });
+
+    expect(apiRequest).toHaveBeenCalledWith(
+      AUTH_API_PATHS.requestOtp,
+      expect.objectContaining({
+        method: 'POST',
+        body: { email: 'test@example.com' },
+        headers: expect.objectContaining({
+          [SKIP_ACCESS_TOKEN_HEADER]: 'true',
+        }),
+      }),
+    );
+    expect(result).toEqual({
+      challengeId: 'challenge-1',
+      expiresInSeconds: 30,
+    });
+  });
+
+  it('verifies an OTP and normalizes the authenticated session', async () => {
+    (apiRequest as jest.Mock).mockResolvedValueOnce({
+      data: {
+        access_token: 'otp-access',
+        refresh_token: 'otp-refresh',
+        user: {
+          id: 'u-otp',
+          email: 'test@example.com',
+          displayName: 'OTP User',
+        },
+      },
+      message: 'OTP verified',
+      status: 200,
+      success: true,
+    });
+
+    const result = await authApi.verifyOtp({
+      challengeId: 'challenge-1',
+      code: '123456',
+      email: 'test@example.com',
+    });
+
+    expect(apiRequest).toHaveBeenCalledWith(
+      AUTH_API_PATHS.verifyOtp,
+      expect.objectContaining({
+        method: 'POST',
+        body: {
+          challenge_id: 'challenge-1',
+          code: '123456',
+          email: 'test@example.com',
+        },
+        headers: expect.objectContaining({
+          [SKIP_ACCESS_TOKEN_HEADER]: 'true',
+        }),
+      }),
+    );
+    expect(result.accessToken).toBe('otp-access');
+    expect(result.user.email).toBe('test@example.com');
+  });
+
   it('calls login endpoint with skipAuth header and normalizes response', async () => {
     const mockApiResponse = {
       data: {

@@ -19,6 +19,10 @@ export {
 export { semanticColors, type SemanticColors } from './semantic/colors';
 export { semanticColors as colors } from './semantic/colors';
 export {
+  semanticGradients,
+  type SemanticGradients,
+} from './semantic/gradients';
+export {
   typography,
   componentTypography,
   type Typography,

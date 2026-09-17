@@ -8,7 +8,12 @@ import {
 
 import type { InputFieldSize } from './input-field.types';
 
-export type InputVisualState = 'default' | 'focused' | 'filled' | 'error';
+export type InputVisualState =
+  | 'default'
+  | 'focused'
+  | 'filled'
+  | 'disabled'
+  | 'error';
 
 export interface InputFieldSizeRecipe {
   height: number;
@@ -47,14 +52,20 @@ export const inputFieldFocusedGradient = {
 export function resolveInputVisualState({
   error,
   focused,
+  disabled = false,
   value,
 }: {
   error: boolean;
   focused: boolean;
+  disabled?: boolean;
   value: string;
 }): InputVisualState {
   if (error) {
     return 'error';
+  }
+
+  if (disabled) {
+    return 'disabled';
   }
 
   if (focused) {
@@ -71,6 +82,17 @@ export function resolveInputVisualState({
 export function resolveInputFieldSizeRecipe(
   size: InputFieldSize,
 ): InputFieldSizeRecipe {
+  if (size === 'lg') {
+    return {
+      height: 62,
+      paddingHorizontal: spacing[8],
+      paddingVertical: spacing[8],
+      gap: spacing[3],
+      borderRadius: radius.xs,
+      borderWidth: borderWidth.thin,
+    };
+  }
+
   return {
     height: size === 'md' ? 52 : 40,
     paddingHorizontal: spacing[8],
@@ -106,6 +128,16 @@ export function resolveInputFieldVisualRecipe(
       textColor: semanticColors.text.primary,
       placeholderColor: semanticColors.text.tertiary,
       usesFocusedGradient: true,
+    };
+  }
+
+  if (state === 'disabled') {
+    return {
+      ...common,
+      textColor: semanticColors.text.tertiary,
+      placeholderColor: semanticColors.text.tertiary,
+      opacity: 0.5,
+      usesFocusedGradient: false,
     };
   }
 

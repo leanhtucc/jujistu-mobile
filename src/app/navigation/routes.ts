@@ -4,8 +4,9 @@ export const ROOT_ROUTES = {
 } as const;
 
 export const AUTH_ROUTES = {
+  WELCOME: 'Welcome',
   LOGIN: 'Login',
-  REGISTER: 'Register',
+  OTP: 'Otp',
 } as const;
 
 export const MAIN_ROUTES = {

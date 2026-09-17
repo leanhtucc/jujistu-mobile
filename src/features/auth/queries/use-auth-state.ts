@@ -3,18 +3,27 @@ import { useEffect, useState } from 'react';
 
 import { useCurrentUserQuery } from './use-current-user-query';
 
+const MINIMUM_INITIALIZE_DURATION_MS = 600;
+
 export function useAuthState() {
   const [tokenChecked, setTokenChecked] = useState(false);
   const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    tokenManager.getAccessToken().then(token => {
-      if (isMounted) {
-        setHasToken(Boolean(token));
-        setTokenChecked(true);
-      }
-    });
+    const minDelayPromise = new Promise<void>(resolve =>
+      setTimeout(() => resolve(), MINIMUM_INITIALIZE_DURATION_MS),
+    );
+
+    Promise.all([tokenManager.getAccessToken(), minDelayPromise]).then(
+      ([token]) => {
+        if (isMounted) {
+          setHasToken(Boolean(token));
+          setTokenChecked(true);
+        }
+      },
+    );
+
     return () => {
       isMounted = false;
     };

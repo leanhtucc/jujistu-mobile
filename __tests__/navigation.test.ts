@@ -20,12 +20,14 @@ describe('navigation contract', () => {
   });
 
   it('defines stable auth route names', () => {
+    const welcomeRoute: keyof AuthStackParamList = AUTH_ROUTES.WELCOME;
     const loginRoute: keyof AuthStackParamList = AUTH_ROUTES.LOGIN;
-    const registerRoute: keyof AuthStackParamList = AUTH_ROUTES.REGISTER;
+    const otpRoute: keyof AuthStackParamList = AUTH_ROUTES.OTP;
 
+    expect(welcomeRoute).toBe('Welcome');
     expect(loginRoute).toBe('Login');
-    expect(registerRoute).toBe('Register');
-    expect(Object.values(AUTH_ROUTES)).toEqual(['Login', 'Register']);
+    expect(otpRoute).toBe('Otp');
+    expect(Object.values(AUTH_ROUTES)).toEqual(['Welcome', 'Login', 'Otp']);
   });
 
   it('defines stable main route names', () => {

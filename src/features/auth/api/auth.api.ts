@@ -11,9 +11,12 @@ import {
 import type {
   AuthSession,
   LoginCredentials,
+  OtpChallenge,
   RegisterPayload,
+  RequestOtpPayload,
   TokenResponse,
   UserProfile,
+  VerifyOtpPayload,
 } from '../types/auth.types';
 
 function normalizeTokenData(data: AuthTokenDataApi): TokenResponse {
@@ -84,6 +87,46 @@ function normalizeUser(
  * and response normalization following the TiengVietTV specification.
  */
 export const authApi = {
+  requestOtp: async (payload: RequestOtpPayload): Promise<OtpChallenge> => {
+    const response = await apiRequest<
+      ApiEnvelope<{ challenge_id: string; expires_in: number }>
+    >(AUTH_API_PATHS.requestOtp, {
+      method: 'POST',
+      body: payload,
+      headers: {
+        [SKIP_ACCESS_TOKEN_HEADER]: 'true',
+      },
+    });
+    const data = response.data;
+
+    if (!data) {
+      throw new Error('OTP challenge was not returned by the server.');
+    }
+
+    return {
+      challengeId: data.challenge_id,
+      expiresInSeconds: data.expires_in,
+    };
+  },
+
+  verifyOtp: async (payload: VerifyOtpPayload): Promise<AuthSession> => {
+    const response = await apiRequest<
+      ApiEnvelope<AuthTokenDataApi & { user?: UserProfileDataApi }>
+    >(AUTH_API_PATHS.verifyOtp, {
+      method: 'POST',
+      body: {
+        challenge_id: payload.challengeId,
+        code: payload.code,
+        email: payload.email,
+      },
+      headers: {
+        [SKIP_ACCESS_TOKEN_HEADER]: 'true',
+      },
+    });
+
+    return normalizeSession(response);
+  },
+
   login: async (credentials: LoginCredentials): Promise<AuthSession> => {
     const response = await apiRequest<
       ApiEnvelope<AuthTokenDataApi & { user?: UserProfileDataApi }>

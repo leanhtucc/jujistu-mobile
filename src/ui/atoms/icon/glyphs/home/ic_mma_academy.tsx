@@ -1,0 +1,15 @@
+import React from 'react';
+import Svg, { Image } from 'react-native-svg';
+import type { GlyphProps } from '../../icon.types';
+export function MmaAcademyGlyph({ size, color: _color }: GlyphProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 34 24" fill="none">
+      <Image
+        width={34}
+        height={24}
+        preserveAspectRatio="xMidYMid meet"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAYCAYAAACfpi8JAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAABIVJREFUeAG1VkuIHEUY/qq6embddTS7MRiJuj4uoiQos3gIxERBZCGejIgeBEE8SQ6CeAnmsngSQgRBPYngyZMXvZj4iBIQzWYluosIa9xIXmuy7ry7u6r869HTj+nsRkiKqe7qevz/97++GgYgaDabfGnh9LFH7pneqZRUGhrmZ5umgVQoNGUW/QbO6MGwYWO0HnDay/03DTX4mZWVX/dLufczM/Vasxl+vrQYnfthXl488lEwuHDZC2b2p7WETtRQMSOhKpbum3FwEVxLewEID2lfEAwNCbduwbbnZuW9Lz4bHNq7b4zVOF9of3/q4flXXxf1xhZ7XGtSrL0gM660WPt5XZwavvIfhQU70AQmjlrYefhtOfXS/kX28q7H5Ju3TnM5GDgX5nUq99A2EnpE7xCM1rmZVKku7tNFtFYcPUQ9wJFaT4q7x2/ncn0dOhQouNTq0BkIg6oAIgckZ/HIlpEjOdDkddnvYjsPuJCx8cS4V5ghzqQqf9hZbkacxibakt5qc9VFEHmvMqNDQMYR46rVoZzLsjkLTTrgNintIQpdQAm3lrTR3d3EanQJNaoadr0g8naWFHJI6XKjvF4YmHfgCkkOsO2tNzDz/jt44rfTaO+eQSdeRcgDbNhs/mXdVJ+1z4hWypjrQ1DuFagNGLM0tnWS8FNZxxFm3pvDo98dx9n6gHb1iC54NY4SFjcw3BICSWL9brmi6Ldy3LOkTHPEWcXJGIWwMYHZk1+jMXcYF3vnUSfyYqnVvlsysy4Ism7UG/3OI3DxK4Cpco8umpe3lpTIJMb07FN4cvEXXH5omoT3vXJv+dCzGVmmL6OfI5FeHz2UzABZIlOoLsiqBDWeJY/FMfZ8+iGSZ56GSKvNr+cBZMeYC42Js6tMPcTjQOgMoGXadE5terWYDd3lvzDquoqdVIW614MwgpXylaN9Hmjmwevi4ZRndJVqF6KoP8CXe2bxQMSQQGCUl3LCjPFWr01Wd5doAqNpwmxI42a9pJGRnTZrFM0rV4vJSEtcCMy/+wF+nHkcDyYhEmOMCXPqTdtl1pWy8g09SVoTOUr1IBNoT2JZJvgbxCEEC0M/TTvJtVd+X8bJAy/gftFAWL8LEcW8HIXK24G4WfmUFFKXq8JzsLn+bfIgLXy/JUBrecVVCiXmsQOvYPKPJdxXm0JsyNHdlBsQf3qXEQjyBPdkKpw6VQEm9527qCR5qvPJxzj+7QkEf57BjvqdiHgDMZVverbkx5InMsNtSOndozCJVRIQEJDELjCUbqUKOQrjfAKNcxeggjtsGEb24Hqbo4h18qToaTWcdFAczs1Eyv9x6V6raXt/U/JT1orzcZy0VV+ELIRzpq+aEeYpirgRIIzxJhZn477kp6L2Fz911olfFYUoja+yHDLacQO6+5Nlrk9z25xorcmFqPuV1Tt1S+2fg5M7bts1PiEmRegIDand6TifO5s15hVW+8IkaEtG+uduRx+9+ve/a714iu2jyvmG2H58TBzaHtQOjjEeakDhJjbDUlQp8pKKjrb7ydzzxAn/AfaZTqOmUIRnAAAAAElFTkSuQmCC"
+      />
+    </Svg>
+  );
+}

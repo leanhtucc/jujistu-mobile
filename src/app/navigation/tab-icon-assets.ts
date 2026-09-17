@@ -1,21 +1,12 @@
-import type { ImageSourcePropType } from 'react-native';
-
-/**
- * Immutable configuration for a single tab state image asset
- * with verified Figma logical render dimensions.
- */
-export interface TabImageAsset {
-  readonly source: ImageSourcePropType;
-  readonly width: number;
-  readonly height: number;
-}
+import type { BottomNavigationIconNameSource } from '@jujistu/ui';
 
 /**
  * Both visual states (active and inactive) for a product tab destination.
+ * Uses the SVG/AppIcon icon slot (BottomNavigationIconNameSource).
  */
 export interface ProductTabIconAsset {
-  readonly active: TabImageAsset;
-  readonly inactive: TabImageAsset;
+  readonly active: BottomNavigationIconNameSource;
+  readonly inactive: BottomNavigationIconNameSource;
 }
 
 /**
@@ -32,73 +23,44 @@ export type TabIconAssetKey =
 /**
  * Static product Bottom Navigation icon asset configuration.
  *
- * Maps each of the 5 mobile destinations to its active and inactive PNG image
- * source and verified logical render dimensions from Figma file NwZDju5WlLK9Ltxd7nYLnt.
+ * Maps each of the 5 mobile destinations to its active and inactive AppIcon
+ * glyph name and verified logical render size from Figma NwZDju5WlLK9Ltxd7nYLnt.
  *
- * NOTE: AppIcon remains strictly for vector glyphs (chevronLeft, logOut).
- * Product tab image assets are consumed by the product navigation layer.
+ * FIXED_VISUAL glyphs (home, tournament, mission active/inactive) embed Figma
+ * raster artwork — they ignore the `color` prop.
+ *
+ * MONOCHROME_VECTOR glyphs (shop, friends) receive `color` to distinguish
+ * active (#FE8B33 orange) from inactive (#CCD5E6 grey).
+ * Legacy PNG paths and assets have been removed; bottom nav uses SVG-backed AppIcon exclusively.
  */
+
+/** Brand active colour forwarded to MONOCHROME_VECTOR tab icons. */
+const ACTIVE_COLOR = '#FE8B33';
+
+/** Inactive grey forwarded to MONOCHROME_VECTOR tab icons. */
+const INACTIVE_COLOR = '#CCD5E6';
+
 export const TAB_ICON_ASSETS: Readonly<
   Record<TabIconAssetKey, ProductTabIconAsset>
 > = {
   home: {
-    active: {
-      source: require('../../../assets/icons/tabs/home-active.png'),
-      width: 27,
-      height: 23,
-    },
-    inactive: {
-      source: require('../../../assets/icons/tabs/home-inactive.png'),
-      width: 27,
-      height: 23,
-    },
+    active: { iconName: 'homeActive', size: 27 },
+    inactive: { iconName: 'homeInactive', size: 27 },
   },
   tournament: {
-    active: {
-      source: require('../../../assets/icons/tabs/tournament-active.png'),
-      width: 36,
-      height: 20,
-    },
-    inactive: {
-      source: require('../../../assets/icons/tabs/tournament-inactive.png'),
-      width: 36,
-      height: 20,
-    },
+    active: { iconName: 'tournamentActive', size: 36 },
+    inactive: { iconName: 'tournamentInactive', size: 36 },
   },
   shop: {
-    active: {
-      source: require('../../../assets/icons/tabs/shop-active.png'),
-      width: 20,
-      height: 20,
-    },
-    inactive: {
-      source: require('../../../assets/icons/tabs/shop-inactive.png'),
-      width: 20,
-      height: 20,
-    },
+    active: { iconName: 'shopActive', size: 20, color: ACTIVE_COLOR },
+    inactive: { iconName: 'shopInactive', size: 20, color: INACTIVE_COLOR },
   },
   mission: {
-    active: {
-      source: require('../../../assets/icons/tabs/mission-active.png'),
-      width: 26,
-      height: 26,
-    },
-    inactive: {
-      source: require('../../../assets/icons/tabs/mission-inactive.png'),
-      width: 26,
-      height: 24,
-    },
+    active: { iconName: 'missionActive', size: 26 },
+    inactive: { iconName: 'missionInactive', size: 26 },
   },
   friends: {
-    active: {
-      source: require('../../../assets/icons/tabs/friends-active.png'),
-      width: 24,
-      height: 22,
-    },
-    inactive: {
-      source: require('../../../assets/icons/tabs/friends-inactive.png'),
-      width: 24,
-      height: 22,
-    },
+    active: { iconName: 'friendsActive', size: 24, color: ACTIVE_COLOR },
+    inactive: { iconName: 'friendsInactive', size: 24, color: INACTIVE_COLOR },
   },
 } as const;

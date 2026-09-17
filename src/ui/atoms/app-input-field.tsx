@@ -59,16 +59,25 @@ export function AppInputField({
   onChangeText,
   placeholder,
   size = 'sm',
+  status = 'neutral',
   error = false,
+  disabled = false,
   secureTextEntry = false,
   keyboardType,
   autoCapitalize,
   autoComplete,
   accessibilityLabel,
+  autoFocus = false,
+  onBlur,
   containerStyle,
 }: InputFieldProps) {
   const [focused, setFocused] = useState(false);
-  const state = resolveInputVisualState({ error, focused, value });
+  const state = resolveInputVisualState({
+    error: error || status === 'error',
+    focused,
+    disabled,
+    value,
+  });
   const sizeRecipe = resolveInputFieldSizeRecipe(size);
   const visualRecipe = resolveInputFieldVisualRecipe(state);
 
@@ -103,12 +112,22 @@ export function AppInputField({
         />
         <TextInput
           accessibilityLabel={accessibilityLabel}
+          accessibilityState={disabled ? { disabled: true } : undefined}
           autoCapitalize={autoCapitalize}
           autoComplete={autoComplete}
+          autoFocus={autoFocus}
           keyboardType={keyboardType}
-          onBlur={() => setFocused(false)}
-          onChangeText={onChangeText}
-          onFocus={() => setFocused(true)}
+          editable={!disabled}
+          onBlur={() => {
+            setFocused(false);
+            onBlur?.();
+          }}
+          onChangeText={disabled ? undefined : onChangeText}
+          onFocus={() => {
+            if (!disabled) {
+              setFocused(true);
+            }
+          }}
           placeholder={placeholder}
           placeholderTextColor={visualRecipe.placeholderColor}
           secureTextEntry={secureTextEntry}

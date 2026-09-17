@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import Svg, { LinearGradient, Stop } from 'react-native-svg';
 
@@ -123,6 +123,47 @@ describe('AppButton', () => {
     expect(resolveAppButtonSizeRecipe('sm', true).height).toBe(32);
   });
 
+  it('adds the Figma-grounded lg size without changing sm or md', () => {
+    expect(resolveAppButtonSizeRecipe('lg', false)).toMatchObject({
+      height: 56,
+      paddingHorizontal: 24,
+      iconSize: 20,
+    });
+  });
+
+  it('renders loading as busy and prevents presses', () => {
+    const onPress = jest.fn();
+    const tree = renderButton({ loading: true, onPress });
+    const control = getPressable(tree);
+
+    expect(tree.root.findAllByType(ActivityIndicator)).toHaveLength(1);
+    expect(control.props.accessibilityState).toEqual({
+      busy: true,
+      disabled: true,
+    });
+    expect(control.props.onPress).toBeUndefined();
+    expect(onPress).not.toHaveBeenCalled();
+  });
+
+  it('supports outline, ghost and soft recipes with pressed feedback', () => {
+    expect(
+      resolveAppButtonVisualRecipe('primary', false, 'outline'),
+    ).toMatchObject({
+      backgroundColor: 'transparent',
+      borderColor: '#FE8B33',
+      borderWidth: 1,
+    });
+    expect(
+      resolveAppButtonVisualRecipe('primary', false, 'ghost').backgroundColor,
+    ).toBe('transparent');
+    expect(
+      resolveAppButtonVisualRecipe('primary', false, 'soft').backgroundColor,
+    ).toBe('#222222');
+    expect(
+      resolveAppButtonVisualRecipe('primary', false, 'filled', true).opacity,
+    ).toBe(0.8);
+  });
+
   it('fires onPress when enabled and removes the handler when disabled', () => {
     const enabledPress = jest.fn();
     const enabledTree = renderButton({ onPress: enabledPress });
@@ -185,12 +226,12 @@ describe('AppButton', () => {
     type HasIconOnly = 'iconOnly' extends keyof ButtonProps ? true : false;
 
     const contract: [HasLoading, HasFullWidth, HasChildren, HasIconOnly] = [
-      false,
+      true,
       false,
       false,
       false,
     ];
 
-    expect(contract).toEqual([false, false, false, false]);
+    expect(contract).toEqual([true, false, false, false]);
   });
 });
