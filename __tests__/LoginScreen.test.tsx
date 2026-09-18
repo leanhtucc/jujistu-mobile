@@ -2,6 +2,7 @@ import { authApi, LoginScreen } from '@jujistu/features/auth';
 import { AppButton, AppInputField } from '@jujistu/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 jest.mock('@jujistu/features/auth/api/auth.api', () => ({
@@ -43,8 +44,15 @@ describe('LoginScreen', () => {
 
     expect(input.props.placeholder).toBe('Email');
     expect(input.props.autoFocus).toBe(true);
+    expect(input.props.leadingIcon).toBe('mail');
+    expect(input.props.size).toBe('md');
     expect(button.props.disabled).toBe(true);
     expect(button.props.label).toBe('Đăng Nhập');
+    expect(button.props.size).toBe('md');
+    expect(button.props.labelStyle).toBeUndefined();
+    expect(tree.root.findByType(KeyboardAvoidingView).props.behavior).toBe(
+      Platform.OS === 'ios' ? 'padding' : 'height',
+    );
   });
 
   it('shows validation error when invalid email format is entered and submitted', () => {
@@ -65,6 +73,23 @@ describe('LoginScreen', () => {
     const json = JSON.stringify(tree.toJSON());
     expect(json).toContain('Định dạng email không đúng. Vui lòng kiểm tra lại');
     expect(authApi.requestOtp).not.toHaveBeenCalled();
+
+    const error = tree.root
+      .findAllByType(Text)
+      .find(node => node.props.accessibilityLiveRegion === 'polite');
+    expect(error).toBeDefined();
+    expect(StyleSheet.flatten(error!.props.style)).toMatchObject({
+      lineHeight: 18,
+      marginLeft: 4,
+    });
+    const ancestorGaps: number[] = [];
+    let ancestor = error!.parent;
+    while (ancestor) {
+      const gap = StyleSheet.flatten(ancestor.props.style)?.gap;
+      if (typeof gap === 'number') ancestorGaps.push(gap);
+      ancestor = ancestor.parent;
+    }
+    expect(ancestorGaps).toEqual(expect.arrayContaining([6, 18]));
   });
 
   it('shows validation error on blur if email is invalid', () => {

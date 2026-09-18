@@ -4,6 +4,7 @@ import {
   primitiveColors,
   radius,
   semanticColors,
+  semanticGradients,
   spacing,
 } from '@jujistu/shared/theme';
 
@@ -15,9 +16,7 @@ import type {
 
 const buttonComponentTokens = {
   primary: {
-    gradientLeft: '#A70100',
-    gradientRight: primitiveColors.orange[500],
-    disabledBackground: primitiveColors.red[500],
+    background: primitiveColors.red[500],
   },
   secondaryDark: {
     background: primitiveColors.neutral[700],
@@ -96,17 +95,21 @@ export function resolveAppButtonVisualRecipe(
   }
 
   if (variant === 'primary') {
+    if (!disabled) {
+      return {
+        backgroundColor: 'transparent',
+        foregroundColor: semanticColors.text.primary,
+        gradient: {
+          left: semanticGradients.action.primary.start,
+          right: semanticGradients.action.primary.end,
+        },
+        opacity: resolvedOpacity,
+      };
+    }
+
     return {
-      backgroundColor: disabled
-        ? buttonComponentTokens.primary.disabledBackground
-        : undefined,
+      backgroundColor: buttonComponentTokens.primary.background,
       foregroundColor: semanticColors.text.primary,
-      gradient: disabled
-        ? undefined
-        : {
-            left: buttonComponentTokens.primary.gradientLeft,
-            right: buttonComponentTokens.primary.gradientRight,
-          },
       opacity: resolvedOpacity,
     };
   }

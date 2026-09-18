@@ -6,6 +6,9 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from './button.types';
+export { AppGradientTitle } from './app-gradient-title';
+export { JujitsuChampionshipTitle } from './jujitsu-championship-title';
+export type { AppGradientTitleProps } from './app-gradient-title';
 export { AppIconButton } from './app-icon-button';
 export type { IconButtonProps, IconButtonSize } from './icon-button.types';
 export { AppIcon } from './icon';

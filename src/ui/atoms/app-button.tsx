@@ -29,6 +29,7 @@ export function AppButton({
   onPress,
   accessibilityLabel,
   containerStyle,
+  labelStyle,
 }: ButtonProps) {
   const hasIcon = icon !== undefined;
   const sizeRecipe = resolveAppButtonSizeRecipe(size, hasIcon);
@@ -70,32 +71,42 @@ export function AppButton({
                 borderColor: visualRecipe.borderColor,
                 borderRadius: sizeRecipe.borderRadius,
                 borderWidth: visualRecipe.borderWidth ?? 0,
-                gap: sizeRecipe.gap,
                 height: sizeRecipe.height,
                 opacity: visualRecipe.opacity,
-                paddingHorizontal: sizeRecipe.paddingHorizontal,
-                paddingVertical: sizeRecipe.paddingVertical,
               },
             ]}
           >
             {visualRecipe.gradient ? <PrimaryGradientFill /> : null}
-            {loading ? (
-              <ActivityIndicator
-                color={visualRecipe.foregroundColor}
-                size="small"
-              />
-            ) : iconPosition === 'leading' ? (
-              renderedIcon
-            ) : null}
-            <Text
+            <View
               style={[
-                componentTypography.button,
-                { color: visualRecipe.foregroundColor },
+                styles.content,
+                {
+                  gap: sizeRecipe.gap,
+                  paddingHorizontal: sizeRecipe.paddingHorizontal,
+                  paddingVertical: sizeRecipe.paddingVertical,
+                },
               ]}
             >
-              {label}
-            </Text>
-            {!loading && iconPosition === 'trailing' ? renderedIcon : null}
+              {loading ? (
+                <ActivityIndicator
+                  color={visualRecipe.foregroundColor}
+                  size="small"
+                />
+              ) : iconPosition === 'leading' ? (
+                renderedIcon
+              ) : null}
+              <Text
+                style={[
+                  componentTypography.button,
+                  styles.label,
+                  { color: visualRecipe.foregroundColor },
+                  labelStyle,
+                ]}
+              >
+                {label}
+              </Text>
+              {!loading && iconPosition === 'trailing' ? renderedIcon : null}
+            </View>
           </View>
         );
       }}
@@ -104,10 +115,19 @@ export function AppButton({
 }
 
 const styles = StyleSheet.create({
-  surface: {
+  content: {
     alignItems: 'center',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
+    position: 'relative',
+    zIndex: 1,
+  },
+  label: {
+    includeFontPadding: true,
+  },
+  surface: {
     overflow: 'hidden',
+    position: 'relative',
   },
 });

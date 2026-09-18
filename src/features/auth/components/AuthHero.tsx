@@ -1,4 +1,5 @@
 import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
+import { JujitsuChampionshipTitle } from '@jujistu/ui';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -17,9 +18,7 @@ export function AuthHero({ compact = false }: AuthHeroProps) {
         source={logo}
         style={[styles.logo, compact && styles.logoCompact]}
       />
-      <Text accessibilityRole="header" style={styles.title}>
-        Jujitsu Championship
-      </Text>
+      <JujitsuChampionshipTitle />
       <Text style={styles.description}>
         Nơi quy tụ thông tin các trận đấu hot nhất VIMMA trong hệ thống giải đấu
         Jujitsu Championship
@@ -44,19 +43,12 @@ const styles = StyleSheet.create({
   },
   logo: {
     height: 146,
+    marginBottom: 12,
     resizeMode: 'contain',
     width: 146,
   },
   logoCompact: {
     height: 126,
     width: 126,
-  },
-  title: {
-    color: semanticColors.text.primary,
-    fontFamily: fontFamilies.display.regular,
-    fontSize: 28,
-    lineHeight: 35,
-    textAlign: 'center',
-    textTransform: 'uppercase',
   },
 });

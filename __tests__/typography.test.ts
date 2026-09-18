@@ -93,8 +93,8 @@ describe('Typography Infrastructure', () => {
   it('exposes exact component typography values', () => {
     expect(componentTypography.button).toEqual({
       fontFamily: expect.any(String),
-      fontSize: 14,
-      lineHeight: 14,
+      fontSize: 16,
+      lineHeight: 24,
       fontWeight: '600',
       letterSpacing: 0,
     });

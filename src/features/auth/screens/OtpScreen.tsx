@@ -129,6 +129,7 @@ export function OtpScreen({
               <AppButton
                 containerStyle={styles.action}
                 label="Đổi email khác"
+                labelStyle={styles.actionLabel}
                 onPress={onClose}
                 size="md"
                 variant="secondaryDark"
@@ -139,6 +140,7 @@ export function OtpScreen({
                 label={
                   countdown > 0 ? `Gửi lại OTP (${countdown}s)` : 'Gửi lại OTP'
                 }
+                labelStyle={styles.actionLabel}
                 loading={requestOtpMutation.isPending}
                 onPress={handleResend}
                 size="md"
@@ -153,6 +155,10 @@ export function OtpScreen({
 
 const styles = StyleSheet.create({
   action: { flex: 1 },
+  actionLabel: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
   actions: {
     flexDirection: 'row',
     gap: 12,

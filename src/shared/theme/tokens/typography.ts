@@ -3,11 +3,8 @@ import { Platform } from 'react-native';
 /**
  * Primitive font families architecture.
  *
- * Current runtime status: BLOCKED_BY_FONT_ASSETS.
- *
- * Designed to allow swapping concrete linked font asset postscript names
- * (e.g. 'Barlow-Regular', 'Barlow-SemiBold', etc.) per platform without
- * altering the semantic typography tokens.
+ * Runtime font assets are linked in the Android and iOS native projects.
+ * Platform-specific family names keep weight selection deterministic.
  */
 export const fontFamilies = {
   primary: {

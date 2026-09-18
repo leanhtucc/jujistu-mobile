@@ -1,5 +1,7 @@
 import type { StyleProp, TextInputProps, ViewStyle } from 'react-native';
 
+import type { IconName } from './icon';
+
 export type InputFieldSize = 'sm' | 'md' | 'lg';
 export type InputFieldStatus = 'neutral' | 'error';
 
@@ -19,4 +21,5 @@ export interface InputFieldProps {
   autoFocus?: boolean;
   onBlur?: () => void;
   containerStyle?: StyleProp<ViewStyle>;
+  leadingIcon?: IconName;
 }

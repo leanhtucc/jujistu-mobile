@@ -12,7 +12,13 @@ export function AuthBackground({
   dimmed = false,
 }: AuthBackgroundProps) {
   return (
-    <ImageBackground source={background} style={styles.background}>
+    <ImageBackground
+      accessibilityIgnoresInvertColors
+      accessible={false}
+      resizeMode="cover"
+      source={background}
+      style={styles.background}
+    >
       {dimmed ? <View pointerEvents="none" style={styles.dim} /> : null}
       {children}
     </ImageBackground>

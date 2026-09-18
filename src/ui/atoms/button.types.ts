@@ -1,4 +1,4 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 
 import type { IconName } from './icon';
 
@@ -22,4 +22,5 @@ export interface ButtonProps {
   onPress: () => void;
   accessibilityLabel?: string;
   containerStyle?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
 }

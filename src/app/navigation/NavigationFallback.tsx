@@ -1,7 +1,9 @@
 import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
+import { AppGradientTitle } from '@jujistu/ui';
 import { useEffect, useRef } from 'react';
 import {
   Animated,
+  Easing,
   Image,
   ImageBackground,
   StyleSheet,
@@ -15,23 +17,15 @@ const splashBackground = require('../../../assets/image/backgrounds/bg_splash.pn
 
 export function NavigationFallback() {
   const insets = useSafeAreaInsets();
-  const progress = useRef(new Animated.Value(0.12)).current;
+  const progress = useRef(new Animated.Value(0.04)).current;
 
   useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(progress, {
-          duration: 1200,
-          toValue: 0.82,
-          useNativeDriver: false,
-        }),
-        Animated.timing(progress, {
-          duration: 350,
-          toValue: 0.12,
-          useNativeDriver: false,
-        }),
-      ]),
-    );
+    const animation = Animated.timing(progress, {
+      duration: 2400,
+      easing: Easing.out(Easing.cubic),
+      toValue: 0.96,
+      useNativeDriver: false,
+    });
 
     animation.start();
     return () => animation.stop();
@@ -39,8 +33,11 @@ export function NavigationFallback() {
 
   return (
     <ImageBackground
+      accessibilityIgnoresInvertColors
       accessibilityLabel="Loading application"
       accessibilityRole="progressbar"
+      accessibilityValue={{ min: 0, max: 100, text: 'Loading' }}
+      resizeMode="cover"
       source={splashBackground}
       style={styles.container}
     >
@@ -50,15 +47,21 @@ export function NavigationFallback() {
           source={logo}
           style={styles.logo}
         />
-        <Text accessibilityRole="header" style={styles.title}>
-          Welcome
-        </Text>
+        <AppGradientTitle
+          accessibilityLabel="Welcome"
+          fontSize={32}
+          label="WELCOME"
+          letterSpacing={0}
+          lineHeight={40}
+          shadow={false}
+          strokeWidth={0}
+        />
         <Text style={styles.subtitle}>
           Chào mừng bạn đến với VIMMA{`\n`}Jujitsu Championship
         </Text>
       </View>
 
-      <View style={[styles.loading, { bottom: insets.bottom + 24 }]}>
+      <View style={[styles.loading, { bottom: insets.bottom + 27 }]}>
         <Text style={styles.loadingLabel}>Loading...</Text>
         <View style={styles.progressTrack}>
           <Animated.View
@@ -87,8 +90,9 @@ const styles = StyleSheet.create({
   },
   hero: {
     alignItems: 'center',
-    gap: 4,
-    width: 300,
+    maxWidth: 320,
+    transform: [{ translateY: -26 }],
+    width: '100%',
   },
   loading: {
     left: 16,
@@ -104,10 +108,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logo: {
-    height: 156,
-    marginBottom: 8,
+    height: 146,
+    marginBottom: 16,
     resizeMode: 'contain',
-    width: 156,
+    width: 146,
   },
   progressFill: {
     backgroundColor: semanticColors.text.primary,
@@ -125,14 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamilies.primary.medium,
     fontSize: 16,
     lineHeight: 20,
+    maxWidth: 300,
     textAlign: 'center',
-  },
-  title: {
-    color: semanticColors.text.primary,
-    fontFamily: fontFamilies.display.regular,
-    fontSize: 32,
-    lineHeight: 40,
-    textAlign: 'center',
-    textTransform: 'uppercase',
   },
 });

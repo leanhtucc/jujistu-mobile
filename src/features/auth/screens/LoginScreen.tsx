@@ -60,7 +60,7 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
     <AuthBackground>
       <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardAvoidingView}
         >
           <ScrollView
@@ -69,28 +69,31 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
           >
             <AuthHero compact />
             <View style={styles.form}>
-              <AppInputField
-                accessibilityLabel="Email"
-                autoCapitalize="none"
-                autoComplete="email"
-                autoFocus
-                error={Boolean(errorMessage)}
-                keyboardType="email-address"
-                onBlur={handleBlur}
-                onChangeText={value => {
-                  setEmail(value);
-                  if (validationError) setValidationError(null);
-                  if (requestOtpMutation.isError) requestOtpMutation.reset();
-                }}
-                placeholder="Email"
-                size="lg"
-                value={email}
-              />
-              {errorMessage ? (
-                <Text accessibilityLiveRegion="polite" style={styles.error}>
-                  {errorMessage}
-                </Text>
-              ) : null}
+              <View style={styles.field}>
+                <AppInputField
+                  accessibilityLabel="Email"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  autoFocus
+                  error={Boolean(errorMessage)}
+                  keyboardType="email-address"
+                  leadingIcon="mail"
+                  onBlur={handleBlur}
+                  onChangeText={value => {
+                    setEmail(value);
+                    if (validationError) setValidationError(null);
+                    if (requestOtpMutation.isError) requestOtpMutation.reset();
+                  }}
+                  placeholder="Email"
+                  size="md"
+                  value={email}
+                />
+                {errorMessage ? (
+                  <Text accessibilityLiveRegion="polite" style={styles.error}>
+                    {errorMessage}
+                  </Text>
+                ) : null}
+              </View>
               <AppButton
                 accessibilityLabel="Gửi mã OTP"
                 containerStyle={styles.button}
@@ -98,7 +101,7 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
                 label="Đăng Nhập"
                 loading={requestOtpMutation.isPending}
                 onPress={handleSubmit}
-                size="lg"
+                size="md"
               />
             </View>
           </ScrollView>
@@ -110,7 +113,6 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 24,
     width: '100%',
   },
   content: {
@@ -125,9 +127,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     marginLeft: 4,
-    marginTop: 8,
+  },
+  field: {
+    gap: 6,
+    width: '100%',
   },
   form: {
+    gap: 18,
     marginTop: 32,
     width: '100%',
   },

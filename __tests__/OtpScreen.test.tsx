@@ -77,6 +77,15 @@ describe('OtpScreen', () => {
 
     const otpField = tree.root.findByType(AppOtpField);
     expect(otpField.props.digitCount).toBeUndefined();
+
+    const actionButtons = tree.root.findAllByType(AppButton);
+    expect(actionButtons).toHaveLength(2);
+    actionButtons.forEach(button => {
+      expect(button.props.labelStyle).toMatchObject({
+        fontSize: 14,
+        lineHeight: 20,
+      });
+    });
   });
 
   it('calls onClose when close button or "Đổi email khác" is pressed', () => {

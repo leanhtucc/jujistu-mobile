@@ -68,9 +68,15 @@ describe('AuthFlowIntegration & useAuthState', () => {
     expect(latestState?.isInitializing).toBe(true);
     expect(latestState?.isAuthenticated).toBe(false);
 
-    // Advance past minimum initialize duration (600ms)
+    // Keep the branded loading screen visible for the full minimum duration.
     await act(async () => {
-      jest.advanceTimersByTime(650);
+      jest.advanceTimersByTime(2400);
+      await Promise.resolve();
+    });
+    expect(latestState?.isInitializing).toBe(true);
+
+    await act(async () => {
+      jest.advanceTimersByTime(150);
       await Promise.resolve();
     });
 
@@ -119,7 +125,7 @@ describe('AuthFlowIntegration & useAuthState', () => {
 
     // Advance past minimum initialize duration
     await act(async () => {
-      jest.advanceTimersByTime(650);
+      jest.advanceTimersByTime(2550);
       await Promise.resolve();
     });
 

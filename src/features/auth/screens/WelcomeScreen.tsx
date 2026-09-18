@@ -21,7 +21,7 @@ export function WelcomeScreen({ onLogin }: WelcomeScreenProps) {
             containerStyle={styles.button}
             label="Đăng Nhập"
             onPress={onLogin}
-            size="lg"
+            size="md"
           />
         </View>
       </SafeAreaView>

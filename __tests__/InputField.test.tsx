@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import Svg, { LinearGradient, Stop } from 'react-native-svg';
 
-import { AppInputField } from '@jujistu/ui';
+import { AppIcon, AppInputField } from '@jujistu/ui';
 import type { InputFieldProps } from '@jujistu/ui';
 import {
   inputFieldFocusedGradient,
@@ -134,6 +134,23 @@ describe('AppInputField', () => {
     expect(StyleSheet.flatten(getInput(tree).props.style).color).toBe(
       '#7D7F84',
     );
+  });
+
+  it('renders the verified leading icon without exposing it to accessibility', () => {
+    const tree = renderInput({ leadingIcon: 'mail', size: 'md' });
+    const icon = tree.root.findByType(AppIcon);
+    const inputStyle = StyleSheet.flatten(getInput(tree).props.style);
+
+    expect(icon.props).toMatchObject({
+      accessible: false,
+      color: '#9E9E9E',
+      name: 'mail',
+      size: 20,
+    });
+    expect(inputStyle).toMatchObject({
+      paddingHorizontal: 16,
+      paddingLeft: 0,
+    });
   });
 
   it('resolves default, filled and whitespace-only content deterministically', () => {
@@ -376,7 +393,7 @@ describe('AppInputField', () => {
       true,
       false,
       false,
-      false,
+      true,
       false,
       false,
       false,
@@ -390,7 +407,7 @@ describe('AppInputField', () => {
       true,
       false,
       false,
-      false,
+      true,
       false,
       false,
       false,

@@ -1,21 +1,41 @@
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
-import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
+import { HomeHeroCarousel } from '../components/HomeHeroCarousel';
+import { HomeNewsSection } from '../components/HomeNewsSection';
+import { HomeQuickActions } from '../components/HomeQuickActions';
 
 export function HomeScreen() {
-  const safeAreaInsets = useSafeAreaInsets();
-  const theme = useAppTheme();
-
   return (
-    <View
-      className="flex-1 bg-white dark:bg-black"
-      style={{ backgroundColor: theme.colors.background }}
+    <ScrollView
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+      style={styles.screen}
     >
-      <NewAppScreen
-        templateFileName="src/features/home/presentation/HomeScreen.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
+      <HomeHeroCarousel />
+      <View style={styles.newsSection}>
+        <HomeNewsSection />
+      </View>
+      <View style={styles.quickActions}>
+        <HomeQuickActions />
+      </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+  content: {
+    minHeight: 653,
+    paddingTop: 12,
+    paddingBottom: 15,
+  },
+  newsSection: {
+    marginTop: 8,
+  },
+  quickActions: {
+    marginTop: 92,
+  },
+});

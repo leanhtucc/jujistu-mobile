@@ -19,7 +19,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function RootNavigator() {
   const theme = useAppTheme();
   const navigationTheme = theme.isDark ? DarkTheme : DefaultTheme;
-  const { isInitializing, isAuthenticated } = useAuthState();
+  const { isInitializing, isAuthenticated, user } = useAuthState();
 
   if (isInitializing) {
     return <NavigationFallback />;
@@ -31,8 +31,10 @@ export function RootNavigator() {
       theme={navigationTheme}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
-          <Stack.Screen component={MainNavigator} name={ROOT_ROUTES.MAIN} />
+        {isAuthenticated && user ? (
+          <Stack.Screen name={ROOT_ROUTES.MAIN}>
+            {() => <MainNavigator user={user} />}
+          </Stack.Screen>
         ) : (
           <Stack.Screen component={AuthNavigator} name={ROOT_ROUTES.AUTH} />
         )}

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { useCurrentUserQuery } from './use-current-user-query';
 
-const MINIMUM_INITIALIZE_DURATION_MS = 600;
+const MINIMUM_INITIALIZE_DURATION_MS = 2500;
 
 export function useAuthState() {
   const [tokenChecked, setTokenChecked] = useState(false);

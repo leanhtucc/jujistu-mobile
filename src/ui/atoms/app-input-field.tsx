@@ -7,8 +7,9 @@ import Svg, {
   Stop,
 } from 'react-native-svg';
 
-import { componentTypography } from '@jujistu/shared/theme';
+import { componentTypography, primitiveColors } from '@jujistu/shared/theme';
 
+import { AppIcon } from './icon';
 import {
   inputFieldFocusedGradient,
   resolveInputFieldSizeRecipe,
@@ -70,6 +71,7 @@ export function AppInputField({
   autoFocus = false,
   onBlur,
   containerStyle,
+  leadingIcon,
 }: InputFieldProps) {
   const [focused, setFocused] = useState(false);
   const state = resolveInputVisualState({
@@ -110,6 +112,19 @@ export function AppInputField({
             },
           ]}
         />
+        {leadingIcon ? (
+          <AppIcon
+            accessible={false}
+            color={
+              state === 'error'
+                ? visualRecipe.textColor
+                : primitiveColors.neutral[200]
+            }
+            name={leadingIcon}
+            size={20}
+            style={styles.leadingIcon}
+          />
+        ) : null}
         <TextInput
           accessibilityLabel={accessibilityLabel}
           accessibilityState={disabled ? { disabled: true } : undefined}
@@ -139,6 +154,7 @@ export function AppInputField({
               paddingHorizontal: sizeRecipe.paddingHorizontal,
               paddingVertical: sizeRecipe.paddingVertical,
             },
+            leadingIcon ? styles.inputWithLeadingIcon : null,
           ]}
           value={value}
         />
@@ -161,5 +177,14 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 0,
     textAlignVertical: 'center',
+  },
+  inputWithLeadingIcon: {
+    paddingLeft: 0,
+  },
+  leadingIcon: {
+    alignSelf: 'center',
+    marginLeft: 16,
+    position: 'relative',
+    zIndex: 1,
   },
 });

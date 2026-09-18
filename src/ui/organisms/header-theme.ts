@@ -50,10 +50,18 @@ export const HEADER_ACTION_GRADIENT = {
 export const HEADER_ICON_SIZES: Record<IconName, number> = {
   chevronLeft: 24,
   logOut: 20,
+  mail: 20,
   settings: 24,
   gem: 20,
   coin: 20,
   balanceAdd: 14,
+  // Home quick-action icons — not used in the Header but IconName is exhaustive
+  club: 34,
+  gift: 34,
+  leaderboard: 42,
+  live: 40,
+  minigame: 34,
+  mmaAcademy: 34,
   // Tab nav icons — not used in the Header but IconName is exhaustive
   homeActive: 24,
   homeInactive: 24,

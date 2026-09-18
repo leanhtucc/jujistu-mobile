@@ -68,6 +68,10 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
       const logOutAssignable: IsLogOutAssignable = true;
       expect(logOutAssignable).toBe(true);
 
+      type IsMailAssignable = ['mail'] extends [IconName] ? true : false;
+      const mailAssignable: IsMailAssignable = true;
+      expect(mailAssignable).toBe(true);
+
       type IsSettingsAssignable = ['settings'] extends [IconName]
         ? true
         : false;
@@ -186,16 +190,23 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
   });
 
   describe('C. Production registry contains exactly the verified glyphs', () => {
-    it('contains all 16 verified glyphs: 6 shared UI + 10 tab icons', () => {
+    it('contains all 23 verified glyphs: 7 shared UI + 6 home + 10 tab icons', () => {
       const keys = Object.keys(glyphs);
       expect(keys.sort()).toEqual(
         [
           'chevronLeft',
           'logOut',
+          'mail',
           'settings',
           'gem',
           'coin',
           'balanceAdd',
+          'club',
+          'gift',
+          'leaderboard',
+          'live',
+          'minigame',
+          'mmaAcademy',
           'homeActive',
           'homeInactive',
           'shopActive',
@@ -208,14 +219,22 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'friendsInactive',
         ].sort(),
       );
-      expect(keys).toHaveLength(16);
+      expect(keys).toHaveLength(23);
       // Shared UI glyphs
       expect(typeof glyphs.chevronLeft).toBe('function');
       expect(typeof glyphs.logOut).toBe('function');
+      expect(typeof glyphs.mail).toBe('function');
       expect(typeof glyphs.settings).toBe('function');
       expect(typeof glyphs.gem).toBe('function');
       expect(typeof glyphs.coin).toBe('function');
       expect(typeof glyphs.balanceAdd).toBe('function');
+      // Home quick-action glyphs
+      expect(typeof glyphs.club).toBe('function');
+      expect(typeof glyphs.gift).toBe('function');
+      expect(typeof glyphs.leaderboard).toBe('function');
+      expect(typeof glyphs.live).toBe('function');
+      expect(typeof glyphs.minigame).toBe('function');
+      expect(typeof glyphs.mmaAcademy).toBe('function');
       // Tab icon glyphs
       expect(typeof glyphs.homeActive).toBe('function');
       expect(typeof glyphs.homeInactive).toBe('function');

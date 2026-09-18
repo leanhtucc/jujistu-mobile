@@ -37,6 +37,10 @@ function getSurface(tree: ReactTestRenderer.ReactTestRenderer) {
   return getControl(tree).children[0] as ReactTestRenderer.ReactTestInstance;
 }
 
+function getContent(tree: ReactTestRenderer.ReactTestRenderer) {
+  return getSurface(tree).findByType(Text).parent!;
+}
+
 describe('AppButton', () => {
   it('renders its required label with the approved Button typography', () => {
     const tree = renderButton();
@@ -48,29 +52,63 @@ describe('AppButton', () => {
     );
   });
 
+  it('uses a readable default label without clipping Vietnamese diacritics', () => {
+    const tree = renderButton();
+    const labelStyle = StyleSheet.flatten(
+      tree.root.findByType(Text).props.style,
+    );
+
+    expect(labelStyle).toMatchObject({
+      fontSize: 16,
+      includeFontPadding: true,
+      lineHeight: 24,
+    });
+  });
+
   it('defaults to the primary variant and md size', () => {
     const tree = renderButton();
     const surfaceStyle = StyleSheet.flatten(getSurface(tree).props.style);
+    const contentStyle = StyleSheet.flatten(getContent(tree).props.style);
 
     expect(tree.root.findAllByType(Svg)).toHaveLength(1);
     expect(surfaceStyle.height).toBe(48);
-    expect(surfaceStyle.paddingHorizontal).toBe(16);
-    expect(surfaceStyle.paddingVertical).toBe(12);
+    expect(surfaceStyle.backgroundColor).toBe('transparent');
+    expect(surfaceStyle.overflow).toBe('hidden');
+    expect(contentStyle.paddingHorizontal).toBe(16);
+    expect(contentStyle.paddingVertical).toBe(12);
+    expect(contentStyle.alignItems).toBe('center');
   });
 
-  it('renders the exact primary gradient from dark red left to orange right', () => {
+  it('renders the exact enabled primary gradient from red to orange', () => {
     const tree = renderButton();
+    const recipe = resolveAppButtonVisualRecipe('primary', false);
     const gradient = tree.root.findByType(LinearGradient);
     const stops = tree.root.findAllByType(Stop);
+    const surfaceStyle = StyleSheet.flatten(getSurface(tree).props.style);
 
-    expect(gradient.props).toMatchObject({
-      x1: '0',
-      x2: '1',
-      y1: '0',
-      y2: '0',
+    expect(recipe).toMatchObject({
+      backgroundColor: 'transparent',
+      foregroundColor: '#FFFFFF',
+      gradient: {
+        left: '#A70100',
+        right: '#FE8B33',
+      },
     });
-    expect(stops[0].props).toMatchObject({ offset: '0', stopColor: '#A70100' });
-    expect(stops[1].props).toMatchObject({ offset: '1', stopColor: '#FE8B33' });
+    expect(gradient.props).toMatchObject({
+      x1: '0%',
+      x2: '100%',
+      y1: '50%',
+      y2: '50%',
+    });
+    expect(stops[0].props).toMatchObject({
+      offset: '0',
+      stopColor: '#A70100',
+    });
+    expect(stops[1].props).toMatchObject({
+      offset: '1',
+      stopColor: '#FE8B33',
+    });
+    expect(surfaceStyle.backgroundColor).toBe('transparent');
   });
 
   it('uses the exact solid primary disabled recipe before disabled opacity', () => {

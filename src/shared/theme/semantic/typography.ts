@@ -95,8 +95,8 @@ export const typography = {
 export const componentTypography = {
   button: {
     fontFamily: fontFamilies.primary.semiBold,
-    fontSize: 14,
-    lineHeight: 14,
+    fontSize: 16,
+    lineHeight: 24,
     fontWeight: fontWeights.semiBold,
     letterSpacing: 0,
   },
