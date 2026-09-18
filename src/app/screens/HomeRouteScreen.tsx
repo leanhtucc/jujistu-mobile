@@ -1,8 +1,9 @@
 import type { UserProfile } from '@jujistu/features/auth';
 import { HomeScreen } from '@jujistu/features/home';
+import { createLogger } from '@jujistu/shared/logger/logger';
 import { primitiveColors } from '@jujistu/shared/theme';
 import { AppBottomNavigation } from '@jujistu/ui';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Image,
   type ImageSourcePropType,
@@ -19,13 +20,17 @@ import {
 
 const backgroundImage = require('../../../assets/image/backgrounds/bg_home.png');
 const fallbackAvatar = require('../../../assets/app/LogoApp.png');
+const log = createLogger('HomeRouteScreen');
 
 export interface HomeRouteScreenProps {
+  readonly onReady?: () => void;
   readonly user: UserProfile;
 }
 
-export function HomeRouteScreen({ user }: HomeRouteScreenProps) {
+export function HomeRouteScreen({ onReady, user }: HomeRouteScreenProps) {
   const insets = useSafeAreaInsets();
+  const [backgroundSettled, setBackgroundSettled] = useState(false);
+  const [hasLayout, setHasLayout] = useState(false);
   const avatar: ImageSourcePropType = user.avatarUrl
     ? { uri: user.avatarUrl }
     : fallbackAvatar;
@@ -34,11 +39,25 @@ export function HomeRouteScreen({ user }: HomeRouteScreenProps) {
     [],
   );
 
+  useEffect(() => {
+    if (backgroundSettled && hasLayout) {
+      onReady?.();
+    }
+  }, [backgroundSettled, hasLayout, onReady]);
+
+  const handleBackgroundError = useCallback(() => {
+    log.error('Home background failed to load');
+    setBackgroundSettled(true);
+  }, []);
+
   return (
-    <View style={styles.root}>
+    <View onLayout={() => setHasLayout(true)} style={styles.root}>
       <Image
         accessible={false}
+        fadeDuration={0}
         importantForAccessibility="no"
+        onError={handleBackgroundError}
+        onLoad={() => setBackgroundSettled(true)}
         resizeMode="cover"
         source={backgroundImage}
         style={styles.background}

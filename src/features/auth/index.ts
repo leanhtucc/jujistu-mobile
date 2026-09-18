@@ -8,6 +8,7 @@ export { useVerifyOtpMutation } from './queries/use-verify-otp-mutation';
 export { useRegisterMutation } from './queries/use-register-mutation';
 export { useCurrentUserQuery } from './queries/use-current-user-query';
 export { useLogoutMutation } from './queries/use-logout-mutation';
+export { AuthBackground } from './components/AuthBackground';
 export { LoginScreen } from './screens/LoginScreen';
 export { RegisterScreen } from './screens/RegisterScreen';
 export { WelcomeScreen } from './screens/WelcomeScreen';

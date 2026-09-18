@@ -46,9 +46,17 @@ RootNavigator (NavigationContainer)
 - Add deep-link prefixes and catch-all behavior only after the public URL/scheme
   contract and security review are complete.
 
-`NavigationFallback` is an accessible loading state used while the navigation
-container resolves initial state. It is not an error screen and must not hide
-invalid route definitions.
+`RootNavigator` also coordinates startup readiness as documented in ADR 0009. Its
+`NavigationFallback` remains mounted above the destination until session restore,
+the navigation container, loading assets, the destination's critical background, and
+the minimum visible duration (4000ms from visible presentation) are ready. The
+fallback progress bar animates from 0% to 100% over the minimum visible duration;
+do not add fixed startup delays or fake percentage progress in business or data layers.
+
+The authentication background wraps the entire `AuthNavigator`, so it persists
+across Welcome, Login, and OTP. Login is not pre-mounted during startup. All startup
+and auth surfaces must retain an explicit black fallback independent of the system
+theme.
 
 ## Native setup
 

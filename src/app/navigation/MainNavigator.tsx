@@ -9,17 +9,18 @@ import type { MainStackParamList } from './types';
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export interface MainNavigatorProps {
+  readonly onReady?: () => void;
   readonly user: UserProfile;
 }
 
-export function MainNavigator({ user }: MainNavigatorProps) {
+export function MainNavigator({ onReady, user }: MainNavigatorProps) {
   return (
     <Stack.Navigator
       initialRouteName={MAIN_ROUTES.HOME}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={MAIN_ROUTES.HOME}>
-        {() => <HomeRouteScreen user={user} />}
+        {() => <HomeRouteScreen onReady={onReady} user={user} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

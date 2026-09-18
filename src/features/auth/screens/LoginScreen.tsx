@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AuthBackground } from '../components/AuthBackground';
 import { AuthHero } from '../components/AuthHero';
 import { useRequestOtpMutation } from '../queries/use-request-otp-mutation';
 
@@ -57,57 +56,55 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
   };
 
   return (
-    <AuthBackground>
-      <SafeAreaView style={styles.safeArea}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardAvoidingView}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}
+      >
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
         >
-          <ScrollView
-            contentContainerStyle={styles.content}
-            keyboardShouldPersistTaps="handled"
-          >
-            <AuthHero compact />
-            <View style={styles.form}>
-              <View style={styles.field}>
-                <AppInputField
-                  accessibilityLabel="Email"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  autoFocus
-                  error={Boolean(errorMessage)}
-                  keyboardType="email-address"
-                  leadingIcon="mail"
-                  onBlur={handleBlur}
-                  onChangeText={value => {
-                    setEmail(value);
-                    if (validationError) setValidationError(null);
-                    if (requestOtpMutation.isError) requestOtpMutation.reset();
-                  }}
-                  placeholder="Email"
-                  size="md"
-                  value={email}
-                />
-                {errorMessage ? (
-                  <Text accessibilityLiveRegion="polite" style={styles.error}>
-                    {errorMessage}
-                  </Text>
-                ) : null}
-              </View>
-              <AppButton
-                accessibilityLabel="Gửi mã OTP"
-                containerStyle={styles.button}
-                disabled={email.trim().length === 0}
-                label="Đăng Nhập"
-                loading={requestOtpMutation.isPending}
-                onPress={handleSubmit}
+          <AuthHero compact />
+          <View style={styles.form}>
+            <View style={styles.field}>
+              <AppInputField
+                accessibilityLabel="Email"
+                autoCapitalize="none"
+                autoComplete="email"
+                autoFocus
+                error={Boolean(errorMessage)}
+                keyboardType="email-address"
+                leadingIcon="mail"
+                onBlur={handleBlur}
+                onChangeText={value => {
+                  setEmail(value);
+                  if (validationError) setValidationError(null);
+                  if (requestOtpMutation.isError) requestOtpMutation.reset();
+                }}
+                placeholder="Email"
                 size="md"
+                value={email}
               />
+              {errorMessage ? (
+                <Text accessibilityLiveRegion="polite" style={styles.error}>
+                  {errorMessage}
+                </Text>
+              ) : null}
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </AuthBackground>
+            <AppButton
+              accessibilityLabel="Gửi mã OTP"
+              containerStyle={styles.button}
+              disabled={email.trim().length === 0}
+              label="Đăng Nhập"
+              loading={requestOtpMutation.isPending}
+              onPress={handleSubmit}
+              size="md"
+            />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
