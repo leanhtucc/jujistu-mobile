@@ -1,12 +1,12 @@
 import { appConfig } from '@jujistu/shared/config/appConfig';
 import { createLogger } from '@jujistu/shared/logger/logger';
 
+import { API_TIMEOUT_MS } from './api-config';
 import { normalizeHttpError, normalizeNetworkError } from './api-error';
 import { hasMockApiResponse, mockApiRequest } from './mock-api';
 import { trackApiRequestActivity } from './request-activity';
-import type { ApiRequestOptions } from './types';
-
 import { tokenManager } from './token-manager';
+import type { ApiRequestOptions } from './types';
 
 const log = createLogger('HttpClient');
 
@@ -95,15 +95,62 @@ function sanitizeDebugHeaders(
   );
 }
 
+function isFormDataBody(body: unknown): boolean {
+  if (!body || typeof body !== 'object') {
+    return false;
+  }
+  if (typeof FormData !== 'undefined' && body instanceof FormData) {
+    return true;
+  }
+  return body.constructor?.name === 'FormData' || '_parts' in body;
+}
+
+function combineAbortSignals(
+  ...signals: (AbortSignal | undefined | null)[]
+): AbortSignal {
+  const controller = new AbortController();
+
+  for (const signal of signals) {
+    if (!signal) {
+      continue;
+    }
+    if (signal.aborted) {
+      controller.abort(signal.reason);
+      return controller.signal;
+    }
+    signal.addEventListener('abort', () => controller.abort(signal.reason), {
+      once: true,
+    });
+  }
+
+  return controller.signal;
+}
+
 async function performApiFetch(
   path: string,
   options: ApiRequestOptions,
   retryOnUnauthorized: boolean,
 ): Promise<unknown> {
-  const { trackActivity = true, ...requestOptions } = options;
+  const {
+    trackActivity = true,
+    timeoutMs = API_TIMEOUT_MS,
+    signal: callerSignal,
+    ...requestOptions
+  } = options;
   const stopTrackingActivity = trackActivity
     ? trackApiRequestActivity()
     : undefined;
+
+  const timeoutController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    timeoutController.abort(
+      new Error(`Request timed out after ${timeoutMs}ms`),
+    );
+  }, timeoutMs);
+
+  const signal = callerSignal
+    ? combineAbortSignals(callerSignal, timeoutController.signal)
+    : timeoutController.signal;
 
   try {
     const baseUrl = getApiBaseUrl();
@@ -120,7 +167,7 @@ async function performApiFetch(
       body !== undefined &&
       body !== null &&
       typeof body === 'object' &&
-      !(body instanceof FormData);
+      !isFormDataBody(body);
 
     const headers: Record<string, string> = {
       Accept: 'application/json',
@@ -168,8 +215,12 @@ async function performApiFetch(
         ...requestOptions,
         body: requestBody,
         headers,
+        signal,
       });
     } catch (error) {
+      if (error instanceof Error && 'code' in error) {
+        throw error;
+      }
       throw normalizeNetworkError(error);
     }
 
@@ -208,6 +259,7 @@ async function performApiFetch(
 
     return responseBody;
   } finally {
+    clearTimeout(timeoutId);
     stopTrackingActivity?.();
   }
 }

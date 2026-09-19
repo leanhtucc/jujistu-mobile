@@ -7,8 +7,8 @@ const path = require('path');
 import {
   BOTTOM_NAVIGATION_ITEMS,
   type BottomNavigationProductKey,
-} from '../src/app/navigation/bottom-navigation-items';
-import { TAB_ICON_ASSETS } from '../src/app/navigation/tab-icon-assets';
+} from '@jujistu/app/navigation/bottom-navigation-items';
+import { TAB_ICON_ASSETS } from '@jujistu/app/navigation/tab-icon-assets';
 
 const EXPECTED_KEYS: readonly BottomNavigationProductKey[] = [
   'home',

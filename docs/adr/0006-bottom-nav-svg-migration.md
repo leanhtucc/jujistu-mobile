@@ -75,7 +75,8 @@ migrated to the `iconName` slot.
 
 ### 6. Product tab-icon-assets migration
 
-`src/app/navigation/tab-icon-assets.ts` is updated to use
+This mapping lives at `src/app/navigation/tab-icon-assets.ts` because it configures
+application-wide destinations (ADR 0012). It uses
 `BottomNavigationIconNameSource` exclusively. FIXED_VISUAL glyphs carry
 only `iconName` and `size`; MONOCHROME_VECTOR glyphs additionally carry
 `color` to distinguish active/inactive states without changing glyph code.

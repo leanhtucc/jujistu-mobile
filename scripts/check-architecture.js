@@ -2,16 +2,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 
-const projectRoot = path.resolve(__dirname, '..');
-const sourceRoot = path.join(projectRoot, 'src');
-const aliases = new Map([
-  ['@jujistu/ui', path.join(sourceRoot, 'ui')],
-  ['@jujistu/app', path.join(sourceRoot, 'app')],
-  ['@jujistu/features', path.join(sourceRoot, 'features')],
-  ['@jujistu/shared', path.join(sourceRoot, 'shared')],
-]);
+const defaultProjectRoot = path.resolve(__dirname, '..');
+
+function createAliases(sourceRoot) {
+  return new Map([
+    ['@jujistu/ui', path.join(sourceRoot, 'ui')],
+    ['@jujistu/app', path.join(sourceRoot, 'app')],
+    ['@jujistu/features', path.join(sourceRoot, 'features')],
+    ['@jujistu/shared', path.join(sourceRoot, 'shared')],
+  ]);
+}
 
 function collectSourceFiles(directory) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
     const absolutePath = path.join(directory, entry.name);
 
@@ -23,7 +29,7 @@ function collectSourceFiles(directory) {
   });
 }
 
-function resolveInternalImport(importer, specifier) {
+function resolveInternalImport(importer, specifier, aliases) {
   if (specifier.startsWith('.')) {
     return path.resolve(path.dirname(importer), specifier);
   }
@@ -37,7 +43,7 @@ function resolveInternalImport(importer, specifier) {
   return null;
 }
 
-function describeModule(absolutePath) {
+function describeModule(absolutePath, sourceRoot) {
   const relativePath = path.relative(sourceRoot, absolutePath);
 
   if (relativePath.startsWith('..') || path.isAbsolute(relativePath)) {
@@ -76,127 +82,210 @@ function getModuleSpecifiers(sourceFile) {
   return specifiers;
 }
 
-function locationOf(sourceFile, node) {
+function locationOf(sourceFile, node, projectRoot) {
   const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
   return `${path.relative(projectRoot, sourceFile.fileName)}:${line + 1}`;
 }
 
-const violations = [];
-
-for (const fileName of collectSourceFiles(sourceRoot)) {
-  const text = fs.readFileSync(fileName, 'utf8');
-  const scriptKind = fileName.endsWith('.tsx')
-    ? ts.ScriptKind.TSX
-    : ts.ScriptKind.TS;
-  const sourceFile = ts.createSourceFile(
-    fileName,
-    text,
-    ts.ScriptTarget.Latest,
-    true,
-    scriptKind,
+function isUiFile(fileName) {
+  return (
+    /[\\/](screens|sections|components)[\\/]/.test(fileName) ||
+    fileName.endsWith('Screen.tsx')
   );
-  const importer = describeModule(fileName);
+}
 
-  for (const { node, value } of getModuleSpecifiers(sourceFile)) {
-    const targetPath = resolveInternalImport(fileName, value);
-    const imported = targetPath && describeModule(targetPath);
+function isSharedApiImport(targetPath) {
+  const normalized = targetPath.split(path.sep).join('/');
+  return normalized.includes('shared/services/api');
+}
 
-    if (!imported) {
+function isFeatureServiceImport(targetPath, imported) {
+  if (!imported || imported.layer !== 'features') {
+    return false;
+  }
+  const normalized = targetPath.split(path.sep).join('/');
+  return (
+    normalized.includes('/services/') ||
+    normalized.endsWith('/services') ||
+    normalized.includes('/api/') ||
+    normalized.endsWith('/api') ||
+    normalized.endsWith('.api.ts') ||
+    normalized.endsWith('.api')
+  );
+}
+
+function checkArchitecture(projectRoot = defaultProjectRoot) {
+  const sourceRoot = path.join(projectRoot, 'src');
+  const aliases = createAliases(sourceRoot);
+  const violations = [];
+
+  for (const fileName of collectSourceFiles(sourceRoot)) {
+    const text = fs.readFileSync(fileName, 'utf8');
+    const scriptKind = fileName.endsWith('.tsx')
+      ? ts.ScriptKind.TSX
+      : ts.ScriptKind.TS;
+    const sourceFile = ts.createSourceFile(
+      fileName,
+      text,
+      ts.ScriptTarget.Latest,
+      true,
+      scriptKind,
+    );
+    const importer = describeModule(fileName, sourceRoot);
+
+    if (!importer) {
       continue;
     }
 
-    if (
-      importer.layer === 'shared' &&
-      ['app', 'features', 'ui'].includes(imported.layer)
-    ) {
-      violations.push(
-        `${locationOf(sourceFile, node)} shared cannot import ${
-          imported.layer
-        }: ${value}`,
-      );
-    }
-
-    if (
-      importer.layer === 'ui' &&
-      (imported.layer === 'app' || imported.layer === 'features')
-    ) {
-      violations.push(
-        `${locationOf(sourceFile, node)} ui cannot import ${
-          imported.layer
-        }: ${value}`,
-      );
-    }
-
-    if (importer.layer === 'features' && imported.layer === 'app') {
-      violations.push(
-        `${locationOf(sourceFile, node)} features cannot import app: ${value}`,
-      );
-    }
-
-    if (
+    const isFeatureIndex =
       importer.layer === 'features' &&
-      imported.layer === 'features' &&
-      importer.feature !== imported.feature
-    ) {
-      violations.push(
-        `${locationOf(sourceFile, node)} feature ${
-          importer.feature
-        } cannot import feature ${imported.feature}: ${value}`,
-      );
-    }
+      path.basename(fileName) === 'index.ts' &&
+      path.dirname(fileName) ===
+        path.join(sourceRoot, 'features', importer.feature);
 
-    if (
-      importer.layer === 'app' &&
-      imported.layer === 'features' &&
-      value !== `@jujistu/features/${imported.feature}`
-    ) {
-      violations.push(
-        `${locationOf(
-          sourceFile,
-          node,
-        )} app must use the public API of feature ${
-          imported.feature
-        }: ${value}`,
-      );
-    }
+    for (const { node, value } of getModuleSpecifiers(sourceFile)) {
+      const targetPath = resolveInternalImport(fileName, value, aliases);
+      const imported = targetPath && describeModule(targetPath, sourceRoot);
 
-    if (
-      fileName.endsWith('Screen.tsx') &&
-      imported.layer === 'shared' &&
-      imported.feature === 'api'
-    ) {
-      violations.push(
-        `${locationOf(
-          sourceFile,
-          node,
-        )} screens cannot access the shared API client directly: ${value}`,
-      );
-    }
-  }
+      if (!imported) {
+        continue;
+      }
 
-  if (fileName.endsWith('Screen.tsx')) {
-    function findDirectFetch(node) {
       if (
-        ts.isCallExpression(node) &&
-        ts.isIdentifier(node.expression) &&
-        node.expression.text === 'fetch'
+        importer.layer === 'shared' &&
+        ['app', 'features', 'ui'].includes(imported.layer)
       ) {
         violations.push(
-          `${locationOf(sourceFile, node)} screens cannot call fetch directly`,
+          `${locationOf(sourceFile, node, projectRoot)} shared cannot import ${
+            imported.layer
+          }: ${value}`,
         );
       }
 
-      ts.forEachChild(node, findDirectFetch);
+      if (
+        importer.layer === 'ui' &&
+        (imported.layer === 'app' || imported.layer === 'features')
+      ) {
+        violations.push(
+          `${locationOf(sourceFile, node, projectRoot)} ui cannot import ${
+            imported.layer
+          }: ${value}`,
+        );
+      }
+
+      if (importer.layer === 'features' && imported.layer === 'app') {
+        violations.push(
+          `${locationOf(
+            sourceFile,
+            node,
+            projectRoot,
+          )} features cannot import app: ${value}`,
+        );
+      }
+
+      if (
+        importer.layer === 'features' &&
+        imported.layer === 'features' &&
+        importer.feature !== imported.feature
+      ) {
+        violations.push(
+          `${locationOf(sourceFile, node, projectRoot)} feature ${
+            importer.feature
+          } cannot import feature ${imported.feature}: ${value}`,
+        );
+      }
+
+      if (
+        importer.layer === 'app' &&
+        imported.layer === 'features' &&
+        value !== `@jujistu/features/${imported.feature}`
+      ) {
+        violations.push(
+          `${locationOf(
+            sourceFile,
+            node,
+            projectRoot,
+          )} app must use the public API of feature ${
+            imported.feature
+          }: ${value}`,
+        );
+      }
+
+      if (isUiFile(fileName) && isSharedApiImport(targetPath)) {
+        violations.push(
+          `${locationOf(
+            sourceFile,
+            node,
+            projectRoot,
+          )} UI components cannot access the shared API client directly: ${value}. UI must use feature hooks.`,
+        );
+      }
+
+      if (isUiFile(fileName) && isFeatureServiceImport(targetPath, imported)) {
+        violations.push(
+          `${locationOf(
+            sourceFile,
+            node,
+            projectRoot,
+          )} UI components cannot import feature services directly: ${value}. UI must use feature hooks.`,
+        );
+      }
+
+      if (isFeatureIndex && ts.isExportDeclaration(node)) {
+        if (
+          value.includes('services') ||
+          value.includes('queries') ||
+          value.includes('api') ||
+          value.endsWith('.keys') ||
+          value.endsWith('-keys')
+        ) {
+          violations.push(
+            `${locationOf(
+              sourceFile,
+              node,
+              projectRoot,
+            )} feature index cannot export internal service, api, or query modules: ${value}`,
+          );
+        }
+      }
     }
 
-    findDirectFetch(sourceFile);
+    if (isUiFile(fileName)) {
+      function findDirectFetch(node) {
+        if (
+          ts.isCallExpression(node) &&
+          ts.isIdentifier(node.expression) &&
+          node.expression.text === 'fetch'
+        ) {
+          violations.push(
+            `${locationOf(
+              sourceFile,
+              node,
+              projectRoot,
+            )} screens cannot call fetch directly`,
+          );
+        }
+
+        ts.forEachChild(node, findDirectFetch);
+      }
+
+      findDirectFetch(sourceFile);
+    }
+  }
+
+  return violations;
+}
+
+if (require.main === module) {
+  const violations = checkArchitecture();
+
+  if (violations.length > 0) {
+    console.error('Architecture boundary violations:\n');
+    console.error(violations.map(violation => `- ${violation}`).join('\n'));
+    process.exit(1);
+  } else {
+    console.log('Architecture boundaries passed.');
   }
 }
 
-if (violations.length > 0) {
-  console.error('Architecture boundary violations:\n');
-  console.error(violations.map(violation => `- ${violation}`).join('\n'));
-  process.exitCode = 1;
-} else {
-  console.log('Architecture boundaries passed.');
-}
+module.exports = { checkArchitecture };

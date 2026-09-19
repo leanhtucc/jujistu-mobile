@@ -1,14 +1,22 @@
-import { authApi, LoginScreen } from '@jujistu/features/auth';
+import { LoginScreen } from '@jujistu/features/auth';
 import { AppButton, AppInputField } from '@jujistu/ui';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  notifyManager,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-jest.mock('@jujistu/features/auth/api/auth.api', () => ({
-  authApi: {
-    requestOtp: jest.fn(),
-  },
+import * as authService from '../src/features/auth/services/auth-service';
+
+beforeAll(() => {
+  notifyManager.setScheduler(fn => fn());
+});
+
+jest.mock('../src/features/auth/services/auth-service', () => ({
+  requestOtp: jest.fn(),
 }));
 
 function renderLoginScreen(props: {
@@ -49,7 +57,10 @@ describe('LoginScreen', () => {
     expect(button.props.disabled).toBe(true);
     expect(button.props.label).toBe('Đăng Nhập');
     expect(button.props.size).toBe('md');
-    expect(button.props.labelStyle).toBeUndefined();
+    expect(StyleSheet.flatten(button.props.labelStyle)).toMatchObject({
+      fontSize: 18,
+      lineHeight: 24,
+    });
     expect(tree.root.findByType(KeyboardAvoidingView).props.behavior).toBe(
       Platform.OS === 'ios' ? 'padding' : 'height',
     );
@@ -72,14 +83,14 @@ describe('LoginScreen', () => {
 
     const json = JSON.stringify(tree.toJSON());
     expect(json).toContain('Định dạng email không đúng. Vui lòng kiểm tra lại');
-    expect(authApi.requestOtp).not.toHaveBeenCalled();
+    expect(authService.requestOtp).not.toHaveBeenCalled();
 
     const error = tree.root
       .findAllByType(Text)
       .find(node => node.props.accessibilityLiveRegion === 'polite');
     expect(error).toBeDefined();
     expect(StyleSheet.flatten(error!.props.style)).toMatchObject({
-      lineHeight: 18,
+      lineHeight: 20,
       marginLeft: 4,
     });
     const ancestorGaps: number[] = [];
@@ -109,7 +120,7 @@ describe('LoginScreen', () => {
   });
 
   it('submits valid email and calls onOtpRequested on success', async () => {
-    (authApi.requestOtp as jest.Mock).mockResolvedValueOnce({
+    (authService.requestOtp as jest.Mock).mockResolvedValueOnce({
       challengeId: 'mock-challenge-123',
       expiresInSeconds: 30,
     });
@@ -127,7 +138,7 @@ describe('LoginScreen', () => {
       button.props.onPress();
     });
 
-    expect(authApi.requestOtp).toHaveBeenCalledWith({
+    expect(authService.requestOtp).toHaveBeenCalledWith({
       email: 'test.user@example.com',
     });
     expect(onOtpRequested).toHaveBeenCalledWith({
@@ -137,7 +148,7 @@ describe('LoginScreen', () => {
   });
 
   it('displays API error message when requestOtp fails', async () => {
-    (authApi.requestOtp as jest.Mock).mockRejectedValueOnce(
+    (authService.requestOtp as jest.Mock).mockRejectedValueOnce(
       new Error('Email đã bị khóa hoặc không tồn tại'),
     );
 

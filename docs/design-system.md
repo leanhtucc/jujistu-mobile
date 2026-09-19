@@ -39,7 +39,7 @@ import {
 } from '@jujistu/ui';
 ```
 
-Product-specific compositions (such as `ProductAccountHeader`) are owned by the application layer at `src/app/components/` and import `@jujistu/ui` primitives.
+`ProductAccountHeader` is a Home-specific screen section and lives with the other Home regions under `src/features/home/sections/`. It composes `@jujistu/ui` primitives without moving product-specific content into the reusable UI layer.
 
 ---
 
@@ -190,7 +190,7 @@ The JUJISTU design system does not currently have approved semantic tokens for:
 
 Ownership of screen insets follows a strict boundary:
 
-1. **`ProductAccountHeader` does NOT own top safe area**: The component renders at a fixed 64px height. The authenticated shell or screen wrapper must apply `insets.top` padding above it.
+1. **`ProductAccountHeader` does NOT own top safe area**: The component renders at a fixed 64px height. `HomeScreen` applies `insets.top` above it.
 2. **`AppBottomNavigation` does NOT own bottom safe area**: The component renders at a fixed 64px height. The main navigator shell must apply `insets.bottom` padding below it.
 3. **Screen Shells Own Insets**: Screens and root layout containers use `react-native-safe-area-context` (`useSafeAreaInsets`) to manage status bar and home indicator padding.
 
@@ -198,14 +198,14 @@ Ownership of screen insets follows a strict boundary:
 
 ## 9. Difference Between AppTab and AppBottomNavigation
 
-| Attribute         | `AppTab` / `AppTabList`                                        | `AppBottomNavigation`                                          |
-| ----------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
-| **Layer**         | Molecule (`src/ui/molecules/`)                                 | Organism (`src/ui/organisms/`)                                 |
-| **Purpose**       | In-screen filtering, segmented controls, or sub-view switching | Application-level primary navigation between root destinations |
-| **Position**      | In-flow within screen content                                  | Fixed anchored bar at bottom of authenticated shell            |
-| **Anatomy**       | Pill/button with text label and optional leading/trailing icon | Fixed 5-slot tab bar with icons and tab labels                 |
-| **Icon Pipeline** | Uses `AppIcon` (SVG glyph registry)                            | Uses PNG active/inactive asset pairs (`tab-icon-assets.ts`)    |
-| **State**         | Parent-controlled (`activeKey`, `onTabPress`)                  | Navigator-controlled (`activeTab`, `onTabPress`)               |
+| Attribute         | `AppTab` / `AppTabList`                                        | `AppBottomNavigation`                                                                 |
+| ----------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Layer**         | Molecule (`src/ui/molecules/`)                                 | Organism (`src/ui/organisms/`)                                                        |
+| **Purpose**       | In-screen filtering, segmented controls, or sub-view switching | Application-level primary navigation between root destinations                        |
+| **Position**      | In-flow within screen content                                  | Fixed anchored bar at bottom of authenticated shell                                   |
+| **Anatomy**       | Pill/button with text label and optional leading/trailing icon | Fixed 5-slot tab bar with icons and tab labels                                        |
+| **Icon Pipeline** | Uses `AppIcon` (SVG glyph registry)                            | Uses application-owned SVG/AppIcon mappings (`src/app/navigation/tab-icon-assets.ts`) |
+| **State**         | Parent-controlled (`activeKey`, `onTabPress`)                  | Navigator-controlled (`activeTab`, `onTabPress`)                                      |
 
 ---
 

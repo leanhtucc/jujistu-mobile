@@ -8,10 +8,14 @@ architecture.
 
 ```text
 src/
-├── app/                 application composition, navigation, and providers
+├── app/                 application-wide composition
+│   ├── bootstrap/       startup initialization
+│   ├── navigation/      navigators, route contracts, and bottom destination config
+│   ├── providers/       application providers and infrastructure bridges
+│   └── App.tsx           application root composition
 ├── features/            user-facing capabilities grouped by feature
 │   ├── auth/            authentication flows, query hooks, and screens
-│   └── home/            home dashboard
+│   └── home/            Home content: screen, sections, data, and hooks
 ├── ui/                  product UI design system
 │   ├── atoms/           smallest reusable visual primitives
 │   ├── molecules/       compositions of atoms
@@ -22,8 +26,9 @@ src/
     ├── config/          typed runtime environment configuration
     ├── errors/          structured AppError hierarchy
     ├── logger/          tagged logger with automatic PII/credential redaction
+    ├── responsive.ts    window size classes and bounded responsive helpers
     ├── services/        infrastructure services
-    │   └── api/         api-client, query-client, token-manager, refresh-lock
+    │   └── api/         http-client, query-client, token-manager, refresh-lock
     └── theme/           colors and design tokens
 ```
 
@@ -44,6 +49,10 @@ app ──────> features ──────> ui ──────> shar
 - `ui` may import `shared`, but must not import `app` or a feature.
 - `shared` must not import `ui`, `app`, or any feature.
 - `app` imports a feature through that feature's `index.ts` public API.
+- Application-wide destination configuration belongs to `app/navigation`; a feature
+  must not own or import the root bottom-navigation registry.
+- Feature screens remain in their feature. `app/navigation` composes their public
+  entry points with application navigation without creating duplicate app screens.
 - Screen components do not call `fetch`, `axios`, or a shared API client directly.
 
 The standard data flow for remote operations is:
@@ -51,11 +60,11 @@ The standard data flow for remote operations is:
 ```text
 Screen / UI Component
         ↓
-Feature Query / Mutation Hook
+Feature Hook (UI contract facade)
         ↓
-Feature API Module
+Feature Service (plain async functions & DTO parsing)
         ↓
-Shared API Client (fetch)
+Shared HTTP Transport (http-client.ts / apiRequest)
         ↓
 Backend
 ```
@@ -69,7 +78,8 @@ Navigation conventions and the current route contract are documented in
 ## State ownership
 
 - **Server State**: Managed exclusively through TanStack Query v5 (`@tanstack/react-query`).
-  Query hooks live in `<feature>/queries/`. Query keys are centralized per feature.
+  Query and mutation hooks live in `<feature>/hooks/` and return clean UI contracts.
+  Query keys are private inside the feature.
 - **Client State**: Local component state (`useState`, `useReducer`) for UI state.
 - **Credential Storage**: Access and refresh tokens are stored in `react-native-keychain`
   behind the `tokenManager` abstraction. Credentials must never be stored in Redux
@@ -94,10 +104,11 @@ templates. Internal registries and component recipes remain private to `src/ui`.
 
 ## Feature growth
 
-A feature starts with a public `index.ts` and only the folder needed by its current
-code. Add `domain`, `data`, or `application` folders later when real business rules,
-data adapters, or use cases exist. Do not add generic repositories, services, or
-base classes in anticipation of future requirements.
+A feature starts with a public `index.ts` and only the folders needed by its current
+code. Use `screens/` for feature entry screens, `sections/` for substantial regions
+of one screen, `data/` for feature-owned static content or adapters, and `hooks/` for
+feature behavior. Do not use `components/` as a generic catch-all, and do not add
+domain, application, repository, or service layers before they have a real role.
 
 Shared code is promoted only after genuine reuse. Reusable visual components belong
 to `ui`; non-visual infrastructure, services, configuration, and design tokens

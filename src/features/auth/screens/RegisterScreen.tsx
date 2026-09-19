@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useRegisterMutation } from '../queries/use-register-mutation';
+import { useRegister } from '../hooks/use-register';
 
 export function RegisterScreen() {
   const [displayName, setDisplayName] = useState('');
@@ -21,20 +21,24 @@ export function RegisterScreen() {
   const theme = useAppTheme();
   const navigation = useNavigation<any>();
 
-  const registerMutation = useRegisterMutation();
+  const { register, isSubmitting, error } = useRegister();
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!displayName.trim() || !email.trim() || !password.trim()) {
       return;
     }
-    registerMutation.mutate({
-      displayName: displayName.trim(),
-      email: email.trim(),
-      password,
-    });
+    try {
+      await register({
+        displayName: displayName.trim(),
+        email: email.trim(),
+        password,
+      });
+    } catch {
+      // Error is captured in error state
+    }
   };
 
-  const isPending = registerMutation.isPending;
+  const isPending = isSubmitting;
 
   return (
     <View
@@ -58,7 +62,7 @@ export function RegisterScreen() {
           Join Jujitsu today
         </Text>
 
-        {registerMutation.isError && (
+        {Boolean(error) && (
           <View
             accessibilityLiveRegion="polite"
             style={[
@@ -67,8 +71,7 @@ export function RegisterScreen() {
             ]}
           >
             <Text style={[styles.errorText, { color: theme.colors.error }]}>
-              {registerMutation.error?.message ||
-                'Registration failed. Please try again.'}
+              {error?.message || 'Registration failed. Please try again.'}
             </Text>
           </View>
         )}

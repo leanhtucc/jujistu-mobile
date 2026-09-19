@@ -23,16 +23,22 @@ const gradientStops = [
   ['97.81%', '#454545'],
 ] as const;
 
-export function JujitsuChampionshipTitle() {
+export interface JujitsuChampionshipTitleProps {
+  readonly height?: number;
+}
+
+export function JujitsuChampionshipTitle({
+  height = 48,
+}: JujitsuChampionshipTitleProps) {
   return (
     <View
       accessibilityLabel="Jujitsu Championship"
       accessibilityRole="header"
-      style={styles.container}
+      style={[styles.container, { height }]}
     >
       <Svg
         accessible={false}
-        height={43}
+        height={height}
         pointerEvents="none"
         preserveAspectRatio="xMidYMid meet"
         viewBox="-100 -100 12360 1252"
@@ -70,7 +76,6 @@ export function JujitsuChampionshipTitle() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 43,
     width: '100%',
   },
 });

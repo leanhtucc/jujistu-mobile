@@ -1,4 +1,9 @@
 import { createLogger } from '@jujistu/shared/logger/logger';
+import {
+  getResponsiveContentWidth,
+  selectResponsiveValue,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
 import { AppGradientTitle } from '@jujistu/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -19,6 +24,60 @@ export function NavigationFallback({
   duration = 4000,
 }: NavigationFallbackProps) {
   const insets = useSafeAreaInsets();
+  const responsive = useResponsive();
+  const contentWidth = getResponsiveContentWidth(responsive);
+  const layout = selectResponsiveValue(responsive, {
+    compactPhone: {
+      heroWidth: 290,
+      loadingFontSize: 14,
+      loadingLineHeight: 20,
+      logoSize: 126,
+      subtitleFontSize: 15,
+      subtitleLineHeight: 20,
+      titleFontSize: 30,
+      titleLineHeight: 38,
+    },
+    phone: {
+      heroWidth: 320,
+      loadingFontSize: 14,
+      loadingLineHeight: 20,
+      logoSize: 136,
+      subtitleFontSize: 16,
+      subtitleLineHeight: 22,
+      titleFontSize: 32,
+      titleLineHeight: 40,
+    },
+    largePhone: {
+      heroWidth: 400,
+      loadingFontSize: 16,
+      loadingLineHeight: 22,
+      logoSize: 146,
+      subtitleFontSize: 18,
+      subtitleLineHeight: 24,
+      titleFontSize: 36,
+      titleLineHeight: 45,
+    },
+    tablet: {
+      heroWidth: 560,
+      loadingFontSize: 18,
+      loadingLineHeight: 24,
+      logoSize: 176,
+      subtitleFontSize: 20,
+      subtitleLineHeight: 28,
+      titleFontSize: 42,
+      titleLineHeight: 52,
+    },
+    largeTablet: {
+      heroWidth: 680,
+      loadingFontSize: 20,
+      loadingLineHeight: 28,
+      logoSize: 208,
+      subtitleFontSize: 22,
+      subtitleLineHeight: 30,
+      titleFontSize: 48,
+      titleLineHeight: 60,
+    },
+  });
   const progress = useRef(new Animated.Value(0)).current;
   const [backgroundSettled, setBackgroundSettled] = useState(false);
   const [logoSettled, setLogoSettled] = useState(false);
@@ -79,31 +138,57 @@ export function NavigationFallback({
         />
 
         <View style={styles.foreground}>
-          <View style={styles.hero}>
+          <View style={[styles.hero, { maxWidth: layout.heroWidth }]}>
             <Image
               accessibilityIgnoresInvertColors
               fadeDuration={0}
               onError={handleLogoError}
               onLoad={() => setLogoSettled(true)}
               source={logo}
-              style={styles.logo}
+              style={[
+                styles.logo,
+                { height: layout.logoSize, width: layout.logoSize },
+              ]}
             />
             <AppGradientTitle
               accessibilityLabel="Welcome"
-              fontSize={32}
+              fontSize={layout.titleFontSize}
               label="WELCOME"
               letterSpacing={0}
-              lineHeight={40}
+              lineHeight={layout.titleLineHeight}
               shadow={false}
               strokeWidth={0}
             />
-            <Text style={styles.subtitle}>
+            <Text
+              style={[
+                styles.subtitle,
+                {
+                  fontSize: layout.subtitleFontSize,
+                  lineHeight: layout.subtitleLineHeight,
+                },
+              ]}
+            >
               Chào mừng bạn đến với VIMMA{`\n`}Jujitsu Championship
             </Text>
           </View>
 
-          <View style={[styles.loading, { bottom: insets.bottom + 27 }]}>
-            <Text style={styles.loadingLabel}>Loading...</Text>
+          <View
+            style={[
+              styles.loading,
+              { bottom: insets.bottom + 27, width: contentWidth },
+            ]}
+          >
+            <Text
+              style={[
+                styles.loadingLabel,
+                {
+                  fontSize: layout.loadingFontSize,
+                  lineHeight: layout.loadingLineHeight,
+                },
+              ]}
+            >
+              Loading...
+            </Text>
             <View
               onLayout={event => setTrackWidth(event.nativeEvent.layout.width)}
               style={styles.progressTrack}
@@ -134,10 +219,12 @@ export function NavigationFallback({
 const styles = StyleSheet.create({
   background: {
     bottom: 0,
+    height: '100%',
     left: 0,
     position: 'absolute',
     right: 0,
     top: 0,
+    width: '100%',
   },
   container: {
     backgroundColor: '#000000',
@@ -150,28 +237,22 @@ const styles = StyleSheet.create({
   },
   hero: {
     alignItems: 'center',
-    maxWidth: 320,
     transform: [{ translateY: -26 }],
     width: '100%',
   },
   loading: {
-    left: 16,
+    alignSelf: 'center',
     position: 'absolute',
-    right: 16,
   },
   loadingLabel: {
     color: semanticColors.text.secondary,
     fontFamily: fontFamilies.primary.regular,
-    fontSize: 14,
-    lineHeight: 20,
     marginBottom: 4,
     textAlign: 'center',
   },
   logo: {
-    height: 146,
     marginBottom: 16,
     resizeMode: 'contain',
-    width: 146,
   },
   progressFill: {
     backgroundColor: semanticColors.text.primary,
@@ -195,9 +276,6 @@ const styles = StyleSheet.create({
   subtitle: {
     color: semanticColors.text.secondary,
     fontFamily: fontFamilies.primary.medium,
-    fontSize: 16,
-    lineHeight: 20,
-    maxWidth: 300,
     textAlign: 'center',
   },
 });

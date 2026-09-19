@@ -1,3 +1,7 @@
+import {
+  getResponsiveContentWidth,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import { AppButton } from '@jujistu/ui';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -10,14 +14,18 @@ type WelcomeScreenProps = {
 };
 
 export function WelcomeScreen({ onLogin }: WelcomeScreenProps) {
+  const responsive = useResponsive();
+  const contentWidth = getResponsiveContentWidth(responsive);
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.content}>
+      <View style={[styles.content, { width: contentWidth }]}>
         <AuthHero />
         <AppButton
           accessibilityLabel="Mở màn hình đăng nhập"
           containerStyle={styles.button}
           label="Đăng Nhập"
+          labelStyle={styles.buttonLabel}
           onPress={onLogin}
           size="md"
         />
@@ -31,11 +39,13 @@ const styles = StyleSheet.create({
     marginTop: 32,
     width: '100%',
   },
+  buttonLabel: {
+    fontSize: 18,
+    lineHeight: 24,
+  },
   content: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    width: '100%',
   },
   safeArea: {
     alignItems: 'center',

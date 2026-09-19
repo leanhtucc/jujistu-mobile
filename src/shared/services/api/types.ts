@@ -22,5 +22,6 @@ export type ApiRequestOptions = Omit<RequestInit, 'body' | 'headers'> & {
   body?: unknown;
   headers?: Record<string, string>;
   skipAuth?: boolean;
+  timeoutMs?: number;
   trackActivity?: boolean;
 };

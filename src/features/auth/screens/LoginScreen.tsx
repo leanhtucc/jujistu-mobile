@@ -1,3 +1,7 @@
+import {
+  getResponsiveContentWidth,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
 import { AppButton, AppInputField } from '@jujistu/ui';
 import React, { useState } from 'react';
@@ -13,7 +17,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AuthHero } from '../components/AuthHero';
-import { useRequestOtpMutation } from '../queries/use-request-otp-mutation';
+import { useRequestOtp } from '../hooks/use-request-otp';
 
 type LoginScreenProps = {
   onOtpRequested: (params: { challengeId: string; email: string }) => void;
@@ -22,13 +26,15 @@ type LoginScreenProps = {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
+  const responsive = useResponsive();
+  const contentWidth = getResponsiveContentWidth(responsive);
   const [email, setEmail] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
-  const requestOtpMutation = useRequestOtpMutation();
+  const { requestOtp, isSubmitting, error, clearError } = useRequestOtp();
   const normalizedEmail = email.trim().toLowerCase();
-  const errorMessage = validationError ?? requestOtpMutation.error?.message;
+  const errorMessage = validationError ?? error?.message;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     Keyboard.dismiss();
     if (!EMAIL_PATTERN.test(normalizedEmail)) {
       setValidationError('Định dạng email không đúng. Vui lòng kiểm tra lại');
@@ -36,17 +42,15 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
     }
 
     setValidationError(null);
-    requestOtpMutation.mutate(
-      { email: normalizedEmail },
-      {
-        onSuccess: challenge => {
-          onOtpRequested({
-            challengeId: challenge.challengeId,
-            email: normalizedEmail,
-          });
-        },
-      },
-    );
+    try {
+      const challenge = await requestOtp({ email: normalizedEmail });
+      onOtpRequested({
+        challengeId: challenge.challengeId,
+        email: normalizedEmail,
+      });
+    } catch {
+      // Error is captured in hook state
+    }
   };
 
   const handleBlur = () => {
@@ -66,7 +70,7 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
           keyboardShouldPersistTaps="handled"
         >
           <AuthHero compact />
-          <View style={styles.form}>
+          <View style={[styles.form, { width: contentWidth }]}>
             <View style={styles.field}>
               <AppInputField
                 accessibilityLabel="Email"
@@ -80,7 +84,7 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
                 onChangeText={value => {
                   setEmail(value);
                   if (validationError) setValidationError(null);
-                  if (requestOtpMutation.isError) requestOtpMutation.reset();
+                  if (error) clearError();
                 }}
                 placeholder="Email"
                 size="md"
@@ -95,9 +99,10 @@ export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
             <AppButton
               accessibilityLabel="Gửi mã OTP"
               containerStyle={styles.button}
-              disabled={email.trim().length === 0}
+              disabled={email.trim().length === 0 || isSubmitting}
               label="Đăng Nhập"
-              loading={requestOtpMutation.isPending}
+              labelStyle={styles.buttonLabel}
+              loading={isSubmitting}
               onPress={handleSubmit}
               size="md"
             />
@@ -112,7 +117,12 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
   },
+  buttonLabel: {
+    fontSize: 18,
+    lineHeight: 24,
+  },
   content: {
+    alignItems: 'center',
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 16,
@@ -121,13 +131,12 @@ const styles = StyleSheet.create({
   error: {
     color: semanticColors.text.error,
     fontFamily: fontFamilies.primary.regular,
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
     marginLeft: 4,
   },
   field: {
     gap: 6,
-    width: '100%',
   },
   form: {
     gap: 18,

@@ -17,11 +17,16 @@ describe('AuthBackground', () => {
 
     const root = tree.root.findAllByType(View)[0];
     const content = tree.root.findByType(Text);
+    const image = tree.root.findByType(Image);
 
     expect(StyleSheet.flatten(root.props.style)).toMatchObject({
       backgroundColor: '#000000',
     });
     expect(content.props.children).toBe('Authentication content');
+    expect(StyleSheet.flatten(image.props.style)).toMatchObject({
+      height: '100%',
+      width: '100%',
+    });
   });
 
   it('reports ready after both its first layout and background load', () => {

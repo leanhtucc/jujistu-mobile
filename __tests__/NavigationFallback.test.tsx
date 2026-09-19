@@ -32,12 +32,19 @@ describe('NavigationFallback', () => {
 
     const root = tree.root.findAllByType(View)[0];
     const images = tree.root.findAllByType(Image);
+    const background = images.find(
+      image => image.props.resizeMode === 'cover',
+    )!;
     const scene = tree.root
       .findAllByType(View)
       .find(view => StyleSheet.flatten(view.props.style)?.opacity === 0)!;
 
     expect(StyleSheet.flatten(root.props.style)).toMatchObject({
       backgroundColor: '#000000',
+    });
+    expect(StyleSheet.flatten(background.props.style)).toMatchObject({
+      height: '100%',
+      width: '100%',
     });
     expect(StyleSheet.flatten(scene.props.style)).toMatchObject({ opacity: 0 });
 

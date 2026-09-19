@@ -150,4 +150,87 @@ describe('http-client (apiRequest)', () => {
     await requestPromise;
     expect(getActiveApiRequestCount()).toBe(0);
   });
+
+  it('returns undefined on 204 No Content', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      status: 204,
+      headers: { get: () => null },
+    });
+
+    const result = await apiRequest<void>('/api/no-content');
+    expect(result).toBeUndefined();
+  });
+
+  it('aborts and throws network error when request times out', async () => {
+    globalThis.fetch = jest.fn().mockImplementation(
+      (_url, options) =>
+        new Promise((_, reject) => {
+          const signal = options?.signal as AbortSignal;
+          if (signal) {
+            signal.addEventListener('abort', () => {
+              reject(new Error('AbortError: The user aborted a request.'));
+            });
+          }
+        }),
+    );
+
+    await expect(
+      apiRequest('/api/timeout', { timeoutMs: 50 }),
+    ).rejects.toThrow();
+  });
+
+  it('respects caller abort signal', async () => {
+    const callerController = new AbortController();
+
+    globalThis.fetch = jest.fn().mockImplementation((_url, options) => {
+      const signal = options?.signal as AbortSignal;
+      if (signal?.aborted) {
+        return Promise.reject(
+          new Error('AbortError: The user aborted a request.'),
+        );
+      }
+      return new Promise((_, reject) => {
+        signal?.addEventListener('abort', () => {
+          reject(new Error('AbortError: The user aborted a request.'));
+        });
+      });
+    });
+
+    const promise = apiRequest('/api/cancel', {
+      signal: callerController.signal,
+    });
+    callerController.abort();
+
+    await expect(promise).rejects.toThrow();
+  });
+
+  it('does not set Content-Type: application/json for FormData body', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      headers: { get: () => 'application/json' },
+      json: async () => ({ uploaded: true }),
+    });
+
+    // Mock FormData in Node test environment
+    class FormData {
+      _parts: any[] = [];
+    }
+    const formData = new FormData();
+
+    await apiRequest('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://api.jujistu.test/api/upload',
+      expect.objectContaining({
+        headers: expect.not.objectContaining({
+          'Content-Type': 'application/json',
+        }),
+      }),
+    );
+  });
 });

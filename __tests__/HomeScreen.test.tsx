@@ -2,13 +2,25 @@ import { HomeScreen } from '@jujistu/features/home';
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { Image, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+const metrics = {
+  frame: { x: 0, y: 0, width: 390, height: 843 },
+  insets: { top: 44, right: 0, bottom: 20, left: 0 },
+};
 
 describe('HomeScreen', () => {
   it('renders the Figma home content with local assets', () => {
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
     act(() => {
-      tree = ReactTestRenderer.create(<HomeScreen />);
+      tree = ReactTestRenderer.create(
+        <SafeAreaProvider initialMetrics={metrics}>
+          <HomeScreen
+            user={{ displayName: 'Mardust Vuong', avatarUrl: null }}
+          />
+        </SafeAreaProvider>,
+      );
     });
 
     const text = tree!.root
@@ -44,5 +56,9 @@ describe('HomeScreen', () => {
         require('../assets/image/news/news_02.png'),
       ]),
     );
+
+    act(() => {
+      tree!.unmount();
+    });
   });
 });

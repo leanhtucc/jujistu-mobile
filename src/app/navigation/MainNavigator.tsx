@@ -1,8 +1,16 @@
 import type { UserProfile } from '@jujistu/features/auth';
+import { HomeScreen } from '@jujistu/features/home';
+import { primitiveColors } from '@jujistu/shared/theme';
+import { AppBottomNavigation } from '@jujistu/ui';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HomeRouteScreen } from '../screens/HomeRouteScreen';
+import {
+  BOTTOM_NAVIGATION_ITEMS,
+  type BottomNavigationProductKey,
+} from './bottom-navigation-items';
 import { MAIN_ROUTES } from './routes';
 import type { MainStackParamList } from './types';
 
@@ -13,6 +21,26 @@ export interface MainNavigatorProps {
   readonly user: UserProfile;
 }
 
+function MainNavigationContent({ onReady, user }: MainNavigatorProps) {
+  const insets = useSafeAreaInsets();
+  const handleBottomNavigationPress = useCallback(
+    (_key: BottomNavigationProductKey) => undefined,
+    [],
+  );
+
+  return (
+    <View style={styles.root}>
+      <HomeScreen onReady={onReady} user={user} />
+      <AppBottomNavigation
+        activeKey="home"
+        items={BOTTOM_NAVIGATION_ITEMS}
+        onItemPress={handleBottomNavigationPress}
+      />
+      <View style={[styles.bottomInset, { height: insets.bottom }]} />
+    </View>
+  );
+}
+
 export function MainNavigator({ onReady, user }: MainNavigatorProps) {
   return (
     <Stack.Navigator
@@ -20,8 +48,18 @@ export function MainNavigator({ onReady, user }: MainNavigatorProps) {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={MAIN_ROUTES.HOME}>
-        {() => <HomeRouteScreen onReady={onReady} user={user} />}
+        {() => <MainNavigationContent onReady={onReady} user={user} />}
       </Stack.Screen>
     </Stack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: primitiveColors.neutral[1000],
+  },
+  bottomInset: {
+    backgroundColor: primitiveColors.neutral[1000],
+  },
+});

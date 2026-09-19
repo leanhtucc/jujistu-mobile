@@ -9,10 +9,12 @@ introduced without a dedicated upgrade review.
 ```text
 src/app/navigation/
 ├── AuthNavigator.tsx        stack navigator for unauthenticated email OTP flows
+├── bottom-navigation-items.ts application-wide authenticated destinations
 ├── MainNavigator.tsx        stack navigator for authenticated flows (Home)
 ├── NavigationFallback.tsx   accessible loading state during session resolution
 ├── RootNavigator.tsx        root container conditionally rendering Auth or Main
 ├── routes.ts                centralized ROOT_ROUTES, AUTH_ROUTES, MAIN_ROUTES constants
+├── tab-icon-assets.ts       active/inactive icon mapping for bottom destinations
 └── types.ts                 typed RootStackParamList, AuthStackParamList, MainStackParamList
 ```
 
@@ -29,7 +31,9 @@ RootNavigator (NavigationContainer)
 │   └── Otp (transparent modal)
 │
 └── [authenticated] MainNavigator (Stack)
-    └── Home (prepared for future BottomTabs when >= 2 business features are confirmed)
+    └── Main navigation content
+        ├── HomeScreen (complete Home feature)
+        └── AppBottomNavigation (application navigation)
 ```
 
 ## Rules
@@ -37,8 +41,9 @@ RootNavigator (NavigationContainer)
 - Route names come from `ROOT_ROUTES`, `AUTH_ROUTES`, or `MAIN_ROUTES`; do not repeat
   string literals in screens.
 - Every route and its parameters must be represented in its corresponding param list.
-- Application composition owns navigators; features export screens through their
-  public `index.ts` API.
+- Application composition owns navigators and the application-wide bottom-destination
+  registry. Feature screens—including their feature-specific headers and content—are
+  exported through their public `index.ts` API.
 - Business logic must not import navigation objects.
 - Pass serializable identifiers through route parameters, not full domain objects,
   callbacks, credentials, or tokens.

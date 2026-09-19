@@ -1,8 +1,11 @@
 # ADR-0002: Server State, Authentication, and Secure Storage Foundation
 
-- Status: Accepted
-- Date: 2026-09-14
+- Status: Superseded in part by [ADR-0013](0013-standardized-api-feature-hooks-boundary.md)
+- Date: 2026-09-14 (Updated 2026-09-19)
 - Owners: JUJISTU mobile architecture team
+
+> [!NOTE]
+> Sections 1 and 2 of this ADR describing `<feature>/queries`, `api-client.ts`, and direct query mutation usage in UI have been superseded by [ADR-0013](0013-standardized-api-feature-hooks-boundary.md). Shared HTTP transport is now unified in `http-client.ts` (`apiRequest`), remote operations are encapsulated in `services/`, and UI strictly interacts with `hooks/` facades.
 
 ## Context
 

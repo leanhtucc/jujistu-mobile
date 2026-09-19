@@ -1,13 +1,25 @@
 import { AUTH_API_PATHS, SYSTEM_API_PATHS } from './paths';
-import type {
-  ApiEnvelope,
-  AuthTokenDataApi,
-  UserProfileDataApi,
-} from './schema';
+import type { ApiEnvelope } from './schema';
 import type { ApiRequestOptions } from './types';
 
 const MOCK_ACCESS_TOKEN = 'jujistu-mock-access-token';
 const MOCK_REFRESH_TOKEN = 'jujistu-mock-refresh-token';
+
+type MockUserProfile = {
+  id: string;
+  email: string;
+  displayName: string;
+  avatarUrl?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+type MockAuthTokens = {
+  access_token: string;
+  refresh_token: string;
+  expire_in?: number;
+  auth_type?: string;
+};
 
 function waitForMockLatency(ms = 120): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -22,7 +34,7 @@ function ok<TData>(message: string, data?: TData): ApiEnvelope<TData> {
   };
 }
 
-const MOCK_USER: UserProfileDataApi = {
+const MOCK_USER: MockUserProfile = {
   id: 'usr_jujistu_mock_1',
   email: 'athlete@jujistu.app',
   displayName: 'Jujitsu Athlete',
@@ -31,7 +43,7 @@ const MOCK_USER: UserProfileDataApi = {
   updatedAt: new Date().toISOString(),
 };
 
-const MOCK_TOKENS: AuthTokenDataApi = {
+const MOCK_TOKENS: MockAuthTokens = {
   access_token: MOCK_ACCESS_TOKEN,
   refresh_token: MOCK_REFRESH_TOKEN,
   expire_in: 3600,

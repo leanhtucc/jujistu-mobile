@@ -1,9 +1,8 @@
-import { authApi } from '@jujistu/features/auth';
+import { useAuthTransportBridge } from '@jujistu/features/auth';
 import {
   refreshAccessToken,
   setApiAccessTokenProvider,
   setApiUnauthorizedHandler,
-  tokenManager,
 } from '@jujistu/shared/services/api';
 import React, { type PropsWithChildren, useLayoutEffect } from 'react';
 
@@ -15,23 +14,22 @@ import React, { type PropsWithChildren, useLayoutEffect } from 'react';
  * 2. An unauthorized handler handling 401 token refresh with automatic request retry.
  */
 export function ApiAccessTokenBridge({ children }: PropsWithChildren) {
+  const { getAccessToken, refreshSession } = useAuthTransportBridge();
+
   useLayoutEffect(() => {
-    setApiAccessTokenProvider(async () => {
-      const token = await tokenManager.getAccessToken();
-      return token;
-    });
+    setApiAccessTokenProvider(getAccessToken);
 
     return () => {
       setApiAccessTokenProvider(null);
     };
-  }, []);
+  }, [getAccessToken]);
 
   useLayoutEffect(() => {
     setApiUnauthorizedHandler(async () => {
       try {
         const newAccessToken = await refreshAccessToken(
           async refreshTokenValue => {
-            const response = await authApi.refresh(refreshTokenValue);
+            const response = await refreshSession(refreshTokenValue);
             return {
               accessToken: response.accessToken,
               refreshToken: response.refreshToken,
@@ -48,7 +46,7 @@ export function ApiAccessTokenBridge({ children }: PropsWithChildren) {
     return () => {
       setApiUnauthorizedHandler(null);
     };
-  }, []);
+  }, [refreshSession]);
 
   return <>{children}</>;
 }

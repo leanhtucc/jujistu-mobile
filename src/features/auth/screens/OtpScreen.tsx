@@ -1,3 +1,8 @@
+import {
+  getResponsiveContentWidth,
+  selectResponsiveValue,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
 import { AppButton, AppOtpField } from '@jujistu/ui';
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,8 +16,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useRequestOtpMutation } from '../queries/use-request-otp-mutation';
-import { useVerifyOtpMutation } from '../queries/use-verify-otp-mutation';
+import { useRequestOtp } from '../hooks/use-request-otp';
+import { useVerifyOtp } from '../hooks/use-verify-otp';
 
 type OtpScreenProps = {
   challengeId: string;
@@ -28,13 +33,66 @@ export function OtpScreen({
   email,
   onClose,
 }: OtpScreenProps) {
+  const responsive = useResponsive();
+  const panelWidth = getResponsiveContentWidth(responsive);
+  const typography = selectResponsiveValue(responsive, {
+    compactPhone: {
+      actionFontSize: 14,
+      actionLineHeight: 20,
+      bodyFontSize: 14,
+      bodyLineHeight: 20,
+      titleFontSize: 22,
+      titleLineHeight: 28,
+    },
+    phone: {
+      actionFontSize: 15,
+      actionLineHeight: 21,
+      bodyFontSize: 15,
+      bodyLineHeight: 22,
+      titleFontSize: 25,
+      titleLineHeight: 31,
+    },
+    largePhone: {
+      actionFontSize: 16,
+      actionLineHeight: 22,
+      bodyFontSize: 16,
+      bodyLineHeight: 24,
+      titleFontSize: 28,
+      titleLineHeight: 35,
+    },
+    tablet: {
+      actionFontSize: 18,
+      actionLineHeight: 24,
+      bodyFontSize: 18,
+      bodyLineHeight: 26,
+      titleFontSize: 32,
+      titleLineHeight: 40,
+    },
+    largeTablet: {
+      actionFontSize: 20,
+      actionLineHeight: 26,
+      bodyFontSize: 20,
+      bodyLineHeight: 28,
+      titleFontSize: 36,
+      titleLineHeight: 44,
+    },
+  });
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(RESEND_SECONDS);
   const [challengeId, setChallengeId] = useState(initialChallengeId);
   const lastSubmittedCode = useRef<string | null>(null);
-  const requestOtpMutation = useRequestOtpMutation();
-  const verifyOtpMutation = useVerifyOtpMutation();
-  const isVerifying = verifyOtpMutation.isPending;
+  const {
+    requestOtp,
+    isSubmitting: isResending,
+    error: requestOtpError,
+    clearError: clearRequestError,
+  } = useRequestOtp();
+  const {
+    verifyOtp,
+    isSubmitting: isVerifying,
+    error: verifyOtpError,
+    clearError: clearVerifyError,
+  } = useVerifyOtp();
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -52,31 +110,31 @@ export function OtpScreen({
     }
 
     lastSubmittedCode.current = code;
-    verifyOtpMutation.mutate({
+    verifyOtp({
       challengeId,
       code,
       email,
+    }).catch(() => {
+      // Error captured in verifyOtpError
     });
-  }, [challengeId, code, email, isVerifying, verifyOtpMutation]);
+  }, [challengeId, code, email, isVerifying, verifyOtp]);
 
-  const handleResend = () => {
-    if (countdown > 0 || requestOtpMutation.isPending) return;
-    requestOtpMutation.mutate(
-      { email },
-      {
-        onSuccess: challenge => {
-          setChallengeId(challenge.challengeId);
-          setCode('');
-          lastSubmittedCode.current = null;
-          setCountdown(RESEND_SECONDS);
-          verifyOtpMutation.reset();
-        },
-      },
-    );
+  const handleResend = async () => {
+    if (countdown > 0 || isResending) return;
+    try {
+      const challenge = await requestOtp({ email });
+      setChallengeId(challenge.challengeId);
+      setCode('');
+      lastSubmittedCode.current = null;
+      setCountdown(RESEND_SECONDS);
+      clearVerifyError();
+      clearRequestError();
+    } catch {
+      // Error captured in requestOtpError
+    }
   };
 
-  const errorMessage =
-    verifyOtpMutation.error?.message ?? requestOtpMutation.error?.message;
+  const errorMessage = verifyOtpError?.message ?? requestOtpError?.message;
 
   return (
     <View style={styles.overlay}>
@@ -85,7 +143,10 @@ export function OtpScreen({
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.keyboardAvoidingView}
         >
-          <View accessibilityViewIsModal style={styles.panel}>
+          <View
+            accessibilityViewIsModal
+            style={[styles.panel, { width: panelWidth }]}
+          >
             <Pressable
               accessibilityLabel="Đóng xác minh OTP"
               accessibilityRole="button"
@@ -96,10 +157,27 @@ export function OtpScreen({
               <Text style={styles.closeText}>×</Text>
             </Pressable>
 
-            <Text accessibilityRole="header" style={styles.title}>
+            <Text
+              accessibilityRole="header"
+              style={[
+                styles.title,
+                {
+                  fontSize: typography.titleFontSize,
+                  lineHeight: typography.titleLineHeight,
+                },
+              ]}
+            >
               Verify your email
             </Text>
-            <Text style={styles.description}>
+            <Text
+              style={[
+                styles.description,
+                {
+                  fontSize: typography.bodyFontSize,
+                  lineHeight: typography.bodyLineHeight,
+                },
+              ]}
+            >
               Vui lòng nhập mã OTP đã được gửi tới email{`\n`}
               <Text style={styles.email}>{email}</Text>.{`\n`}
               Mã có hiệu lực trong 30 phút
@@ -112,7 +190,8 @@ export function OtpScreen({
               onChangeText={value => {
                 setCode(value);
                 if (lastSubmittedCode.current !== value) {
-                  verifyOtpMutation.reset();
+                  clearVerifyError();
+                  clearRequestError();
                 }
               }}
               status={errorMessage ? 'error' : 'neutral'}
@@ -120,7 +199,16 @@ export function OtpScreen({
             />
 
             {errorMessage ? (
-              <Text accessibilityLiveRegion="polite" style={styles.error}>
+              <Text
+                accessibilityLiveRegion="polite"
+                style={[
+                  styles.error,
+                  {
+                    fontSize: typography.bodyFontSize,
+                    lineHeight: typography.bodyLineHeight,
+                  },
+                ]}
+              >
                 {errorMessage}
               </Text>
             ) : null}
@@ -129,19 +217,31 @@ export function OtpScreen({
               <AppButton
                 containerStyle={styles.action}
                 label="Đổi email khác"
-                labelStyle={styles.actionLabel}
+                labelStyle={[
+                  styles.actionLabel,
+                  {
+                    fontSize: typography.actionFontSize,
+                    lineHeight: typography.actionLineHeight,
+                  },
+                ]}
                 onPress={onClose}
                 size="md"
                 variant="secondaryDark"
               />
               <AppButton
                 containerStyle={styles.action}
-                disabled={countdown > 0}
+                disabled={countdown > 0 || isResending}
                 label={
                   countdown > 0 ? `Gửi lại OTP (${countdown}s)` : 'Gửi lại OTP'
                 }
-                labelStyle={styles.actionLabel}
-                loading={requestOtpMutation.isPending}
+                labelStyle={[
+                  styles.actionLabel,
+                  {
+                    fontSize: typography.actionFontSize,
+                    lineHeight: typography.actionLineHeight,
+                  },
+                ]}
+                loading={isResending}
                 onPress={handleResend}
                 size="md"
               />
@@ -156,8 +256,7 @@ export function OtpScreen({
 const styles = StyleSheet.create({
   action: { flex: 1 },
   actionLabel: {
-    fontSize: 14,
-    lineHeight: 20,
+    textAlign: 'center',
   },
   actions: {
     flexDirection: 'row',
@@ -184,9 +283,7 @@ const styles = StyleSheet.create({
   description: {
     color: semanticColors.text.tertiary,
     fontFamily: fontFamilies.primary.regular,
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 10,
+    marginTop: 12,
     textAlign: 'center',
   },
   email: {
@@ -196,8 +293,6 @@ const styles = StyleSheet.create({
   error: {
     color: semanticColors.text.error,
     fontFamily: fontFamilies.primary.regular,
-    fontSize: 12,
-    lineHeight: 18,
     marginTop: 12,
     textAlign: 'center',
   },
@@ -223,14 +318,11 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingHorizontal: 16,
     paddingTop: 52,
-    width: '100%',
   },
   safeArea: { flex: 1 },
   title: {
     color: semanticColors.text.primary,
     fontFamily: fontFamilies.display.regular,
-    fontSize: 24,
-    lineHeight: 30,
     textAlign: 'center',
     textTransform: 'uppercase',
   },

@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { WelcomeScreen } from '@jujistu/features/auth';
 import { AppButton } from '@jujistu/ui';
@@ -20,7 +21,10 @@ describe('WelcomeScreen', () => {
     const button = tree.root.findByType(AppButton);
     expect(button.props.label).toBe('Đăng Nhập');
     expect(button.props.size).toBe('md');
-    expect(button.props.labelStyle).toBeUndefined();
+    expect(StyleSheet.flatten(button.props.labelStyle)).toMatchObject({
+      fontSize: 18,
+      lineHeight: 24,
+    });
 
     const recipe = resolveAppButtonVisualRecipe('primary', false);
     expect(recipe.backgroundColor).toBe('transparent');

@@ -1,8 +1,11 @@
-import { authApi, authKeys, useAuthState } from '@jujistu/features/auth';
+import { useAuthState } from '@jujistu/features/auth';
 import { tokenManager } from '@jujistu/shared/services/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
+
+import { authQueryKeys } from '../src/features/auth/hooks/auth-query-keys';
+import * as authService from '../src/features/auth/services/auth-service';
 
 jest.mock('@jujistu/shared/services/api', () => {
   const actual = jest.requireActual('@jujistu/shared/services/api');
@@ -16,10 +19,8 @@ jest.mock('@jujistu/shared/services/api', () => {
   };
 });
 
-jest.mock('@jujistu/features/auth/api/auth.api', () => ({
-  authApi: {
-    getCurrentUser: jest.fn(),
-  },
+jest.mock('../src/features/auth/services/auth-service', () => ({
+  getCurrentUser: jest.fn(),
 }));
 
 function TestConsumer({
@@ -88,7 +89,7 @@ describe('AuthFlowIntegration & useAuthState', () => {
       displayName: 'Champion',
     };
 
-    (authApi.getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
+    (authService.getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
 
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -97,7 +98,7 @@ describe('AuthFlowIntegration & useAuthState', () => {
     });
 
     // Pre-seed query cache with user data (as saved during login/verify)
-    queryClient.setQueryData(authKeys.currentUser(), mockUser);
+    queryClient.setQueryData(authQueryKeys.currentUser(), mockUser);
 
     let latestState: ReturnType<typeof useAuthState> | undefined;
     let tree!: ReactTestRenderer.ReactTestRenderer;

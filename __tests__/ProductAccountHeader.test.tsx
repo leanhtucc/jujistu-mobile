@@ -5,8 +5,10 @@ import ReactTestRenderer, { act } from 'react-test-renderer';
 import {
   ProductAccountHeader,
   type ProductAccountHeaderProps,
-} from '@jujistu/app/components';
+} from '../src/features/home/sections/ProductAccountHeader';
 import { AppIcon } from '@jujistu/ui';
+import { resolveResponsiveMetrics } from '@jujistu/shared/constants/responsive';
+import { resolveBalanceGroupWidth } from '../src/features/home/sections/ProductAccountHeader';
 
 const avatar = { uri: 'https://example.test/account-avatar.png' };
 
@@ -87,6 +89,58 @@ describe('ProductAccountHeader', () => {
       expect(text.props.numberOfLines).toBe(1);
       expect(text.props.ellipsizeMode).toBe('tail');
     });
+  });
+
+  it('layers the Figma-sized level bar beneath the settings accessory', () => {
+    const tree = renderHeader();
+    const views = tree.root.findAllByType(View);
+    const levelSurface = views.find(view => {
+      const style = StyleSheet.flatten(view.props.style);
+      return style?.left === 27 && style?.height === 15;
+    });
+    const progressImage = tree.root
+      .findAllByType(Image)
+      .find(image => image.props.accessible === false)!;
+    const levelText = tree.root
+      .findAllByType(Text)
+      .find(text => text.props.children === props.level)!;
+
+    expect(StyleSheet.flatten(levelSurface!.props.style)).toMatchObject({
+      left: 27,
+      width: 134,
+      borderBottomRightRadius: 16,
+    });
+    expect(StyleSheet.flatten(progressImage.props.style).width).toBe(86);
+    expect(StyleSheet.flatten(levelText.props.style).width).toBe(134);
+  });
+
+  it('keeps both balance pills compact on Pixel 8 Pro sized windows', () => {
+    const tree = renderHeader();
+    const views = tree.root.findAllByType(View);
+    const balancePill = views.find(view => {
+      const style = StyleSheet.flatten(view.props.style);
+      return style?.flex === 1 && style?.height === 28;
+    });
+    const pillStyle = StyleSheet.flatten(balancePill!.props.style);
+    const primaryBalanceText = tree.root
+      .findAllByType(Text)
+      .find(text => text.props.children === props.primaryBalance)!;
+    const balanceTextStyle = StyleSheet.flatten(primaryBalanceText.props.style);
+    const pixel8Pro = resolveResponsiveMetrics({
+      width: 412,
+      height: 892,
+      scale: 2.625,
+      fontScale: 1,
+    });
+
+    expect(resolveBalanceGroupWidth(pixel8Pro)).toBe(164);
+    expect(balancePill).toBeDefined();
+    expect(pillStyle.flex).toBe(1);
+    expect(pillStyle.paddingLeft).toBe(8);
+    expect(pillStyle.paddingRight).toBe(16);
+    expect(pillStyle.gap).toBe(6);
+    expect(pillStyle.justifyContent).toBe('flex-start');
+    expect(balanceTextStyle.flexShrink).toBe(1);
   });
 
   it('is display-only and exposes exactly the required data props', () => {

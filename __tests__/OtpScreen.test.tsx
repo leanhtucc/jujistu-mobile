@@ -1,15 +1,38 @@
-import { authApi, OtpScreen } from '@jujistu/features/auth';
+import { OtpScreen } from '@jujistu/features/auth';
 import { tokenManager } from '@jujistu/shared/services/api';
 import { AppButton, AppOtpField } from '@jujistu/ui';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  notifyManager,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-jest.mock('@jujistu/features/auth/api/auth.api', () => ({
-  authApi: {
-    requestOtp: jest.fn(),
-    verifyOtp: jest.fn(),
-  },
+import * as authService from '../src/features/auth/services/auth-service';
+
+beforeAll(() => {
+  notifyManager.setScheduler(fn => fn());
+});
+
+jest.mock('@jujistu/shared/responsive', () => {
+  const actual = jest.requireActual('@jujistu/shared/responsive');
+  return {
+    ...actual,
+    useResponsive: () =>
+      actual.resolveResponsiveMetrics({
+        width: 448,
+        height: 998,
+        scale: 3,
+        fontScale: 1,
+      }),
+  };
+});
+
+jest.mock('../src/features/auth/services/auth-service', () => ({
+  requestOtp: jest.fn(),
+  verifyOtp: jest.fn(),
 }));
 
 jest.mock('@jujistu/shared/services/api', () => {
@@ -81,9 +104,9 @@ describe('OtpScreen', () => {
     const actionButtons = tree.root.findAllByType(AppButton);
     expect(actionButtons).toHaveLength(2);
     actionButtons.forEach(button => {
-      expect(button.props.labelStyle).toMatchObject({
-        fontSize: 14,
-        lineHeight: 20,
+      expect(StyleSheet.flatten(button.props.labelStyle)).toMatchObject({
+        fontSize: 16,
+        lineHeight: 22,
       });
     });
   });
@@ -110,7 +133,7 @@ describe('OtpScreen', () => {
   });
 
   it('automatically triggers verification when 6 digits are entered', async () => {
-    (authApi.verifyOtp as jest.Mock).mockResolvedValueOnce({
+    (authService.verifyOtp as jest.Mock).mockResolvedValueOnce({
       accessToken: 'access-token-xyz',
       refreshToken: 'refresh-token-xyz',
       user: {
@@ -130,7 +153,7 @@ describe('OtpScreen', () => {
       otpField.props.onChangeText('123456');
     });
 
-    expect(authApi.verifyOtp).toHaveBeenCalledWith({
+    expect(authService.verifyOtp).toHaveBeenCalledWith({
       challengeId: 'challenge-abc',
       code: '123456',
       email: 'fighter@example.com',
@@ -142,7 +165,7 @@ describe('OtpScreen', () => {
   });
 
   it('displays error message when OTP verification fails', async () => {
-    (authApi.verifyOtp as jest.Mock).mockRejectedValueOnce(
+    (authService.verifyOtp as jest.Mock).mockRejectedValueOnce(
       new Error('Mã OTP không chính xác hoặc đã hết hạn'),
     );
 
@@ -164,7 +187,7 @@ describe('OtpScreen', () => {
     jest.useFakeTimers();
 
     try {
-      (authApi.requestOtp as jest.Mock).mockResolvedValueOnce({
+      (authService.requestOtp as jest.Mock).mockResolvedValueOnce({
         challengeId: 'new-challenge-456',
         expiresInSeconds: 30,
       });
@@ -201,7 +224,7 @@ describe('OtpScreen', () => {
         resendBtn!.props.onPress();
       });
 
-      expect(authApi.requestOtp).toHaveBeenCalled();
+      expect(authService.requestOtp).toHaveBeenCalled();
     } finally {
       if (currentTree) {
         act(() => {
