@@ -14,34 +14,50 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HomeHeroCarousel } from '../sections/HomeHeroCarousel';
-import { HomeNewsSection } from '../sections/HomeNewsSection';
-import { HomeQuickActions } from '../sections/HomeQuickActions';
-import { ProductAccountHeader } from '../sections/ProductAccountHeader';
+import { GuestAccountHeader } from '../components/GuestAccountHeader';
+import { HomeHeroCarousel } from '../components/HomeHeroCarousel';
+import { HomeNewsSection } from '../components/HomeNewsSection';
+import { HomeQuickActions } from '../components/HomeQuickActions';
+import { ProductAccountHeader } from '../components/ProductAccountHeader';
+import type { HomeMode } from '../data/home-content';
 
-const backgroundImage = require('../../../../assets/image/backgrounds/bg_home.png');
+const phoneBackgroundImage = require('../../../../assets/image/backgrounds/bg_home.png');
+const tabletBackgroundImage = require('../../../../assets/image/backgrounds/bg_home_tablet.png');
 const fallbackAvatar = require('../../../../assets/image/avatars/avatar_default.png');
 const log = createLogger('HomeScreen');
 
 export interface HomeScreenProps {
+  readonly mode?: HomeMode;
+  readonly onLogin?: () => void;
   readonly onReady?: () => void;
-  readonly user: {
+  readonly user?: {
     readonly avatarUrl?: string | null;
     readonly displayName: string;
-  };
+  } | null;
 }
 
-export function HomeScreen({ onReady, user }: HomeScreenProps) {
+export function HomeScreen({ mode, onLogin, onReady, user }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const responsive = useResponsive();
   const [backgroundSettled, setBackgroundSettled] = useState(false);
   const [criticalContentSettled, setCriticalContentSettled] = useState(false);
   const [hasLayout, setHasLayout] = useState(false);
-  const quickActionsMarginTop = scaleResponsiveValue(92, responsive, {
-    minScale: 0.76,
-    maxScale: 1.1,
-  });
-  const avatar: ImageSourcePropType = user.avatarUrl
+  const effectiveMode: HomeMode = mode ?? (user ? 'authenticated' : 'guest');
+  const backgroundImage = responsive.isTablet
+    ? tabletBackgroundImage
+    : phoneBackgroundImage;
+  const backgroundResizeMode =
+    responsive.isTablet || responsive.isLandscape ? 'contain' : 'cover';
+  const quickActionsMarginTop = responsive.isTablet
+    ? scaleResponsiveValue(36, responsive, {
+        minScale: 1,
+        maxScale: 1.2,
+      })
+    : scaleResponsiveValue(92, responsive, {
+        minScale: 0.76,
+        maxScale: 1.1,
+      });
+  const avatar: ImageSourcePropType = user?.avatarUrl
     ? { uri: user.avatarUrl }
     : fallbackAvatar;
 
@@ -64,20 +80,24 @@ export function HomeScreen({ onReady, user }: HomeScreenProps) {
         importantForAccessibility="no"
         onError={handleBackgroundError}
         onLoad={() => setBackgroundSettled(true)}
-        resizeMode="cover"
+        resizeMode={backgroundResizeMode}
         source={backgroundImage}
         style={styles.background}
       />
 
       <View style={[styles.topInset, { height: insets.top }]} />
 
-      <ProductAccountHeader
-        avatar={avatar}
-        level="Level 22"
-        primaryBalance="6253"
-        secondaryBalance="8888"
-        username={user.displayName}
-      />
+      {effectiveMode === 'authenticated' && user ? (
+        <ProductAccountHeader
+          avatar={avatar}
+          level="Level 22"
+          primaryBalance="6253"
+          secondaryBalance="8888"
+          username={user.displayName}
+        />
+      ) : (
+        <GuestAccountHeader onLogin={onLogin} />
+      )}
 
       <ScrollView
         contentContainerStyle={styles.content}
@@ -91,7 +111,7 @@ export function HomeScreen({ onReady, user }: HomeScreenProps) {
           <HomeNewsSection />
         </View>
         <View style={{ marginTop: quickActionsMarginTop }}>
-          <HomeQuickActions />
+          <HomeQuickActions mode={effectiveMode} />
         </View>
       </ScrollView>
     </View>
@@ -120,7 +140,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 12,
-    paddingBottom: 15,
+    paddingBottom: 40,
   },
   newsSection: {
     marginTop: 8,

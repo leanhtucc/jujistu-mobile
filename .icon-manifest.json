@@ -1,0 +1,153 @@
+{
+  "generatorVersion": "2.0.0",
+  "generatorHash": "sha256:91a97f2c87ad458fc12584ca73e8122d32fc1e4feadaf04fb36986ae6dd24eba",
+  "entries": {
+    "common/ic_add.svg": {
+      "sourceHash": "sha256:63a12b01a960e99623c73e0ce2b3fa8aaf7fb859fb72c39ce3966737d55c4a13",
+      "targetPath": "src/ui/atoms/icon/glyphs/common/ic_add.tsx",
+      "outputHash": "sha256:c66ac60b790062bcbd0c65c1cb1273128a778d754c82b7c647032f99767d14ec",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:16.980Z"
+    },
+    "common/ic_coin.svg": {
+      "sourceHash": "sha256:772822bd3fb017b930ae66b8edac09473f545120c84f3eeb3c948c26c2f7b85f",
+      "targetPath": "src/ui/atoms/icon/glyphs/common/ic_coin.tsx",
+      "outputHash": "sha256:50bca3f14c0a7916d9cd0932e873759b004967312348bcaa1472d96f5b1200ec",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:18.362Z"
+    },
+    "common/ic_gem.svg": {
+      "sourceHash": "sha256:ace7dd7479f8554c51bfbfe6ba5ab54c022ff133c170b18609e3a5ad5b66e986",
+      "targetPath": "src/ui/atoms/icon/glyphs/common/ic_gem.tsx",
+      "outputHash": "sha256:6d3ba64c2f83c3c35b395c8d432e6e8f49991ca8dc1a8d99108f4a270ff6d1e7",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:23.922Z"
+    },
+    "common/ic_settings.svg": {
+      "sourceHash": "sha256:9cdbb308cff2634551acff65b70ea1be9e061883853272e6370dd638a4e4fe95",
+      "targetPath": "src/ui/atoms/icon/glyphs/common/ic_settings.tsx",
+      "outputHash": "sha256:ecf575f356eeb51d14cb5218fab4b1d03dcf9f6ab27ad92ceef1bc157f6fcce0",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:23.957Z"
+    },
+    "home/ic_club.svg": {
+      "sourceHash": "sha256:34ebf125325ad7814127f1d2a2d3062d1f86df37ea36c78e8f52e96a0f549f42",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_club.tsx",
+      "outputHash": "sha256:1dc7e08cf47f8e805144a17ae2819e994e9fe0dc40c15810def97e1d43554367",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.006Z"
+    },
+    "home/ic_gift.svg": {
+      "sourceHash": "sha256:b6cedd6cbbf9b6fb603117918d4f40ae72538926dad61374826670fea884c18a",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_gift.tsx",
+      "outputHash": "sha256:3ff79f8bcfce04ad520962616dc36aaff8c08dfb15db4982749aee9542bc79af",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.048Z"
+    },
+    "home/ic_leaderboard.svg": {
+      "sourceHash": "sha256:03f03cd6b5c0b1161cda882741779fb790ae25211d0631e62aead1b609fa1906",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_leaderboard.tsx",
+      "outputHash": "sha256:ebd9575208caecbe6b1f57b798df22e514cf64038fe0db5c6b6874852ad89979",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.088Z"
+    },
+    "home/ic_live.svg": {
+      "sourceHash": "sha256:d73632a8dba7e878e92e99e4b98f76124f04045ecc42a78ce62a313de61ca252",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_live.tsx",
+      "outputHash": "sha256:4cb45c1a7674fb6c86505cb54ef72826ec166a21af667d7d54ad527188a59218",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.155Z"
+    },
+    "home/ic_minigame.svg": {
+      "sourceHash": "sha256:d093b9b9524a72167b19f9d193223c6980543f6cbad1dd828c717f2282405372",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_minigame.tsx",
+      "outputHash": "sha256:f6c12b7eeec11bfe23d195332330c5609f7bdc3ffea3a301ca7c988ad02dd2e4",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.209Z"
+    },
+    "home/ic_mma_academy.svg": {
+      "sourceHash": "sha256:e81e6f8290478bde10615d587184eb8ddccab7650f774d8ba1f896d589cc19a2",
+      "targetPath": "src/ui/atoms/icon/glyphs/home/ic_mma_academy.tsx",
+      "outputHash": "sha256:e5c3da5ca395bcb1289976a160a7974b1235766b3e12f206ef7c88f15af5f3b7",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.251Z"
+    },
+    "tabs/friends-active.svg": {
+      "sourceHash": "sha256:13445f54e103e71f1aa68e25175b4b0b5545d9c5a6e22f540f8fe824e78a6b2c",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/friends-active.tsx",
+      "outputHash": "sha256:c94f701dab273c46a4ceb99e393c93d4dee662b59fdac0c72a3c9806fcf7bf5a",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:24.281Z"
+    },
+    "tabs/friends-inactive.svg": {
+      "sourceHash": "sha256:f12d039135a0ec1339683e2205599c319a156b6e6f078ce9be10bdf81d2586d0",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/friends-inactive.tsx",
+      "outputHash": "sha256:c9da3bd7e77bac7778610f21f84a9ba729c08f3452458dfe0174eb7d891df3d7",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:24.306Z"
+    },
+    "tabs/home-active.svg": {
+      "sourceHash": "sha256:eff480780ea505054d1d19deb906a6ba5b4550224089b80af51a42af7f68eff7",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/home-active.tsx",
+      "outputHash": "sha256:daf23c1b69667a7dc5ab2b2d190ecef933b24a99729d2b1112d038cebb484cb4",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.341Z"
+    },
+    "tabs/home-inactive.svg": {
+      "sourceHash": "sha256:495bb27ac83910ad7fadf2326ae6e52760f5407abdbe60e4477a0d31503d7bd5",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/home-inactive.tsx",
+      "outputHash": "sha256:43fecc3b0146342c20fd76ae2c37efb7362e6bbbc62c2e854930186dcbd5ecdb",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.373Z"
+    },
+    "tabs/mission-active.svg": {
+      "sourceHash": "sha256:77059953e33a467ac01a5c6bc69f376f9bc91226adabe44810fdc83f2398fe6e",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/mission-active.tsx",
+      "outputHash": "sha256:66efeb2c4ea1e362111b6e55c1fc3f745f28d2c35f9db4ba8199283a24d4a5fd",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.413Z"
+    },
+    "tabs/mission-inactive.svg": {
+      "sourceHash": "sha256:bbe28f4d8cf969ea47da14d221b1ad2fa214dc9f2d147c6ce4af711060e475fd",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/mission-inactive.tsx",
+      "outputHash": "sha256:fce1da07ac789dfcbc6e4d5b95b77e48d4a1869a4348c12affed90e86a498c26",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.454Z"
+    },
+    "tabs/shop-active.svg": {
+      "sourceHash": "sha256:e2668e92659857e114dabde18ca15343cc1e781e13094eed91669343fbc0f238",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/shop-active.tsx",
+      "outputHash": "sha256:f94b41c5b67246b6b08d61dace15a1fc6d6e629e57ca2d299e9b17930f5cd3ce",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:24.496Z"
+    },
+    "tabs/shop-inactive.svg": {
+      "sourceHash": "sha256:388605f7cce6c287598b889f33f734d6d95e2aef651acab9c1405ed7c3ab5da6",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/shop-inactive.tsx",
+      "outputHash": "sha256:b9d6be0d68556caa1dde003412bfe56854ae90ee8abc8bdb5d633708391ac603",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:24.542Z"
+    },
+    "tabs/tournament-active.svg": {
+      "sourceHash": "sha256:3c570cf3199fc9f074cb2b8edfd6bcd27279a284349f24f8aa3f4029adb628ae",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/tournament-active.tsx",
+      "outputHash": "sha256:0afce642c36370b5630aa2992b3cedf102f892da3ada0f549f59f9200d1ae5e0",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.627Z"
+    },
+    "tabs/tournament-inactive.svg": {
+      "sourceHash": "sha256:d52fe4e7206821182fcfbe475e469b49b073901ade8f5224c268be54dbd5275e",
+      "targetPath": "src/ui/atoms/icon/glyphs/tabs/tournament-inactive.tsx",
+      "outputHash": "sha256:8dac578bcdd005423e5fc2b4d4cfd7ec475f60aa14da434193a97c086ae6245f",
+      "classification": "FIXED_VISUAL",
+      "lastGenerated": "2026-09-20T05:58:24.725Z"
+    },
+    "test-icon.svg": {
+      "sourceHash": "sha256:419e6268b39f2a772c72134c8b1b3ab9b56d2e91e31cf42eff116ab434ec803f",
+      "targetPath": "src/ui/atoms/icon/glyphs/test-icon.tsx",
+      "outputHash": "sha256:80e5363dc29f0d0cd016c0fdf9a9391a2caf9ddd555c6bdbab27184c93307bd4",
+      "classification": "MONOCHROME_VECTOR",
+      "lastGenerated": "2026-09-20T05:58:24.780Z"
+    }
+  }
+}

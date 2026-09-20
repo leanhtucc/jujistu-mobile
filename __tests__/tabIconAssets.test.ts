@@ -84,16 +84,16 @@ describe('Bottom Navigation Tab Icon Assets Contract', () => {
     });
   });
 
-  it('MONOCHROME_VECTOR icons (shop, friends) carry color for active/inactive distinction', () => {
+  it('MONOCHROME_VECTOR icons (shop, friends) carry color for active/inactive distinction matching label text', () => {
     // shop and friends are vector icons — they need explicit color to differentiate states
-    expect(TAB_ICON_ASSETS.shop.active.color).toBeDefined();
-    expect(TAB_ICON_ASSETS.shop.inactive.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.shop.active.color).toBe('#FE8B33');
+    expect(TAB_ICON_ASSETS.shop.inactive.color).toBe('#7D7F84');
     expect(TAB_ICON_ASSETS.shop.active.color).not.toBe(
       TAB_ICON_ASSETS.shop.inactive.color,
     );
 
-    expect(TAB_ICON_ASSETS.friends.active.color).toBeDefined();
-    expect(TAB_ICON_ASSETS.friends.inactive.color).toBeDefined();
+    expect(TAB_ICON_ASSETS.friends.active.color).toBe('#FE8B33');
+    expect(TAB_ICON_ASSETS.friends.inactive.color).toBe('#7D7F84');
     expect(TAB_ICON_ASSETS.friends.active.color).not.toBe(
       TAB_ICON_ASSETS.friends.inactive.color,
     );

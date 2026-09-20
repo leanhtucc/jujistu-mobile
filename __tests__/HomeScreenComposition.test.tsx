@@ -45,9 +45,15 @@ describe('HomeScreen composition', () => {
       .findAllByType(Image)
       .map(node => node.props.source);
 
+    const hasValidBackground = imageSources.some(
+      source =>
+        source === require('../assets/image/backgrounds/bg_home.png') ||
+        source === require('../assets/image/backgrounds/bg_home_tablet.png'),
+    );
+
+    expect(hasValidBackground).toBe(true);
     expect(imageSources).toEqual(
       expect.arrayContaining([
-        require('../assets/image/backgrounds/bg_home.png'),
         require('../assets/image/avatars/avatar_default.png'),
       ]),
     );
@@ -79,7 +85,9 @@ describe('HomeScreen composition', () => {
     const background = images.find(
       image =>
         image.props.source ===
-        require('../assets/image/backgrounds/bg_home.png'),
+          require('../assets/image/backgrounds/bg_home.png') ||
+        image.props.source ===
+          require('../assets/image/backgrounds/bg_home_tablet.png'),
     )!;
     const initialHero = images.find(
       image =>
@@ -98,6 +106,39 @@ describe('HomeScreen composition', () => {
       initialHero.props.onLoad();
     });
     expect(onReady).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      tree!.unmount();
+    });
+  });
+
+  it('renders dedicated tablet background on tablet viewport', () => {
+    let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
+
+    act(() => {
+      tree = ReactTestRenderer.create(
+        <SafeAreaProvider
+          initialMetrics={{
+            frame: { x: 0, y: 0, width: 1280, height: 800 },
+            insets: { top: 24, right: 0, bottom: 20, left: 0 },
+          }}
+        >
+          <HomeScreen
+            user={{ displayName: 'Mardust Vuong', avatarUrl: null }}
+          />
+        </SafeAreaProvider>,
+      );
+    });
+
+    const images = tree!.root.findAllByType(Image);
+    const tabletBg = images.find(
+      image =>
+        image.props.source ===
+        require('../assets/image/backgrounds/bg_home_tablet.png'),
+    );
+
+    expect(tabletBg).toBeDefined();
+    expect(tabletBg?.props.resizeMode).toBe('contain');
 
     act(() => {
       tree!.unmount();

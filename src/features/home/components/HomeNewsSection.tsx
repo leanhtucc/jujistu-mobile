@@ -1,4 +1,7 @@
-import { useResponsive } from '@jujistu/shared/constants/responsive';
+import {
+  type ResponsiveMetrics,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import {
   primitiveColors,
   radius,
@@ -19,12 +22,47 @@ import { HOME_NEWS, type HomeNewsItem } from '../data/home-content';
 
 const NEWS_GAP = 10;
 const FIGMA_NEWS_IMAGE_ASPECT_RATIO = 174 / 97;
-const NEWS_TITLE_HEIGHT = 30;
+const NEWS_TITLE_HEIGHT = 40;
 const SECTION_HORIZONTAL_PADDING = 16;
 const MAX_SECTION_WIDTH = 520;
+const TABLET_MAX_SECTION_WIDTH = 720;
 
-export function resolveHomeNewsCardWidth(screenWidth: number): number {
-  const sectionWidth = Math.min(screenWidth, MAX_SECTION_WIDTH);
+export function resolveHomeNewsCardWidth(
+  screenWidthOrResponsive:
+    | number
+    | (Pick<ResponsiveMetrics, 'width'> &
+        Partial<
+          Pick<
+            ResponsiveMetrics,
+            'isTablet' | 'isLargeTablet' | 'sizeClass' | 'shortestSide'
+          >
+        >),
+  isTabletOverride?: boolean,
+): number {
+  if (typeof screenWidthOrResponsive === 'object') {
+    const responsive = screenWidthOrResponsive;
+    const isTablet =
+      isTabletOverride !== undefined
+        ? isTabletOverride
+        : Boolean(responsive.isTablet) ||
+          Boolean(responsive.isLargeTablet) ||
+          responsive.sizeClass === 'tablet' ||
+          responsive.sizeClass === 'largeTablet' ||
+          (responsive.shortestSide !== undefined &&
+            responsive.shortestSide >= 600);
+    const maxSectionWidth = isTablet
+      ? TABLET_MAX_SECTION_WIDTH
+      : MAX_SECTION_WIDTH;
+    const sectionWidth = Math.min(responsive.width, maxSectionWidth);
+
+    return (sectionWidth - SECTION_HORIZONTAL_PADDING * 2 - NEWS_GAP) / 2;
+  }
+
+  const screenWidth = screenWidthOrResponsive;
+  const maxSectionWidth = isTabletOverride
+    ? TABLET_MAX_SECTION_WIDTH
+    : MAX_SECTION_WIDTH;
+  const sectionWidth = Math.min(screenWidth, maxSectionWidth);
 
   return (sectionWidth - SECTION_HORIZONTAL_PADDING * 2 - NEWS_GAP) / 2;
 }
@@ -35,19 +73,21 @@ export interface HomeNewsSectionProps {
 }
 
 function NewsCard({
-  item,
-  width,
   imageHeight,
+  isTablet = false,
+  item,
   onPress,
+  width,
 }: {
   readonly item: HomeNewsItem;
   readonly width: number;
   readonly imageHeight: number;
+  readonly isTablet?: boolean;
   readonly onPress?: (item: HomeNewsItem) => void;
 }) {
   const style = [
     styles.card,
-    { width, minHeight: imageHeight + 8 + NEWS_TITLE_HEIGHT },
+    { width, minHeight: imageHeight + 8 + (isTablet ? 48 : NEWS_TITLE_HEIGHT) },
   ];
   const content = (
     <>
@@ -56,7 +96,13 @@ function NewsCard({
         resizeMode="cover"
         style={[styles.newsImage, { height: imageHeight }]}
       />
-      <Text numberOfLines={2} style={styles.newsTitle}>
+      <Text
+        numberOfLines={2}
+        style={[
+          styles.newsTitle,
+          isTablet ? styles.tabletNewsTitle : undefined,
+        ]}
+      >
         {item.title}
       </Text>
     </>
@@ -82,11 +128,15 @@ export function HomeNewsSection({
   onPressItem,
 }: HomeNewsSectionProps) {
   const responsive = useResponsive();
-  const cardWidth = resolveHomeNewsCardWidth(responsive.width);
+  const cardWidth = resolveHomeNewsCardWidth(responsive);
   const imageHeight = cardWidth / FIGMA_NEWS_IMAGE_ASPECT_RATIO;
+  const maxSectionWidth = responsive.isTablet
+    ? TABLET_MAX_SECTION_WIDTH
+    : MAX_SECTION_WIDTH;
   const newsCards = HOME_NEWS.map(item => (
     <NewsCard
       imageHeight={imageHeight}
+      isTablet={responsive.isTablet}
       item={item}
       key={item.id}
       onPress={onPressItem}
@@ -95,7 +145,10 @@ export function HomeNewsSection({
   ));
 
   return (
-    <View accessibilityLabel="Tin tức và sự kiện" style={styles.container}>
+    <View
+      accessibilityLabel="Tin tức và sự kiện"
+      style={[styles.container, { maxWidth: maxSectionWidth }]}
+    >
       <View style={styles.headingRow}>
         <Text accessibilityRole="header" style={styles.heading}>
           Tin tức &amp; Sự kiện
@@ -178,8 +231,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
   },
   newsTitle: {
-    ...typography.label.sm,
+    ...typography.label.md,
     width: '100%',
     color: semanticColors.text.primary,
+  },
+  tabletNewsTitle: {
+    fontSize: 15,
+    lineHeight: 21,
   },
 });

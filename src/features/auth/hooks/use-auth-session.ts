@@ -2,7 +2,7 @@ import { tokenManager } from '@jujistu/shared/services/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { UserProfile } from '../types/auth.types';
+import type { AuthStatus, UserProfile } from '../types/auth.types';
 import { authQueryKeys } from './auth-query-keys';
 import { useCurrentUser } from './use-current-user';
 
@@ -10,6 +10,7 @@ export interface UseAuthSessionResult {
   isInitializing: boolean;
   isAuthenticated: boolean;
   user: UserProfile | null;
+  authStatus: AuthStatus;
   clearSession: () => Promise<void>;
 }
 
@@ -45,6 +46,12 @@ export function useAuthSession(): UseAuthSessionResult {
     !tokenChecked || (hasToken && isLoading && !user && !isError);
   const isAuthenticated = Boolean(user);
 
+  const authStatus: AuthStatus = isInitializing
+    ? { status: 'initializing' }
+    : isAuthenticated && user
+    ? { status: 'authenticated', user }
+    : { status: 'guest' };
+
   const clearSession = useCallback(async () => {
     await tokenManager.clearTokens();
     queryClient.removeQueries({ queryKey: authQueryKeys.all });
@@ -55,6 +62,7 @@ export function useAuthSession(): UseAuthSessionResult {
     isInitializing,
     isAuthenticated,
     user: user ?? null,
+    authStatus,
     clearSession,
   };
 }

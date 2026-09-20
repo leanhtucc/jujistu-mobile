@@ -20,7 +20,7 @@ export function AuthNavigator({ onReady }: AuthNavigatorProps) {
   return (
     <AuthBackground onReady={onReady}>
       <Stack.Navigator
-        initialRouteName={AUTH_ROUTES.WELCOME}
+        initialRouteName={AUTH_ROUTES.LOGIN}
         screenOptions={{
           contentStyle: { backgroundColor: 'transparent' },
           headerShown: false,
@@ -36,6 +36,13 @@ export function AuthNavigator({ onReady }: AuthNavigatorProps) {
         <Stack.Screen name={AUTH_ROUTES.LOGIN}>
           {({ navigation }) => (
             <LoginScreen
+              onBack={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else {
+                  navigation.getParent()?.goBack();
+                }
+              }}
               onOtpRequested={params =>
                 navigation.navigate(AUTH_ROUTES.OTP, params)
               }

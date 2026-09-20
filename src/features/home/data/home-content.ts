@@ -55,3 +55,27 @@ export const HOME_QUICK_ACTIONS = {
     { key: 'minigame', label: 'Minigame', icon: 'minigame', iconSize: 34 },
   ],
 } as const satisfies Record<'left' | 'right', ReadonlyArray<HomeQuickAction>>;
+
+export type HomeMode = 'guest' | 'authenticated';
+
+export function getHomeQuickActions(
+  mode: HomeMode = 'authenticated',
+): Record<'left' | 'right', ReadonlyArray<HomeQuickAction>> {
+  if (mode === 'guest') {
+    return {
+      left: [
+        HOME_QUICK_ACTIONS.left[0],
+        HOME_QUICK_ACTIONS.left[1],
+        {
+          key: 'mma-academy',
+          label: 'Coming Soon',
+          icon: 'mmaAcademy',
+          iconSize: 34,
+        },
+      ],
+      right: HOME_QUICK_ACTIONS.right,
+    };
+  }
+
+  return HOME_QUICK_ACTIONS;
+}

@@ -559,3 +559,52 @@ describe('AppBottomNavigation — 17. Public barrel contract', () => {
     expect(true).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// 18. Controlled activeKey color forwarding
+// ---------------------------------------------------------------------------
+
+describe('AppBottomNavigation — 18. Controlled activeKey color forwarding', () => {
+  const ITEMS_WITH_COLORS = [
+    {
+      key: 'shop',
+      label: 'Shop',
+      activeIcon: { iconName: 'shopActive', size: 20, color: '#FE8B33' },
+      inactiveIcon: { iconName: 'shopInactive', size: 20, color: '#7D7F84' },
+    },
+    {
+      key: 'friends',
+      label: 'Friends',
+      activeIcon: { iconName: 'friendsActive', size: 24, color: '#FE8B33' },
+      inactiveIcon: { iconName: 'friendsInactive', size: 24, color: '#7D7F84' },
+    },
+  ] as const;
+
+  it('forwards #FE8B33 to AppIcon when tab is activeKey, and #7D7F84 when inactive', () => {
+    const treeActive = renderNav({
+      activeKey: 'shop',
+      items: ITEMS_WITH_COLORS as any,
+    });
+    const iconsActive = treeActive.root.findAllByType(AppIcon);
+    const shopActiveIcon = iconsActive.find(i => i.props.name === 'shopActive');
+    const friendsInactiveIcon = iconsActive.find(
+      i => i.props.name === 'friendsInactive',
+    );
+    expect(shopActiveIcon?.props.color).toBe('#FE8B33');
+    expect(friendsInactiveIcon?.props.color).toBe('#7D7F84');
+
+    const treeFriends = renderNav({
+      activeKey: 'friends',
+      items: ITEMS_WITH_COLORS as any,
+    });
+    const iconsFriends = treeFriends.root.findAllByType(AppIcon);
+    const shopInactiveIcon = iconsFriends.find(
+      i => i.props.name === 'shopInactive',
+    );
+    const friendsActiveIcon = iconsFriends.find(
+      i => i.props.name === 'friendsActive',
+    );
+    expect(shopInactiveIcon?.props.color).toBe('#7D7F84');
+    expect(friendsActiveIcon?.props.color).toBe('#FE8B33');
+  });
+});

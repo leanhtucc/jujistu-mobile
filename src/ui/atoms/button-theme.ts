@@ -158,7 +158,7 @@ export function resolveAppButtonSizeRecipe(
   return {
     height: hasIcon ? 32 : 30,
     paddingHorizontal: spacing[6],
-    paddingVertical: spacing[4],
+    paddingVertical: 0,
     gap: spacing[2],
     borderRadius: radius.xs,
     iconSize: 16,

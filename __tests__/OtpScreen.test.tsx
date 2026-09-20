@@ -16,8 +16,8 @@ beforeAll(() => {
   notifyManager.setScheduler(fn => fn());
 });
 
-jest.mock('@jujistu/shared/responsive', () => {
-  const actual = jest.requireActual('@jujistu/shared/responsive');
+jest.mock('@jujistu/shared/constants/responsive', () => {
+  const actual = jest.requireActual('@jujistu/shared/constants/responsive');
   return {
     ...actual,
     useResponsive: () =>

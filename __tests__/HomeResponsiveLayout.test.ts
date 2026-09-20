@@ -1,7 +1,7 @@
 import { resolveResponsiveMetrics } from '@jujistu/shared/constants/responsive';
 
-import { resolveHomeHeroGeometry } from '../src/features/home/sections/HomeHeroCarousel';
-import { resolveHomeNewsCardWidth } from '../src/features/home/sections/HomeNewsSection';
+import { resolveHomeHeroGeometry } from '../src/features/home/components/HomeHeroCarousel';
+import { resolveHomeNewsCardWidth } from '../src/features/home/components/HomeNewsSection';
 
 const viewports = [
   { width: 360, height: 800 },
@@ -38,12 +38,42 @@ describe('Home responsive layout', () => {
         fontScale: 1,
       });
       const hero = resolveHomeHeroGeometry(metrics);
-      const newsCardWidth = resolveHomeNewsCardWidth(width);
+      const newsCardWidth = resolveHomeNewsCardWidth(metrics);
 
       expect(hero.activeWidth).toBeLessThan(width);
       expect(hero.inactiveWidth).toBeLessThan(hero.activeWidth);
       expect(newsCardWidth * 2 + 10 + 32).toBeLessThanOrEqual(width);
-      expect(newsCardWidth).toBeLessThanOrEqual(239);
+      if (metrics.isTablet) {
+        expect(newsCardWidth).toBe(339);
+      } else {
+        expect(newsCardWidth).toBeLessThanOrEqual(239);
+      }
     },
   );
+
+  it('scales hero and news geometry up on tablet viewports', () => {
+    const portraitTablet = resolveResponsiveMetrics({
+      width: 800,
+      height: 1280,
+      scale: 2,
+      fontScale: 1,
+    });
+    const landscapeTablet = resolveResponsiveMetrics({
+      width: 1280,
+      height: 800,
+      scale: 2,
+      fontScale: 1,
+    });
+
+    const portraitHero = resolveHomeHeroGeometry(portraitTablet);
+    const landscapeHero = resolveHomeHeroGeometry(landscapeTablet);
+
+    expect(portraitHero.activeWidth).toBeGreaterThan(450);
+    expect(landscapeHero.activeWidth).toBeGreaterThan(450);
+    expect(portraitHero.activeHeight).toBeGreaterThan(250);
+    expect(landscapeHero.activeHeight).toBeGreaterThan(250);
+
+    expect(resolveHomeNewsCardWidth(portraitTablet)).toBe(339);
+    expect(resolveHomeNewsCardWidth(landscapeTablet)).toBe(339);
+  });
 });

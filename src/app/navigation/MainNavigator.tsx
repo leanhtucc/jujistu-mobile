@@ -2,6 +2,8 @@ import type { UserProfile } from '@jujistu/features/auth';
 import { HomeScreen } from '@jujistu/features/home';
 import { primitiveColors } from '@jujistu/shared/theme';
 import { AppBottomNavigation } from '@jujistu/ui';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -11,26 +13,44 @@ import {
   BOTTOM_NAVIGATION_ITEMS,
   type BottomNavigationProductKey,
 } from './bottom-navigation-items';
-import { MAIN_ROUTES } from './routes';
-import type { MainStackParamList } from './types';
+import { AUTH_ROUTES, MAIN_ROUTES, ROOT_ROUTES } from './routes';
+import type { MainStackParamList, RootStackParamList } from './types';
+import { useRequireAuth } from './use-require-auth';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 export interface MainNavigatorProps {
+  readonly onLogin?: () => void;
   readonly onReady?: () => void;
-  readonly user: UserProfile;
+  readonly user?: UserProfile | null;
 }
 
-function MainNavigationContent({ onReady, user }: MainNavigatorProps) {
+function MainNavigationContent({ onLogin, onReady, user }: MainNavigatorProps) {
   const insets = useSafeAreaInsets();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { requireAuth } = useRequireAuth();
+
+  const handleLogin = useCallback(() => {
+    if (onLogin) {
+      onLogin();
+    } else {
+      navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN });
+    }
+  }, [navigation, onLogin]);
+
   const handleBottomNavigationPress = useCallback(
-    (_key: BottomNavigationProductKey) => undefined,
-    [],
+    (key: BottomNavigationProductKey) => {
+      if (key !== 'home') {
+        requireAuth();
+      }
+    },
+    [requireAuth],
   );
 
   return (
     <View style={styles.root}>
-      <HomeScreen onReady={onReady} user={user} />
+      <HomeScreen onLogin={handleLogin} onReady={onReady} user={user} />
       <AppBottomNavigation
         activeKey="home"
         items={BOTTOM_NAVIGATION_ITEMS}
@@ -41,14 +61,20 @@ function MainNavigationContent({ onReady, user }: MainNavigatorProps) {
   );
 }
 
-export function MainNavigator({ onReady, user }: MainNavigatorProps) {
+export function MainNavigator({ onLogin, onReady, user }: MainNavigatorProps) {
   return (
     <Stack.Navigator
       initialRouteName={MAIN_ROUTES.HOME}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={MAIN_ROUTES.HOME}>
-        {() => <MainNavigationContent onReady={onReady} user={user} />}
+        {() => (
+          <MainNavigationContent
+            onLogin={onLogin}
+            onReady={onReady}
+            user={user}
+          />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );

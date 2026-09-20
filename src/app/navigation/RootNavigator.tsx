@@ -101,22 +101,25 @@ export function RootNavigator() {
           theme={navigationTheme}
         >
           <Stack.Navigator
+            initialRouteName={ROOT_ROUTES.MAIN}
             screenOptions={{
               contentStyle: styles.root,
               headerShown: false,
             }}
           >
-            {isAuthenticated && user ? (
-              <Stack.Screen name={ROOT_ROUTES.MAIN}>
-                {() => (
-                  <MainNavigator onReady={handleDestinationReady} user={user} />
-                )}
-              </Stack.Screen>
-            ) : (
+            <Stack.Screen name={ROOT_ROUTES.MAIN}>
+              {() => (
+                <MainNavigator
+                  onReady={handleDestinationReady}
+                  user={isAuthenticated && user ? user : null}
+                />
+              )}
+            </Stack.Screen>
+            {!isAuthenticated ? (
               <Stack.Screen name={ROOT_ROUTES.AUTH}>
-                {() => <AuthNavigator onReady={handleDestinationReady} />}
+                {() => <AuthNavigator />}
               </Stack.Screen>
-            )}
+            ) : null}
           </Stack.Navigator>
         </NavigationContainer>
       ) : null}

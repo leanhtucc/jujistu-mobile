@@ -5,10 +5,10 @@ import ReactTestRenderer, { act } from 'react-test-renderer';
 import {
   ProductAccountHeader,
   type ProductAccountHeaderProps,
-} from '../src/features/home/sections/ProductAccountHeader';
+} from '../src/features/home/components/ProductAccountHeader';
 import { AppIcon } from '@jujistu/ui';
 import { resolveResponsiveMetrics } from '@jujistu/shared/constants/responsive';
-import { resolveBalanceGroupWidth } from '../src/features/home/sections/ProductAccountHeader';
+import { resolveBalanceGroupWidth } from '../src/features/home/components/ProductAccountHeader';
 
 const avatar = { uri: 'https://example.test/account-avatar.png' };
 

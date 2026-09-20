@@ -6,6 +6,7 @@ import { fontFamilies, semanticColors } from '@jujistu/shared/theme';
 import { AppButton, AppInputField } from '@jujistu/ui';
 import React, { useState } from 'react';
 import {
+  BackHandler,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -20,14 +21,29 @@ import { AuthHero } from '../components/AuthHero';
 import { useRequestOtp } from '../hooks/use-request-otp';
 
 type LoginScreenProps = {
+  onBack?: () => void;
   onOtpRequested: (params: { challengeId: string; email: string }) => void;
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function LoginScreen({ onOtpRequested }: LoginScreenProps) {
+export function LoginScreen({ onBack, onOtpRequested }: LoginScreenProps) {
   const responsive = useResponsive();
   const contentWidth = getResponsiveContentWidth(responsive);
+
+  React.useEffect(() => {
+    if (!onBack) {
+      return;
+    }
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        onBack();
+        return true;
+      },
+    );
+    return () => subscription.remove();
+  }, [onBack]);
   const [email, setEmail] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
   const { requestOtp, isSubmitting, error, clearError } = useRequestOtp();

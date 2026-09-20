@@ -34,11 +34,11 @@ export type TabIconAssetKey =
  * Legacy PNG paths and assets have been removed; bottom nav uses SVG-backed AppIcon exclusively.
  */
 
-/** Brand active colour forwarded to MONOCHROME_VECTOR tab icons. */
+/** Brand active colour forwarded to MONOCHROME_VECTOR tab icons (#FE8B33). */
 const ACTIVE_COLOR = '#FE8B33';
 
-/** Inactive grey forwarded to MONOCHROME_VECTOR tab icons. */
-const INACTIVE_COLOR = '#CCD5E6';
+/** Inactive grey forwarded to MONOCHROME_VECTOR tab icons, matching text inactive color (#7D7F84). */
+const INACTIVE_COLOR = '#7D7F84';
 
 export const TAB_ICON_ASSETS: Readonly<
   Record<TabIconAssetKey, ProductTabIconAsset>

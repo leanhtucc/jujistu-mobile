@@ -149,7 +149,7 @@ Screen or feature component
   and at least one real cross-feature reuse exists.
 - Use semantic theme values instead of introducing raw colors in runtime UI.
 - Responsive changes must preserve phone behavior. Use the helpers in
-  `src/shared/responsive.ts`, flexible layout, safe areas, and scroll/keyboard-safe
+  `src/shared/constants/responsive.ts`, flexible layout, safe areas, and scroll/keyboard-safe
   containers instead of screen-specific absolute offsets.
 - If a shared UI public API or theme token changes, update the related documentation
   and tests in the same change.

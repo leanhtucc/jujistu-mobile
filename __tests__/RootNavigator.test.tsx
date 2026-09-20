@@ -3,7 +3,6 @@ import React from 'react';
 import { Animated } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-import { AuthNavigator } from '../src/app/navigation/AuthNavigator';
 import { MainNavigator } from '../src/app/navigation/MainNavigator';
 import { NavigationFallback } from '../src/app/navigation/NavigationFallback';
 import {
@@ -37,7 +36,9 @@ jest.mock('../src/app/navigation/AuthNavigator', () => {
   const { View: RNView } = require('react-native');
   return {
     AuthNavigator: ({ onReady }: { onReady?: () => void }) => {
-      mockDestinationReadyCallback = onReady ?? null;
+      if (onReady) {
+        mockDestinationReadyCallback = onReady;
+      }
       return ReactModule.createElement(RNView, { testID: 'auth-navigator' });
     },
   };
@@ -48,7 +49,9 @@ jest.mock('../src/app/navigation/MainNavigator', () => {
   const { View: RNView } = require('react-native');
   return {
     MainNavigator: ({ onReady }: { onReady?: () => void; user: any }) => {
-      mockDestinationReadyCallback = onReady ?? null;
+      if (onReady) {
+        mockDestinationReadyCallback = onReady;
+      }
       return ReactModule.createElement(RNView, { testID: 'main-navigator' });
     },
   };
@@ -498,7 +501,7 @@ describe('RootNavigator — Minimum Visible Duration & Startup Coordination', ()
     act(() => tree.unmount());
   });
 
-  it('10. Unauthenticated user → Loading đủ thời gian rồi vào Welcome', () => {
+  it('10. Unauthenticated user → Loading đủ thời gian rồi vào Guest Home', () => {
     mockedUseAuthState.mockReturnValue({
       isAuthenticated: false,
       isInitializing: false,
@@ -528,9 +531,10 @@ describe('RootNavigator — Minimum Visible Duration & Startup Coordination', ()
     const fallback = tree.root.findAllByType(NavigationFallback);
     expect(fallback.length).toBe(0);
 
-    // AuthNavigator (Welcome) is mounted
-    const authNavigator = tree.root.findAllByType(AuthNavigator);
-    expect(authNavigator.length).toBe(1);
+    // MainNavigator (Home) is mounted with user=null (Guest Mode)
+    const mainNavigator = tree.root.findAllByType(MainNavigator);
+    expect(mainNavigator.length).toBe(1);
+    expect(mainNavigator[0].props.user).toBeNull();
 
     act(() => tree.unmount());
   });

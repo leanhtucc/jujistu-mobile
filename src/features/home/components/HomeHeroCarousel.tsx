@@ -23,8 +23,38 @@ export interface HomeHeroCarouselProps {
 }
 
 export function resolveHomeHeroGeometry(
-  responsive: Pick<ResponsiveMetrics, 'shortestSide' | 'width'>,
+  responsive: Pick<ResponsiveMetrics, 'shortestSide' | 'width'> &
+    Partial<
+      Pick<ResponsiveMetrics, 'isTablet' | 'isLargeTablet' | 'sizeClass'>
+    >,
 ) {
+  const isTablet =
+    Boolean(responsive.isTablet) ||
+    Boolean(responsive.isLargeTablet) ||
+    responsive.sizeClass === 'tablet' ||
+    responsive.sizeClass === 'largeTablet' ||
+    responsive.shortestSide >= 600;
+
+  if (isTablet) {
+    const tabletScale = scaleResponsiveValue(1, responsive, {
+      baseShortestSide: 768,
+      minScale: 0.95,
+      maxScale: 1.25,
+      roundToPixel: false,
+    });
+    const TABLET_ACTIVE_WIDTH = 480;
+    const TABLET_ACTIVE_HEIGHT = 270;
+    const TABLET_INACTIVE_WIDTH = 380;
+    const TABLET_INACTIVE_HEIGHT = 214;
+
+    return {
+      activeWidth: Math.round(TABLET_ACTIVE_WIDTH * tabletScale),
+      activeHeight: Math.round(TABLET_ACTIVE_HEIGHT * tabletScale),
+      inactiveWidth: Math.round(TABLET_INACTIVE_WIDTH * tabletScale),
+      inactiveHeight: Math.round(TABLET_INACTIVE_HEIGHT * tabletScale),
+    } as const;
+  }
+
   const scale = scaleResponsiveValue(1, responsive, {
     minScale: 0.88,
     maxScale: 1.08,
@@ -180,6 +210,7 @@ export function HomeHeroCarousel({
             key={index}
             style={[
               styles.dot,
+              responsive.isTablet ? styles.tabletDot : undefined,
               index === carousel.activeIndex ? styles.activeDot : undefined,
             ]}
           />
@@ -240,6 +271,10 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: radius.full,
     backgroundColor: primitiveColors.neutral[300],
+  },
+  tabletDot: {
+    width: 6,
+    height: 6,
   },
   activeDot: {
     backgroundColor: primitiveColors.red[500],

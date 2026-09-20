@@ -1,11 +1,11 @@
 import React from 'react';
-import { Image, StyleSheet } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
+import Svg, { Rect, Image } from 'react-native-svg';
 
 import { HomeActiveGlyph } from '../src/ui/atoms/icon/glyphs/tabs/home-active';
 
 describe('HomeActiveGlyph', () => {
-  it('renders the coloured Figma active-state artwork at the verified 27x23 ratio', () => {
+  it('renders the SVG active-state artwork from downloaded Figma SVG', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
 
     act(() => {
@@ -14,12 +14,18 @@ describe('HomeActiveGlyph', () => {
       );
     });
 
-    const image = tree.root.findByType(Image);
-    const style = StyleSheet.flatten(image.props.style);
+    const svg = tree.root.findByType(Svg);
+    expect(svg.props.width).toBe(27);
+    expect(svg.props.height).toBe(27);
+    expect(svg.props.viewBox).toBe('0 0 27 23');
 
-    expect(image.props.source).toBeDefined();
-    expect(image.props.resizeMode).toBe('contain');
-    expect(style.width).toBe(27);
-    expect(style.height).toBeCloseTo(23);
+    const rect = tree.root.findByType(Rect);
+    expect(rect.props.width).toBe(27);
+    expect(rect.props.height).toBe(23);
+
+    const image = tree.root.findByType(Image);
+    expect(image.props.width).toBe(257);
+    expect(image.props.height).toBe(211);
+    expect(image.props.xlinkHref).toContain('data:image/png;base64');
   });
 });

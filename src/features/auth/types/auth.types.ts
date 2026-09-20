@@ -21,6 +21,11 @@ export interface AuthSession {
   readonly refreshToken: string;
 }
 
+export type AuthStatus =
+  | { status: 'initializing' }
+  | { status: 'guest' }
+  | { status: 'authenticated'; user: UserProfile };
+
 export interface LoginCredentials {
   readonly email: string;
   readonly password: string;

@@ -33,7 +33,9 @@ describe('NavigationFallback', () => {
     const root = tree.root.findAllByType(View)[0];
     const images = tree.root.findAllByType(Image);
     const background = images.find(
-      image => image.props.resizeMode === 'cover',
+      image =>
+        image.props.source ===
+        require('../assets/image/backgrounds/bg_splash.png'),
     )!;
     const scene = tree.root
       .findAllByType(View)

@@ -43,7 +43,12 @@ function BottomNavigationLabel({
   const gradId = BOTTOM_NAV_ACTIVE_LABEL_GRADIENT.id;
 
   return (
-    <Svg height={GRADIENT_LABEL_HEIGHT} pointerEvents="none" width="100%">
+    <Svg
+      height={GRADIENT_LABEL_HEIGHT}
+      pointerEvents="none"
+      style={styles.labelSvg}
+      width="100%"
+    >
       {isActive ? (
         <Defs>
           <LinearGradient
@@ -157,5 +162,9 @@ const styles = StyleSheet.create({
   item: {
     alignItems: 'center',
     flex: 1,
+  },
+  labelSvg: {
+    width: '100%',
+    alignSelf: 'stretch',
   },
 });

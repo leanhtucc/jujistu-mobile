@@ -41,7 +41,7 @@ export function AuthBackground({
         fadeDuration={0}
         onError={handleImageError}
         onLoad={() => setBackgroundSettled(true)}
-        resizeMode="cover"
+        resizeMode="contain"
         source={background}
         style={styles.image}
       />

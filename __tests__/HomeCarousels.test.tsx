@@ -2,8 +2,8 @@ import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-import { HomeHeroCarousel } from '../src/features/home/sections/HomeHeroCarousel';
-import { HomeNewsSection } from '../src/features/home/sections/HomeNewsSection';
+import { HomeHeroCarousel } from '../src/features/home/components/HomeHeroCarousel';
+import { HomeNewsSection } from '../src/features/home/components/HomeNewsSection';
 
 describe('Home carousel behavior', () => {
   beforeEach(() => {

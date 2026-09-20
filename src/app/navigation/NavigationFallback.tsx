@@ -132,7 +132,9 @@ export function NavigationFallback({
           fadeDuration={0}
           onError={handleBackgroundError}
           onLoad={() => setBackgroundSettled(true)}
-          resizeMode="cover"
+          resizeMode={
+            responsive.isTablet || responsive.isLandscape ? 'contain' : 'cover'
+          }
           source={splashBackground}
           style={styles.background}
         />
