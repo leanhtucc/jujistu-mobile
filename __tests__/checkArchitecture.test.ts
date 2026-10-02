@@ -144,5 +144,40 @@ describe('checkArchitecture', () => {
       expect(violations.length).toBeGreaterThan(0);
       expect(violations[0]).toContain('screens cannot call fetch directly');
     });
+
+    it('catches runtime visual assets stored inside src', () => {
+      const assetDirectory = path.join(
+        tempDir,
+        'src',
+        'features',
+        'auth',
+        'screens',
+        'assets',
+      );
+      fs.mkdirSync(assetDirectory, { recursive: true });
+      fs.writeFileSync(path.join(assetDirectory, 'icon.png'), 'test');
+
+      const violations = checkArchitecture(tempDir);
+      expect(violations).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining(
+            'runtime visual assets must live under the repository-root assets/ tree',
+          ),
+        ]),
+      );
+    });
+
+    it('catches non-SVG files in the canonical icon asset tree', () => {
+      const iconDirectory = path.join(tempDir, 'assets', 'icons', 'home');
+      fs.mkdirSync(iconDirectory, { recursive: true });
+      fs.writeFileSync(path.join(iconDirectory, 'icon.png'), 'test');
+
+      const violations = checkArchitecture(tempDir);
+      expect(violations).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining('canonical icon assets must use SVG'),
+        ]),
+      );
+    });
   });
 });

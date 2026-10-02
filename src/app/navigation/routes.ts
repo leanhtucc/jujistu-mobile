@@ -11,6 +11,8 @@ export const AUTH_ROUTES = {
 
 export const MAIN_ROUTES = {
   HOME: 'Home',
+  VIDEOS: 'Videos',
+  VIDEO_PLAYER: 'VideoPlayer',
 } as const;
 
 export type RootRouteName = (typeof ROOT_ROUTES)[keyof typeof ROOT_ROUTES];

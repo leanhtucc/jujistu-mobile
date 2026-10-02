@@ -13,6 +13,10 @@ export type AuthStackParamList = {
 
 export type MainStackParamList = {
   [MAIN_ROUTES.HOME]: undefined;
+  [MAIN_ROUTES.VIDEOS]: undefined;
+  [MAIN_ROUTES.VIDEO_PLAYER]: {
+    videoId: string;
+  };
 };
 
 export type RootStackParamList = {

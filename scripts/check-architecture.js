@@ -29,6 +29,24 @@ function collectSourceFiles(directory) {
   });
 }
 
+function collectVisualAssetFiles(directory) {
+  if (!fs.existsSync(directory)) {
+    return [];
+  }
+
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+    const absolutePath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      return collectVisualAssetFiles(absolutePath);
+    }
+
+    return /\.(gif|jpe?g|png|svg|webp)$/i.test(entry.name)
+      ? [absolutePath]
+      : [];
+  });
+}
+
 function resolveInternalImport(importer, specifier, aliases) {
   if (specifier.startsWith('.')) {
     return path.resolve(path.dirname(importer), specifier);
@@ -118,6 +136,27 @@ function checkArchitecture(projectRoot = defaultProjectRoot) {
   const sourceRoot = path.join(projectRoot, 'src');
   const aliases = createAliases(sourceRoot);
   const violations = [];
+
+  for (const assetFile of collectVisualAssetFiles(sourceRoot)) {
+    violations.push(
+      `${path.relative(
+        projectRoot,
+        assetFile,
+      )} runtime visual assets must live under the repository-root assets/ tree`,
+    );
+  }
+
+  const iconRoot = path.join(projectRoot, 'assets', 'icons');
+  for (const iconFile of collectVisualAssetFiles(iconRoot)) {
+    if (path.extname(iconFile).toLowerCase() !== '.svg') {
+      violations.push(
+        `${path.relative(
+          projectRoot,
+          iconFile,
+        )} canonical icon assets must use SVG`,
+      );
+    }
+  }
 
   for (const fileName of collectSourceFiles(sourceRoot)) {
     const text = fs.readFileSync(fileName, 'utf8');

@@ -1,6 +1,6 @@
 # Dependency risk register
 
-Last reviewed: 2026-09-13
+Last reviewed: 2026-09-28
 
 ## Open advisories
 
@@ -32,6 +32,26 @@ Decision:
   the audit;
 - review this entry whenever React Navigation is upgraded; and
 - treat any external URL-navigation feature as security-sensitive.
+
+### React Native Video 6
+
+`react-native-video` 6.19.2 provides the Android Media3 and iOS AVPlayer bridge used
+by the video feature. Version 6 is the current stable line and supports React Native
+0.68.2 or newer, including the New Architecture. Version 7 remains beta and is not
+used in the production dependency set. The 2026-09-28 production audit reported no
+advisory whose direct or transitive cause was `react-native-video`.
+
+Media URLs are treated as content, never credentials. Playback failures are logged
+without the URL or raw native error payload. The player disables background and
+inactive playback, pauses when audio focus is lost, and uses HTTPS sources.
+
+Decision:
+
+- pin 6.19.2 until a focused native upgrade validates a newer stable release;
+- do not enable DRM, Picture in Picture, background audio, downloaded media, or
+  arbitrary user-provided URLs without a separate product and security review;
+- validate Android and iOS native builds after dependency changes; and
+- review upstream releases and audit output whenever the package is upgraded.
 
 ## Review process
 

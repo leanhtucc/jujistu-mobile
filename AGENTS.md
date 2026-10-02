@@ -34,7 +34,8 @@ src/
 
   features/
     auth/             authentication UI, hooks, services, and feature types
-    home/             Home screen, sections, data, and feature hooks
+    home/             Home screen, components, data, and feature hooks
+    videos/           video discovery, search, playback UI, and lifecycle
 
   ui/
     atoms/            reusable visual primitives
@@ -66,8 +67,9 @@ directories. Add a folder only when it has a current responsibility.
   `src/app/navigation`. Reusable bottom-navigation visuals belong in `src/ui`.
 - Home-only headers and Home content belong in `src/features/home`, not `src/app`.
   Promote a header to `src/ui` only after it has a genuinely reusable product API.
-- Do not use `components/` as a catch-all. Use `screens/` for route entry screens,
-  `sections/` for substantial screen regions, `hooks/` for feature behavior,
+- Use `screens/` for route entry screens and `components/` for feature-owned visual
+  building blocks, including substantial regions composed by a feature screen. Do
+  not create a parallel `sections/` folder. Use `hooks/` for feature behavior,
   `services/` for external adapters, `data/` for feature-owned static data, and
   `types/` for feature contracts when those responsibilities exist.
 - Generic reusable UI belongs in `src/ui`. Feature-specific UI remains in its
@@ -75,7 +77,7 @@ directories. Add a folder only when it has a current responsibility.
 - Reusable non-visual infrastructure belongs in `src/shared`. Code used by one
   feature remains in that feature until real reuse exists.
 - Split files by cohesive responsibility, not by an arbitrary line count. A large
-  screen should orchestrate feature sections instead of containing unrelated UI,
+  screen should orchestrate feature components instead of containing unrelated UI,
   remote-state, transformation, and transport logic in one file.
 
 ## Import boundaries
@@ -156,8 +158,15 @@ Screen or feature component
 
 ## Assets and configuration
 
-- Global or cross-feature assets belong in the repository `assets/` tree. Assets
-  used by one feature remain owned by that feature when practical.
+- All runtime static visual assets belong in the repository-root `assets/` tree.
+  Do not create `assets/` inside `src`, a feature, `screens/`, or `components/`.
+- Canonical icon sources belong under `assets/icons/<category>/` and must be SVG.
+  Screens and feature components consume verified icons through `AppIcon`; they do
+  not import raw SVG files or keep PNG icon copies. Generated glyph TSX under
+  `src/ui/atoms/icon/glyphs/` is build output and is the only icon-related exception
+  inside `src`.
+- Non-icon imagery belongs under the matching repository-root `assets/image/`
+  category. Keep application branding and other app-wide artwork under `assets/app/`.
 - Do not hardcode API URLs, secrets, credentials, signing values, or private keys in
   source. Mobile environment configuration is not a secret; actual credentials are.
 - Preserve the React Native 0.87.1 native template unless a dedicated upgrade is

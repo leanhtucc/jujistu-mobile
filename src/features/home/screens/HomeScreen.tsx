@@ -1,25 +1,33 @@
-import { createLogger } from '@jujistu/shared/logger/logger';
 import {
-  scaleResponsiveValue,
+  selectResponsiveValue,
   useResponsive,
 } from '@jujistu/shared/constants/responsive';
+import { createLogger } from '@jujistu/shared/logger/logger';
 import { primitiveColors } from '@jujistu/shared/theme';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Image,
-  type ImageSourcePropType,
   ScrollView,
   StyleSheet,
   View,
+  type ImageSourcePropType,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type {
+  HomeEventItem,
+  HomeMode,
+  HomeNewsItem,
+  HomeQuickAction,
+  HomeVideoItem,
+} from '../data/home-content';
 import { GuestAccountHeader } from '../components/GuestAccountHeader';
+import { HomeEventTicketSection } from '../components/HomeEventTicketSection';
+import { HomeFeaturedVideoSection } from '../components/HomeFeaturedVideoSection';
 import { HomeHeroCarousel } from '../components/HomeHeroCarousel';
 import { HomeNewsSection } from '../components/HomeNewsSection';
 import { HomeQuickActions } from '../components/HomeQuickActions';
 import { ProductAccountHeader } from '../components/ProductAccountHeader';
-import type { HomeMode } from '../data/home-content';
 
 const phoneBackgroundImage = require('../../../../assets/image/backgrounds/bg_home.png');
 const tabletBackgroundImage = require('../../../../assets/image/backgrounds/bg_home_tablet.png');
@@ -29,6 +37,12 @@ const log = createLogger('HomeScreen');
 export interface HomeScreenProps {
   readonly mode?: HomeMode;
   readonly onLogin?: () => void;
+  readonly onPressAllNews?: () => void;
+  readonly onPressAllVideos?: () => void;
+  readonly onPressEvent?: (event: HomeEventItem) => void;
+  readonly onPressNews?: (item: HomeNewsItem) => void;
+  readonly onPressQuickAction?: (action: HomeQuickAction) => void;
+  readonly onPressVideo?: (item: HomeVideoItem) => void;
   readonly onReady?: () => void;
   readonly user?: {
     readonly avatarUrl?: string | null;
@@ -36,7 +50,18 @@ export interface HomeScreenProps {
   } | null;
 }
 
-export function HomeScreen({ mode, onLogin, onReady, user }: HomeScreenProps) {
+export function HomeScreen({
+  mode,
+  onLogin,
+  onPressAllNews,
+  onPressAllVideos,
+  onPressEvent,
+  onPressNews,
+  onPressQuickAction,
+  onPressVideo,
+  onReady,
+  user,
+}: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const responsive = useResponsive();
   const [backgroundSettled, setBackgroundSettled] = useState(false);
@@ -48,18 +73,14 @@ export function HomeScreen({ mode, onLogin, onReady, user }: HomeScreenProps) {
     : phoneBackgroundImage;
   const backgroundResizeMode =
     responsive.isTablet || responsive.isLandscape ? 'contain' : 'cover';
-  const quickActionsMarginTop = responsive.isTablet
-    ? scaleResponsiveValue(36, responsive, {
-        minScale: 1,
-        maxScale: 1.2,
-      })
-    : scaleResponsiveValue(92, responsive, {
-        minScale: 0.76,
-        maxScale: 1.1,
-      });
   const avatar: ImageSourcePropType = user?.avatarUrl
     ? { uri: user.avatarUrl }
     : fallbackAvatar;
+  const sectionSpacing = selectResponsiveValue(responsive, {
+    compactPhone: { event: 16, hero: -12, news: 6, quick: 8, video: 12 },
+    largePhone: { event: 20, hero: -8, news: 10, quick: 10, video: 16 },
+    tablet: { event: 24, hero: 0, news: 14, quick: 14, video: 20 },
+  });
 
   useEffect(() => {
     if (backgroundSettled && criticalContentSettled && hasLayout) {
@@ -84,7 +105,6 @@ export function HomeScreen({ mode, onLogin, onReady, user }: HomeScreenProps) {
         source={backgroundImage}
         style={styles.background}
       />
-
       <View style={[styles.topInset, { height: insets.top }]} />
 
       {effectiveMode === 'authenticated' && user ? (
@@ -104,14 +124,31 @@ export function HomeScreen({ mode, onLogin, onReady, user }: HomeScreenProps) {
         showsVerticalScrollIndicator={false}
         style={styles.screen}
       >
-        <HomeHeroCarousel
-          onInitialImageSettled={() => setCriticalContentSettled(true)}
-        />
-        <View style={styles.newsSection}>
-          <HomeNewsSection />
+        <View style={{ marginTop: sectionSpacing.hero }}>
+          <HomeHeroCarousel
+            onInitialImageSettled={() => setCriticalContentSettled(true)}
+          />
         </View>
-        <View style={{ marginTop: quickActionsMarginTop }}>
-          <HomeQuickActions mode={effectiveMode} />
+        <View style={{ marginTop: sectionSpacing.quick }}>
+          <HomeQuickActions
+            mode={effectiveMode}
+            onPressAction={onPressQuickAction}
+          />
+        </View>
+        <View style={{ marginTop: sectionSpacing.event }}>
+          <HomeEventTicketSection onPressEvent={onPressEvent} />
+        </View>
+        <View style={{ marginTop: sectionSpacing.video }}>
+          <HomeFeaturedVideoSection
+            onPressAll={onPressAllVideos}
+            onPressItem={onPressVideo}
+          />
+        </View>
+        <View style={{ marginTop: sectionSpacing.news }}>
+          <HomeNewsSection
+            onPressAll={onPressAllNews}
+            onPressItem={onPressNews}
+          />
         </View>
       </ScrollView>
     </View>
@@ -133,16 +170,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   topInset: {
-    backgroundColor: '#030003',
+    backgroundColor: primitiveColors.neutral[1000],
   },
   screen: {
     flex: 1,
   },
   content: {
-    paddingTop: 12,
     paddingBottom: 40,
-  },
-  newsSection: {
-    marginTop: 8,
   },
 });

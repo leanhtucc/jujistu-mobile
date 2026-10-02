@@ -50,6 +50,16 @@ export const typography = {
     },
   },
 
+  subtitle: {
+    md: {
+      fontFamily: fontFamilies.primary.medium,
+      fontSize: 13,
+      lineHeight: 19.5,
+      fontWeight: fontWeights.medium,
+      letterSpacing: 0,
+    },
+  },
+
   label: {
     lg: {
       fontFamily: fontFamilies.primary.medium,

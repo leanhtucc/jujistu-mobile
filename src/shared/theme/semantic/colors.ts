@@ -7,6 +7,7 @@ export const semanticColors = {
     surface: primitiveColors.neutral[850],
     surfaceSubtle: primitiveColors.neutral[800],
     surfaceElevated: primitiveColors.neutral[750],
+    eventSurface: primitiveColors.neutral[550],
     overlay: primitiveColors.alpha.black80,
   },
 

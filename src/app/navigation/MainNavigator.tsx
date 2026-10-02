@@ -1,5 +1,9 @@
 import type { UserProfile } from '@jujistu/features/auth';
 import { HomeScreen } from '@jujistu/features/home';
+import {
+  VideoLibraryScreen,
+  VideoPlayerScreen,
+} from '@jujistu/features/videos';
 import { primitiveColors } from '@jujistu/shared/theme';
 import { AppBottomNavigation } from '@jujistu/ui';
 import { useNavigation } from '@react-navigation/native';
@@ -30,6 +34,8 @@ function MainNavigationContent({ onLogin, onReady, user }: MainNavigatorProps) {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { requireAuth } = useRequireAuth();
+  const mainNavigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>();
 
   const handleLogin = useCallback(() => {
     if (onLogin) {
@@ -50,7 +56,17 @@ function MainNavigationContent({ onLogin, onReady, user }: MainNavigatorProps) {
 
   return (
     <View style={styles.root}>
-      <HomeScreen onLogin={handleLogin} onReady={onReady} user={user} />
+      <HomeScreen
+        onLogin={handleLogin}
+        onPressAllVideos={() => mainNavigation.navigate(MAIN_ROUTES.VIDEOS)}
+        onPressVideo={video =>
+          mainNavigation.navigate(MAIN_ROUTES.VIDEO_PLAYER, {
+            videoId: video.id,
+          })
+        }
+        onReady={onReady}
+        user={user}
+      />
       <AppBottomNavigation
         activeKey="home"
         items={BOTTOM_NAVIGATION_ITEMS}
@@ -73,6 +89,24 @@ export function MainNavigator({ onLogin, onReady, user }: MainNavigatorProps) {
             onLogin={onLogin}
             onReady={onReady}
             user={user}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name={MAIN_ROUTES.VIDEOS}>
+        {({ navigation }) => (
+          <VideoLibraryScreen
+            onBack={() => navigation.goBack()}
+            onSelectVideo={videoId =>
+              navigation.navigate(MAIN_ROUTES.VIDEO_PLAYER, { videoId })
+            }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name={MAIN_ROUTES.VIDEO_PLAYER}>
+        {({ navigation, route }) => (
+          <VideoPlayerScreen
+            onBack={() => navigation.goBack()}
+            videoId={route.params.videoId}
           />
         )}
       </Stack.Screen>

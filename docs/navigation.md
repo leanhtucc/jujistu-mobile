@@ -31,9 +31,13 @@ RootNavigator (NavigationContainer)
 │   └── Otp (transparent modal)
 │
 └── [authenticated] MainNavigator (Stack)
-    └── Main navigation content
-        ├── HomeScreen (complete Home feature)
-        └── AppBottomNavigation (application navigation)
+    ├── Home
+    │   ├── HomeScreen (complete Home feature)
+    │   └── AppBottomNavigation (application navigation)
+    ├── Videos
+    │   └── VideoLibraryScreen
+    └── VideoPlayer
+        └── VideoPlayerScreen
 ```
 
 ## Rules
@@ -47,6 +51,8 @@ RootNavigator (NavigationContainer)
 - Business logic must not import navigation objects.
 - Pass serializable identifiers through route parameters, not full domain objects,
   callbacks, credentials, or tokens.
+- Home opens the video feature through `Videos` or `VideoPlayer`. The player route
+  receives only `videoId`; the video feature resolves its own content.
 - Do not suppress unhandled navigation actions globally.
 - Add deep-link prefixes and catch-all behavior only after the public URL/scheme
   contract and security review are complete.

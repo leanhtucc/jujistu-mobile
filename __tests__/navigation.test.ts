@@ -34,6 +34,10 @@ describe('navigation contract', () => {
     const homeRoute: keyof MainStackParamList = MAIN_ROUTES.HOME;
 
     expect(homeRoute).toBe('Home');
-    expect(Object.values(MAIN_ROUTES)).toEqual(['Home']);
+    expect(Object.values(MAIN_ROUTES)).toEqual([
+      'Home',
+      'Videos',
+      'VideoPlayer',
+    ]);
   });
 });

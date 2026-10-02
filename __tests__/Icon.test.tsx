@@ -20,7 +20,6 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
 
   const BLOCKED_CANDIDATE_GLYPHS = [
     'trophy',
-    'search',
     'Search-o',
     'searchO',
     'close',
@@ -160,8 +159,8 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
 
     it('verifies blocked glyphs are not assignable to IconName', () => {
       type IsSearchAssignable = ['search'] extends [IconName] ? true : false;
-      const searchAssignable: IsSearchAssignable = false;
-      expect(searchAssignable).toBe(false);
+      const searchAssignable: IsSearchAssignable = true;
+      expect(searchAssignable).toBe(true);
 
       type IsTrophyAssignable = ['trophy'] extends [IconName] ? true : false;
       const trophyAssignable: IsTrophyAssignable = false;
@@ -181,16 +180,16 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
       }
     });
 
-    it('specifically confirms trophy, search, and Search-o are not present', () => {
+    it('keeps only the verified search spelling in the registry', () => {
       expect('trophy' in glyphs).toBe(false);
-      expect('search' in glyphs).toBe(false);
+      expect('search' in glyphs).toBe(true);
       expect('Search-o' in glyphs).toBe(false);
       expect('searchO' in glyphs).toBe(false);
     });
   });
 
   describe('C. Production registry contains exactly the verified glyphs', () => {
-    it('contains all 23 verified glyphs: 7 shared UI + 6 home + 10 tab icons', () => {
+    it('contains all 30 verified glyphs', () => {
       const keys = Object.keys(glyphs);
       expect(keys.sort()).toEqual(
         [
@@ -217,9 +216,16 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'missionInactive',
           'friendsActive',
           'friendsInactive',
+          'search',
+          'play',
+          'volumeUp',
+          'fullscreenTopLeft',
+          'fullscreenTopRight',
+          'fullscreenBottomRight',
+          'fullscreenBottomLeft',
         ].sort(),
       );
-      expect(keys).toHaveLength(23);
+      expect(keys).toHaveLength(30);
       // Shared UI glyphs
       expect(typeof glyphs.chevronLeft).toBe('function');
       expect(typeof glyphs.logOut).toBe('function');
@@ -246,6 +252,14 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
       expect(typeof glyphs.missionInactive).toBe('function');
       expect(typeof glyphs.friendsActive).toBe('function');
       expect(typeof glyphs.friendsInactive).toBe('function');
+      // Video browsing and playback glyphs
+      expect(typeof glyphs.search).toBe('function');
+      expect(typeof glyphs.play).toBe('function');
+      expect(typeof glyphs.volumeUp).toBe('function');
+      expect(typeof glyphs.fullscreenTopLeft).toBe('function');
+      expect(typeof glyphs.fullscreenTopRight).toBe('function');
+      expect(typeof glyphs.fullscreenBottomRight).toBe('function');
+      expect(typeof glyphs.fullscreenBottomLeft).toBe('function');
     });
   });
 

@@ -10,7 +10,7 @@ const metrics = {
 };
 
 describe('HomeScreen composition', () => {
-  it('composes the account header, Home content and background', () => {
+  it('composes the account header and the redesigned Home sections', () => {
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
     act(() => {
@@ -37,6 +37,8 @@ describe('HomeScreen composition', () => {
         'Level 22',
         '6253',
         '8888',
+        'Vé sự kiện',
+        'Video nổi bật',
         'Tin tức & Sự kiện',
       ]),
     );
@@ -45,13 +47,6 @@ describe('HomeScreen composition', () => {
       .findAllByType(Image)
       .map(node => node.props.source);
 
-    const hasValidBackground = imageSources.some(
-      source =>
-        source === require('../assets/image/backgrounds/bg_home.png') ||
-        source === require('../assets/image/backgrounds/bg_home_tablet.png'),
-    );
-
-    expect(hasValidBackground).toBe(true);
     expect(imageSources).toEqual(
       expect.arrayContaining([
         require('../assets/image/avatars/avatar_default.png'),
@@ -63,7 +58,7 @@ describe('HomeScreen composition', () => {
     });
   });
 
-  it('reports ready only after layout, background and initial hero settle', () => {
+  it('reports ready only after layout, background, and initial hero settle', () => {
     const onReady = jest.fn();
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
@@ -82,28 +77,34 @@ describe('HomeScreen composition', () => {
       .findAllByType(View)
       .find(node => typeof node.props.onLayout === 'function')!;
     const images = tree!.root.findAllByType(Image);
-    const background = images.find(
-      image =>
-        image.props.source ===
-          require('../assets/image/backgrounds/bg_home.png') ||
-        image.props.source ===
-          require('../assets/image/backgrounds/bg_home_tablet.png'),
-    )!;
     const initialHero = images.find(
       image =>
         image.props.source ===
           require('../assets/image/banners/banner_home_02.png') &&
         typeof image.props.onLoad === 'function',
     )!;
+    const background = images.find(
+      image =>
+        (image.props.source ===
+          require('../assets/image/backgrounds/bg_home.png') ||
+          image.props.source ===
+            require('../assets/image/backgrounds/bg_home_tablet.png')) &&
+        typeof image.props.onLoad === 'function' &&
+        typeof image.props.onError === 'function',
+    )!;
 
     act(() => {
       rootLayout.props.onLayout();
-      background.props.onLoad();
     });
     expect(onReady).not.toHaveBeenCalled();
 
     act(() => {
       initialHero.props.onLoad();
+    });
+    expect(onReady).not.toHaveBeenCalled();
+
+    act(() => {
+      background.props.onLoad();
     });
     expect(onReady).toHaveBeenCalledTimes(1);
 
@@ -112,7 +113,7 @@ describe('HomeScreen composition', () => {
     });
   });
 
-  it('renders dedicated tablet background on tablet viewport', () => {
+  it('renders the tablet Home background on a tablet viewport', () => {
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
     act(() => {
@@ -131,14 +132,14 @@ describe('HomeScreen composition', () => {
     });
 
     const images = tree!.root.findAllByType(Image);
-    const tabletBg = images.find(
+    const background = images.find(
       image =>
         image.props.source ===
         require('../assets/image/backgrounds/bg_home_tablet.png'),
     );
 
-    expect(tabletBg).toBeDefined();
-    expect(tabletBg?.props.resizeMode).toBe('contain');
+    expect(background).toBeDefined();
+    expect(background!.props.resizeMode).toBe('contain');
 
     act(() => {
       tree!.unmount();

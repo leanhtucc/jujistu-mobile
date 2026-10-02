@@ -1,5 +1,4 @@
 import {
-  scaleResponsiveValue,
   type ResponsiveMetrics,
   useResponsive,
 } from '@jujistu/shared/constants/responsive';
@@ -36,36 +35,34 @@ export function resolveHomeHeroGeometry(
     responsive.shortestSide >= 600;
 
   if (isTablet) {
-    const tabletScale = scaleResponsiveValue(1, responsive, {
-      baseShortestSide: 768,
-      minScale: 0.95,
-      maxScale: 1.25,
-      roundToPixel: false,
-    });
-    const TABLET_ACTIVE_WIDTH = 480;
-    const TABLET_ACTIVE_HEIGHT = 270;
-    const TABLET_INACTIVE_WIDTH = 380;
-    const TABLET_INACTIVE_HEIGHT = 214;
+    const activeWidth = Math.min(640, responsive.width * 0.72);
+    const activeHeight = activeWidth * (9 / 16);
+    const inactiveWidth = activeWidth * 0.79;
+    const inactiveHeight = inactiveWidth * (9 / 16);
 
     return {
-      activeWidth: Math.round(TABLET_ACTIVE_WIDTH * tabletScale),
-      activeHeight: Math.round(TABLET_ACTIVE_HEIGHT * tabletScale),
-      inactiveWidth: Math.round(TABLET_INACTIVE_WIDTH * tabletScale),
-      inactiveHeight: Math.round(TABLET_INACTIVE_HEIGHT * tabletScale),
+      activeWidth: Math.round(activeWidth),
+      activeHeight: Math.round(activeHeight),
+      inactiveWidth: Math.round(inactiveWidth),
+      inactiveHeight: Math.round(inactiveHeight),
     } as const;
   }
 
-  const scale = scaleResponsiveValue(1, responsive, {
-    minScale: 0.88,
-    maxScale: 1.08,
-    roundToPixel: false,
-  });
+  const activeWidth = Math.min(
+    responsive.width - 32,
+    Math.max(250, responsive.width * 0.78),
+  );
+  const activeHeight = activeWidth * (FIGMA_ACTIVE_HEIGHT / FIGMA_ACTIVE_WIDTH);
+  const inactiveWidth =
+    activeWidth * (FIGMA_INACTIVE_WIDTH / FIGMA_ACTIVE_WIDTH);
+  const inactiveHeight =
+    inactiveWidth * (FIGMA_INACTIVE_HEIGHT / FIGMA_INACTIVE_WIDTH);
 
   return {
-    activeWidth: FIGMA_ACTIVE_WIDTH * scale,
-    activeHeight: FIGMA_ACTIVE_HEIGHT * scale,
-    inactiveWidth: FIGMA_INACTIVE_WIDTH * scale,
-    inactiveHeight: FIGMA_INACTIVE_HEIGHT * scale,
+    activeWidth,
+    activeHeight,
+    inactiveWidth,
+    inactiveHeight,
   } as const;
 }
 

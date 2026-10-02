@@ -39,7 +39,9 @@ import {
 } from '@jujistu/ui';
 ```
 
-`ProductAccountHeader` is a Home-specific screen section and lives with the other Home regions under `src/features/home/sections/`. It composes `@jujistu/ui` primitives without moving product-specific content into the reusable UI layer.
+`ProductAccountHeader` is a Home-specific screen component and lives with the other
+Home regions under `src/features/home/components/`. It composes `@jujistu/ui`
+primitives without moving product-specific content into the reusable UI layer.
 
 ---
 
@@ -116,6 +118,8 @@ Tokens are defined in `src/shared/theme/`:
 - **Border**: `default` (`#222222`), `subtle` (`rgba(255, 255, 255, 0.10)`), `strong` (`#3D3D3D`), `accent` (`#FE8B33`), `error` (`#FF3A5E`).
 - **Action**: `primary` (`#BA2025`), `secondary` (`#292929`).
 - **Gradient**: Primary action gradient from `#A70100` to `#FE8B33`.
+- **Raised surface gradient**: Home quick actions use the approved neutral raised
+  surface gradient from `#1C1C1C` to `#323232`.
 
 ### Typography
 
@@ -123,6 +127,7 @@ JUJISTU standardizes on Barlow typography across heading, body, label, and capti
 
 - Heading scales: `lg` (18px/23.4), `md` (16px/20), `sm` (14px/19.6), `xs` (12px/15).
 - Body scales: `md` (14px/19.6), `sm` (12px/18).
+- Subtitle scale: `md` (13px/19.5).
 - Label scales: `lg` (18px/27), `md` (14px/19.6), `sm` (12px/15).
 - Caption scales: `sm` (10px/12), `xs` (10px/10).
 
@@ -132,11 +137,13 @@ JUJISTU standardizes on Barlow typography across heading, body, label, and capti
 
 The project uses a build-time, manual glyph registry pipeline (`ADR-0004`):
 
+- Canonical raw icon files live only under `assets/icons/<category>/` and use SVG.
+- Feature and screen folders do not own icon copies or runtime image assets.
 - Glyphs are SVGR-compiled TypeScript components stored in `src/ui/atoms/icon/glyphs/`.
 - Only verified, canonical Figma glyphs are registered in `glyphs.ts`.
 - The public `IconName` type union is derived directly from `keyof typeof glyphs`.
 
-Current Verified Glyphs:
+Current Verified Glyphs include:
 
 1. `chevronLeft`: Navigation back action
 2. `logOut`: Session termination
@@ -144,6 +151,10 @@ Current Verified Glyphs:
 4. `gem`: Primary currency
 5. `coin`: Secondary currency
 6. `balanceAdd`: Currency top-up action badge
+7. `search`: Video library search action
+8. `play` and `volumeUp`: Video playback controls
+9. `fullscreenTopLeft`, `fullscreenTopRight`, `fullscreenBottomRight`, and
+   `fullscreenBottomLeft`: Exact Figma fullscreen control corners
 
 ---
 
@@ -193,6 +204,19 @@ Ownership of screen insets follows a strict boundary:
 1. **`ProductAccountHeader` does NOT own top safe area**: The component renders at a fixed 64px height. `HomeScreen` applies `insets.top` above it.
 2. **`AppBottomNavigation` does NOT own bottom safe area**: The component renders at a fixed 64px height. The main navigator shell must apply `insets.bottom` padding below it.
 3. **Screen Shells Own Insets**: Screens and root layout containers use `react-native-safe-area-context` (`useSafeAreaInsets`) to manage status bar and home indicator padding.
+
+### Responsive layout contract
+
+- Runtime layout decisions use the logical React Native window from
+  `useResponsive`; they never branch on a device model name.
+- Compact and regular phones preserve the 390dp design proportions and shrink
+  fluidly when horizontal space is limited.
+- Large phones, including the Pixel 8 Pro class, expand Home cards, typography,
+  quick actions and media rather than retaining narrow 360dp feed caps.
+- Tablet content is centered and width-capped (`720dp` for the primary feed and
+  video content) so portrait and landscape layouts remain readable.
+- Screen shells own safe areas. Feature components own only their responsive
+  content geometry and must continue to support accessibility font scaling.
 
 ---
 

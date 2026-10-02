@@ -73,6 +73,14 @@ export const HEADER_ICON_SIZES: Record<IconName, number> = {
   missionInactive: 24,
   friendsActive: 24,
   friendsInactive: 24,
+  // Video browsing and playback icons
+  search: 20,
+  play: 20,
+  volumeUp: 20,
+  fullscreenTopLeft: 6,
+  fullscreenTopRight: 6,
+  fullscreenBottomRight: 6,
+  fullscreenBottomLeft: 6,
 };
 
 export function resolveHeaderIconSize(icon: IconName): number {

@@ -31,15 +31,16 @@ describe('HomeScreen', () => {
     expect(text).toEqual(
       expect.arrayContaining([
         'Tin tức & Sự kiện',
+        'Video nổi bật',
+        'Vé sự kiện',
         'Xem tất cả',
-        'Bước lùi này không khiến cho Trần Quốc Tuấn lệch hướng',
-        'Phạm Văn Hào 2 - 0 Trần Văn Trọng',
-        'CLUB',
+        'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
+        'Trần Quốc Toản Vs Zakhar Dzmitrychenka',
+        'Câu lạc bộ',
         'Leaderboard',
         'Học viện MMA',
-        'Gift',
-        'LIVE',
-        'Minigame',
+        'Trực tiếp',
+        'Mini game',
       ]),
     );
 

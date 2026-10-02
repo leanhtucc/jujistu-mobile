@@ -16,8 +16,8 @@ describe('GuestAccountHeader', () => {
 
     const logo = images[0];
     const style = StyleSheet.flatten(logo.props.style);
-    expect(style.width).toBe(48);
-    expect(style.height).toBe(48);
+    expect(style.width).toBe(68);
+    expect(style.height).toBe(68);
     expect(logo.props.accessibilityLabel).toBe('Jujitsu Championship Logo');
   });
 
@@ -52,6 +52,14 @@ describe('GuestAccountHeader', () => {
     expect(button.props.label).toBe('Đăng nhập');
     expect(button.props.variant).toBe('primary');
     expect(button.props.size).toBe('sm');
+
+    const buttonStyle = StyleSheet.flatten(button.props.containerStyle);
+    expect(buttonStyle).toMatchObject({
+      alignItems: 'stretch',
+      height: 42,
+      justifyContent: 'center',
+      width: 124,
+    });
   });
 
   it('fires onLogin callback when login button is pressed', () => {
@@ -71,7 +79,7 @@ describe('GuestAccountHeader', () => {
     expect(handleLogin).toHaveBeenCalledTimes(1);
   });
 
-  it('preserves the 64px header container dimensions and background', () => {
+  it('uses the responsive tablet header dimensions and background', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       tree = ReactTestRenderer.create(<GuestAccountHeader />);
@@ -82,8 +90,8 @@ describe('GuestAccountHeader', () => {
 
     expect(rootStyle).toMatchObject({
       width: '100%',
-      height: 64,
-      paddingHorizontal: 16,
+      height: 88,
+      paddingHorizontal: 24,
       backgroundColor: '#030003',
       flexDirection: 'row',
       alignItems: 'center',

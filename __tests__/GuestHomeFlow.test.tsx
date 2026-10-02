@@ -117,19 +117,19 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
 
     expect(texts).toContain('Tin tức & Sự kiện');
     expect(texts).toContain(
-      'Bước lùi này không khiến cho Trần Quốc Tuấn lệch hướng',
+      'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
     );
 
     act(() => tree.unmount());
   });
 
-  it('TEST-GUEST-09 & 10: Quick action item 3 is Coming Soon in guest mode', () => {
+  it('TEST-GUEST-09 & 10: MMA academy keeps its product label in guest mode', () => {
     const guestActions = getHomeQuickActions('guest');
-    expect(guestActions.left[2]).toEqual({
+    expect(guestActions.find(action => action.key === 'mma-academy')).toEqual({
       key: 'mma-academy',
-      label: 'Coming Soon',
-      icon: 'mmaAcademy',
-      iconSize: 34,
+      label: 'Học viện MMA',
+      iconName: 'mmaAcademy',
+      iconSize: 24,
     });
 
     let tree!: ReactTestRenderer.ReactTestRenderer;
@@ -146,19 +146,19 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       .map(t => t.props.children)
       .filter(v => typeof v === 'string');
 
-    expect(texts).toContain('Coming Soon');
-    expect(texts).not.toContain('Học viện MMA');
+    expect(texts).toContain('Học viện MMA');
+    expect(texts).not.toContain('Coming Soon');
 
     act(() => tree.unmount());
   });
 
   it('TEST-GUEST-11: Quick action item 3 is Học viện MMA in authenticated mode', () => {
     const authActions = getHomeQuickActions('authenticated');
-    expect(authActions.left[2]).toEqual({
+    expect(authActions.find(action => action.key === 'mma-academy')).toEqual({
       key: 'mma-academy',
       label: 'Học viện MMA',
-      icon: 'mmaAcademy',
-      iconSize: 34,
+      iconName: 'mmaAcademy',
+      iconSize: 24,
     });
 
     let tree!: ReactTestRenderer.ReactTestRenderer;

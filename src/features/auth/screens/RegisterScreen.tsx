@@ -1,10 +1,17 @@
 import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
+import {
+  getResponsiveContentWidth,
+  useResponsive,
+} from '@jujistu/shared/constants/responsive';
 import { AppInputField } from '@jujistu/ui';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -18,6 +25,8 @@ export function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const insets = useSafeAreaInsets();
+  const responsive = useResponsive();
+  const contentWidth = Math.min(600, getResponsiveContentWidth(responsive, 24));
   const theme = useAppTheme();
   const navigation = useNavigation<any>();
 
@@ -41,7 +50,8 @@ export function RegisterScreen() {
   const isPending = isSubmitting;
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={[
         styles.container,
         {
@@ -51,108 +61,116 @@ export function RegisterScreen() {
         },
       ]}
     >
-      <View style={styles.content}>
-        <Text
-          accessibilityRole="header"
-          style={[styles.title, { color: theme.colors.text }]}
-        >
-          Create Account
-        </Text>
-        <Text style={[styles.subtitle, { color: theme.colors.textSecondary }]}>
-          Join Jujitsu today
-        </Text>
-
-        {Boolean(error) && (
-          <View
-            accessibilityLiveRegion="polite"
-            style={[
-              styles.errorBanner,
-              { backgroundColor: theme.colors.surface },
-            ]}
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={[styles.content, { width: contentWidth }]}>
+          <Text
+            accessibilityRole="header"
+            style={[styles.title, { color: theme.colors.text }]}
           >
-            <Text style={[styles.errorText, { color: theme.colors.error }]}>
-              {error?.message || 'Registration failed. Please try again.'}
-            </Text>
-          </View>
-        )}
-
-        <View style={styles.form}>
-          <Text style={[styles.label, { color: theme.colors.text }]}>
-            Full Name
+            Create Account
           </Text>
-          <AppInputField
-            accessibilityLabel="Full name input"
-            containerStyle={styles.inputLayout}
-            onChangeText={setDisplayName}
-            placeholder="John Doe"
-            value={displayName}
-          />
-
-          <Text style={[styles.label, { color: theme.colors.text }]}>
-            Email
-          </Text>
-          <AppInputField
-            accessibilityLabel="Email input"
-            autoCapitalize="none"
-            autoComplete="email"
-            containerStyle={styles.inputLayout}
-            keyboardType="email-address"
-            onChangeText={setEmail}
-            placeholder="name@example.com"
-            value={email}
-          />
-
-          <Text style={[styles.label, { color: theme.colors.text }]}>
-            Password
-          </Text>
-          <AppInputField
-            accessibilityLabel="Password input"
-            autoCapitalize="none"
-            containerStyle={styles.inputLayout}
-            onChangeText={setPassword}
-            placeholder="••••••••"
-            secureTextEntry
-            value={password}
-          />
-
-          <Pressable
-            accessibilityLabel="Create account"
-            accessibilityRole="button"
-            accessibilityState={{ disabled: isPending }}
-            disabled={isPending}
-            onPress={handleRegister}
-            style={[
-              styles.button,
-              { backgroundColor: theme.colors.primary },
-              isPending && styles.buttonDisabled,
-            ]}
+          <Text
+            style={[styles.subtitle, { color: theme.colors.textSecondary }]}
           >
-            {isPending ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              <Text style={styles.buttonText}>Sign Up</Text>
-            )}
-          </Pressable>
+            Join Jujitsu today
+          </Text>
 
-          <Pressable
-            accessibilityLabel="Navigate to login"
-            accessibilityRole="button"
-            onPress={() => navigation.navigate('Login')}
-            style={styles.switchAuthButton}
-          >
-            <Text
+          {Boolean(error) && (
+            <View
+              accessibilityLiveRegion="polite"
               style={[
-                styles.switchAuthText,
-                { color: theme.colors.textSecondary },
+                styles.errorBanner,
+                { backgroundColor: theme.colors.surface },
               ]}
             >
-              Already have an account?{' '}
-              <Text style={{ color: theme.colors.primary }}>Sign In</Text>
+              <Text style={[styles.errorText, { color: theme.colors.error }]}>
+                {error?.message || 'Registration failed. Please try again.'}
+              </Text>
+            </View>
+          )}
+
+          <View style={styles.form}>
+            <Text style={[styles.label, { color: theme.colors.text }]}>
+              Full Name
             </Text>
-          </Pressable>
+            <AppInputField
+              accessibilityLabel="Full name input"
+              containerStyle={styles.inputLayout}
+              onChangeText={setDisplayName}
+              placeholder="John Doe"
+              value={displayName}
+            />
+
+            <Text style={[styles.label, { color: theme.colors.text }]}>
+              Email
+            </Text>
+            <AppInputField
+              accessibilityLabel="Email input"
+              autoCapitalize="none"
+              autoComplete="email"
+              containerStyle={styles.inputLayout}
+              keyboardType="email-address"
+              onChangeText={setEmail}
+              placeholder="name@example.com"
+              value={email}
+            />
+
+            <Text style={[styles.label, { color: theme.colors.text }]}>
+              Password
+            </Text>
+            <AppInputField
+              accessibilityLabel="Password input"
+              autoCapitalize="none"
+              containerStyle={styles.inputLayout}
+              onChangeText={setPassword}
+              placeholder="••••••••"
+              secureTextEntry
+              value={password}
+            />
+
+            <Pressable
+              accessibilityLabel="Create account"
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isPending }}
+              disabled={isPending}
+              onPress={handleRegister}
+              style={[
+                styles.button,
+                { backgroundColor: theme.colors.primary },
+                isPending && styles.buttonDisabled,
+              ]}
+            >
+              {isPending ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.buttonText}>Sign Up</Text>
+              )}
+            </Pressable>
+
+            <Pressable
+              accessibilityLabel="Navigate to login"
+              accessibilityRole="button"
+              onPress={() => navigation.navigate('Login')}
+              style={styles.switchAuthButton}
+            >
+              <Text
+                style={[
+                  styles.switchAuthText,
+                  { color: theme.colors.textSecondary },
+                ]}
+              >
+                Already have an account?{' '}
+                <Text style={{ color: theme.colors.primary }}>Sign In</Text>
+              </Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -174,11 +192,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    alignItems: 'center',
     paddingHorizontal: 24,
   },
   content: {
-    flex: 1,
     justifyContent: 'center',
+    width: '100%',
   },
   errorBanner: {
     borderRadius: 8,
@@ -198,6 +217,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 6,
+  },
+  scrollContent: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   subtitle: {
     fontSize: 16,

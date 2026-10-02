@@ -21,18 +21,26 @@ import { MissionActiveGlyph } from './glyphs/tabs/mission-active';
 import { MissionInactiveGlyph } from './glyphs/tabs/mission-inactive';
 import { FriendsActiveGlyph } from './glyphs/tabs/friends-active';
 import { FriendsInactiveGlyph } from './glyphs/tabs/friends-inactive';
+import { FullscreenBlGlyph } from './glyphs/video/ic_fullscreen_bl';
+import { FullscreenBrGlyph } from './glyphs/video/ic_fullscreen_br';
+import { FullscreenTlGlyph } from './glyphs/video/ic_fullscreen_tl';
+import { FullscreenTrGlyph } from './glyphs/video/ic_fullscreen_tr';
+import { PlayGlyph } from './glyphs/video/ic_play';
+import { SearchGlyph } from './glyphs/video/ic_search';
+import { VolumeUpGlyph } from './glyphs/video/ic_volume_up';
 
 /**
  * Immutable production registry of verified Figma glyph components.
  * Populated strictly and exclusively with VERIFIED_IMPLEMENTED glyphs.
  * Must contain zero placeholder, visual-approximation, or blocked candidate glyphs.
  *
- * Current State: 23 VERIFIED_IMPLEMENTED glyphs.
+ * Current State: 30 VERIFIED_IMPLEMENTED glyphs.
  *   Shared UI:  chevronLeft, logOut, mail, settings, gem, coin, balanceAdd (7)
  *   Home:       club, gift, leaderboard, live, minigame, mmaAcademy (6)
  *   Tab icons:  homeActive, homeInactive, shopActive, shopInactive,
  *               tournamentActive, tournamentInactive, missionActive,
  *               missionInactive, friendsActive, friendsInactive (10)
+ *   Video:      search, play, volumeUp and four fullscreen corners (7)
  */
 export const glyphs = {
   // ── Shared UI glyphs ──────────────────────────────────────────────
@@ -61,4 +69,12 @@ export const glyphs = {
   missionInactive: MissionInactiveGlyph,
   friendsActive: FriendsActiveGlyph,
   friendsInactive: FriendsInactiveGlyph,
+  // ── Video browsing and playback glyphs ───────────────────────────
+  search: SearchGlyph,
+  play: PlayGlyph,
+  volumeUp: VolumeUpGlyph,
+  fullscreenTopLeft: FullscreenTlGlyph,
+  fullscreenTopRight: FullscreenTrGlyph,
+  fullscreenBottomRight: FullscreenBrGlyph,
+  fullscreenBottomLeft: FullscreenBlGlyph,
 } as const;

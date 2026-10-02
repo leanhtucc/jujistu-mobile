@@ -1,70 +1,26 @@
-import {
-  type ResponsiveMetrics,
-  useResponsive,
-} from '@jujistu/shared/constants/responsive';
-import {
-  primitiveColors,
-  radius,
-  semanticColors,
-  typography,
-} from '@jujistu/shared/theme';
+import { useResponsive } from '@jujistu/shared/constants/responsive';
+import { radius, semanticColors, typography } from '@jujistu/shared/theme';
 import React from 'react';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { HOME_NEWS, type HomeNewsItem } from '../data/home-content';
 
-const NEWS_GAP = 10;
-const FIGMA_NEWS_IMAGE_ASPECT_RATIO = 174 / 97;
-const NEWS_TITLE_HEIGHT = 40;
-const SECTION_HORIZONTAL_PADDING = 16;
-const MAX_SECTION_WIDTH = 520;
-const TABLET_MAX_SECTION_WIDTH = 720;
+const FIGMA_SECTION_WIDTH = 360;
+const FIGMA_IMAGE_WIDTH = 156;
+const FIGMA_IMAGE_HEIGHT = 87;
+const FIGMA_CONTENT_GAP = 19;
 
-export function resolveHomeNewsCardWidth(
-  screenWidthOrResponsive:
-    | number
-    | (Pick<ResponsiveMetrics, 'width'> &
-        Partial<
-          Pick<
-            ResponsiveMetrics,
-            'isTablet' | 'isLargeTablet' | 'sizeClass' | 'shortestSide'
-          >
-        >),
-  isTabletOverride?: boolean,
-): number {
-  if (typeof screenWidthOrResponsive === 'object') {
-    const responsive = screenWidthOrResponsive;
-    const isTablet =
-      isTabletOverride !== undefined
-        ? isTabletOverride
-        : Boolean(responsive.isTablet) ||
-          Boolean(responsive.isLargeTablet) ||
-          responsive.sizeClass === 'tablet' ||
-          responsive.sizeClass === 'largeTablet' ||
-          (responsive.shortestSide !== undefined &&
-            responsive.shortestSide >= 600);
-    const maxSectionWidth = isTablet
-      ? TABLET_MAX_SECTION_WIDTH
-      : MAX_SECTION_WIDTH;
-    const sectionWidth = Math.min(responsive.width, maxSectionWidth);
+export function resolveHomeNewsGeometry(windowWidth: number) {
+  const sectionWidth = Math.min(720, Math.max(0, windowWidth - 30));
+  const scale = Math.min(1.6, sectionWidth / FIGMA_SECTION_WIDTH);
 
-    return (sectionWidth - SECTION_HORIZONTAL_PADDING * 2 - NEWS_GAP) / 2;
-  }
-
-  const screenWidth = screenWidthOrResponsive;
-  const maxSectionWidth = isTabletOverride
-    ? TABLET_MAX_SECTION_WIDTH
-    : MAX_SECTION_WIDTH;
-  const sectionWidth = Math.min(screenWidth, maxSectionWidth);
-
-  return (sectionWidth - SECTION_HORIZONTAL_PADDING * 2 - NEWS_GAP) / 2;
+  return {
+    contentGap: FIGMA_CONTENT_GAP * scale,
+    imageHeight: FIGMA_IMAGE_HEIGHT * scale,
+    imageWidth: FIGMA_IMAGE_WIDTH * scale,
+    scale,
+    sectionWidth,
+  } as const;
 }
 
 export interface HomeNewsSectionProps {
@@ -72,41 +28,60 @@ export interface HomeNewsSectionProps {
   readonly onPressItem?: (item: HomeNewsItem) => void;
 }
 
-function NewsCard({
+function NewsItem({
+  contentGap,
   imageHeight,
-  isTablet = false,
+  imageWidth,
   item,
   onPress,
-  width,
+  scale,
 }: {
-  readonly item: HomeNewsItem;
-  readonly width: number;
+  readonly contentGap: number;
   readonly imageHeight: number;
-  readonly isTablet?: boolean;
+  readonly imageWidth: number;
+  readonly item: HomeNewsItem;
   readonly onPress?: (item: HomeNewsItem) => void;
+  readonly scale: number;
 }) {
-  const style = [
-    styles.card,
-    { width, minHeight: imageHeight + 8 + (isTablet ? 48 : NEWS_TITLE_HEIGHT) },
-  ];
   const content = (
     <>
       <Image
-        source={item.image}
+        accessibilityIgnoresInvertColors
         resizeMode="cover"
-        style={[styles.newsImage, { height: imageHeight }]}
+        source={item.image}
+        style={[styles.image, { height: imageHeight, width: imageWidth }]}
       />
-      <Text
-        numberOfLines={2}
-        style={[
-          styles.newsTitle,
-          isTablet ? styles.tabletNewsTitle : undefined,
-        ]}
-      >
-        {item.title}
-      </Text>
+      <View style={[styles.copy, { minHeight: imageHeight }]}>
+        <Text
+          numberOfLines={3}
+          style={[
+            styles.description,
+            {
+              fontSize: (typography.subtitle.md.fontSize as number) * scale,
+              lineHeight: (typography.subtitle.md.lineHeight as number) * scale,
+            },
+          ]}
+        >
+          {item.description}
+        </Text>
+        <Text
+          style={[
+            styles.date,
+            {
+              fontSize: (typography.body.md.fontSize as number) * scale,
+              lineHeight: (typography.body.md.lineHeight as number) * scale,
+            },
+          ]}
+        >
+          {item.date}
+        </Text>
+      </View>
     </>
   );
+  const style = [
+    styles.item,
+    { columnGap: contentGap, minHeight: imageHeight },
+  ];
 
   if (!onPress) {
     return <View style={style}>{content}</View>;
@@ -114,6 +89,7 @@ function NewsCard({
 
   return (
     <Pressable
+      accessibilityLabel={`${item.description}, ${item.date}`}
       accessibilityRole="button"
       onPress={() => onPress(item)}
       style={style}
@@ -123,74 +99,85 @@ function NewsCard({
   );
 }
 
+function ViewAllLink({
+  onPress,
+  scale,
+}: {
+  readonly onPress?: () => void;
+  readonly scale: number;
+}) {
+  const textStyle = {
+    fontSize: (typography.body.md.fontSize as number) * scale,
+    lineHeight: (typography.body.md.lineHeight as number) * scale,
+  };
+
+  if (!onPress) {
+    return <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>;
+  }
+
+  return (
+    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress}>
+      <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>
+    </Pressable>
+  );
+}
+
 export function HomeNewsSection({
   onPressAll,
   onPressItem,
 }: HomeNewsSectionProps) {
   const responsive = useResponsive();
-  const cardWidth = resolveHomeNewsCardWidth(responsive);
-  const imageHeight = cardWidth / FIGMA_NEWS_IMAGE_ASPECT_RATIO;
-  const maxSectionWidth = responsive.isTablet
-    ? TABLET_MAX_SECTION_WIDTH
-    : MAX_SECTION_WIDTH;
-  const newsCards = HOME_NEWS.map(item => (
-    <NewsCard
-      imageHeight={imageHeight}
-      isTablet={responsive.isTablet}
-      item={item}
-      key={item.id}
-      onPress={onPressItem}
-      width={cardWidth}
-    />
-  ));
+  const geometry = resolveHomeNewsGeometry(responsive.width);
 
   return (
     <View
       accessibilityLabel="Tin tức và sự kiện"
-      style={[styles.container, { maxWidth: maxSectionWidth }]}
+      style={[styles.container, { width: geometry.sectionWidth }]}
     >
-      <View style={styles.headingRow}>
-        <Text accessibilityRole="header" style={styles.heading}>
+      <View style={[styles.headingRow, { minHeight: 20 * geometry.scale }]}>
+        <Text
+          accessibilityRole="header"
+          style={[
+            styles.heading,
+            {
+              fontSize:
+                (typography.heading.md.fontSize as number) * geometry.scale,
+              lineHeight:
+                (typography.heading.md.lineHeight as number) * geometry.scale,
+            },
+          ]}
+        >
           Tin tức &amp; Sự kiện
         </Text>
-        {onPressAll ? (
-          <Pressable
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={onPressAll}
-          >
-            <Text style={styles.viewAll}>Xem tất cả</Text>
-          </Pressable>
-        ) : (
-          <Text style={styles.viewAll}>Xem tất cả</Text>
-        )}
+        <ViewAllLink onPress={onPressAll} scale={geometry.scale} />
       </View>
-
-      {HOME_NEWS.length > 2 ? (
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.newsScroller}
-        >
-          {newsCards}
-        </ScrollView>
-      ) : (
-        <View style={styles.newsRow}>{newsCards}</View>
-      )}
+      <View
+        style={[
+          styles.items,
+          { gap: 12 * geometry.scale, marginTop: 6 * geometry.scale },
+        ]}
+      >
+        {HOME_NEWS.map(item => (
+          <NewsItem
+            contentGap={geometry.contentGap}
+            imageHeight={geometry.imageHeight}
+            imageWidth={geometry.imageWidth}
+            item={item}
+            key={item.id}
+            onPress={onPressItem}
+            scale={geometry.scale}
+          />
+        ))}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    maxWidth: MAX_SECTION_WIDTH,
     alignSelf: 'center',
   },
   headingRow: {
-    height: 20,
-    marginHorizontal: SECTION_HORIZONTAL_PADDING,
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
@@ -200,43 +187,30 @@ const styles = StyleSheet.create({
     color: semanticColors.text.primary,
   },
   viewAll: {
-    fontFamily: typography.body.md.fontFamily,
-    fontSize: 14,
-    lineHeight: 19.6,
-    fontWeight: typography.body.md.fontWeight,
-    letterSpacing: 0,
-    color: primitiveColors.neutral[300],
+    ...typography.body.md,
+    color: semanticColors.text.tertiary,
     textDecorationLine: 'underline',
   },
-  newsRow: {
-    marginTop: 16,
-    paddingHorizontal: SECTION_HORIZONTAL_PADDING,
+  items: {},
+  item: {
     flexDirection: 'row',
-    gap: NEWS_GAP,
+    alignItems: 'flex-start',
   },
-  newsScroller: {
-    marginTop: 16,
-  },
-  scrollContent: {
-    paddingHorizontal: SECTION_HORIZONTAL_PADDING,
-    flexDirection: 'row',
-    gap: NEWS_GAP,
-  },
-  card: {
+  image: {
     flexShrink: 0,
-    gap: 8,
-  },
-  newsImage: {
-    width: '100%',
     borderRadius: radius.sm,
   },
-  newsTitle: {
-    ...typography.label.md,
-    width: '100%',
+  copy: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: 'space-between',
+  },
+  description: {
+    ...typography.subtitle.md,
     color: semanticColors.text.primary,
   },
-  tabletNewsTitle: {
-    fontSize: 15,
-    lineHeight: 21,
+  date: {
+    ...typography.body.md,
+    color: semanticColors.text.secondary,
   },
 });

@@ -1,6 +1,6 @@
 # ADR 0012: Separate bottom-navigation ownership from Home content
 
-- Status: Accepted
+- Status: Accepted; folder convention superseded by ADR 0014
 - Date: 2026-09-19
 - Supersedes: ADR 0011
 
@@ -25,10 +25,10 @@ feature.
 - `src/app` does not introduce a parallel `screens/` folder for feature screens.
 - `src/features/home` owns the complete Home screen: background, top safe area,
   account header, screen sections, data, readiness coordination, and feature hooks.
-- `ProductAccountHeader` lives in `src/features/home/sections` because it is a
-  visible region of the current Home design, not global application chrome.
-- Large screen regions live in `sections/`; `components/` is not used as a generic
-  catch-all folder.
+- `ProductAccountHeader` remains inside the Home feature because it is a visible
+  region of the current Home design, not global application chrome.
+- ADR 0014 supersedes the folder-location clauses above and standardizes
+  feature-owned visual regions under `components/`.
 - `src/features/home/index.ts` exports the `HomeScreen` feature API consumed by the
   main navigator.
 

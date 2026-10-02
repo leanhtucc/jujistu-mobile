@@ -15,7 +15,8 @@ src/
 │   └── App.tsx           application root composition
 ├── features/            user-facing capabilities grouped by feature
 │   ├── auth/            authentication flows, query hooks, and screens
-│   └── home/            Home content: screen, sections, data, and hooks
+│   ├── home/            Home content: screen, components, data, and hooks
+│   └── videos/          video discovery, search, playback UI, and lifecycle
 ├── ui/                  product UI design system
 │   ├── atoms/           smallest reusable visual primitives
 │   ├── molecules/       compositions of atoms
@@ -105,10 +106,17 @@ templates. Internal registries and component recipes remain private to `src/ui`.
 ## Feature growth
 
 A feature starts with a public `index.ts` and only the folders needed by its current
-code. Use `screens/` for feature entry screens, `sections/` for substantial regions
-of one screen, `data/` for feature-owned static content or adapters, and `hooks/` for
-feature behavior. Do not use `components/` as a generic catch-all, and do not add
-domain, application, repository, or service layers before they have a real role.
+code. Use `screens/` for feature entry screens, `components/` for feature-owned
+visual building blocks and substantial screen regions, `data/` for feature-owned
+static content or adapters, and `hooks/` for feature behavior. Do not create a
+parallel `sections/` folder, and do not add domain, application, repository, or
+service layers before they have a real role.
+
+Runtime visual files are centralized under the repository-root `assets/` tree. Do
+not create feature-local or screen-local asset folders under `src`. Raw icon sources
+are SVG files under `assets/icons/<category>/`; runtime code consumes their verified
+generated glyphs through `AppIcon`. Other imagery is grouped under `assets/image/`,
+while application branding remains under `assets/app/`.
 
 Shared code is promoted only after genuine reuse. Reusable visual components belong
 to `ui`; non-visual infrastructure, services, configuration, and design tokens

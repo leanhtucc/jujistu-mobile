@@ -44,7 +44,7 @@ describe('Home carousel behavior', () => {
     act(() => tree.unmount());
   });
 
-  it('renders both current news cards without an automatic scroller', () => {
+  it('renders the redesigned news row without an automatic scroller', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       tree = ReactTestRenderer.create(<HomeNewsSection />);
@@ -57,8 +57,8 @@ describe('Home carousel behavior', () => {
     expect(tree.root.findAllByType(ScrollView)).toHaveLength(0);
     expect(titles).toEqual(
       expect.arrayContaining([
-        'Bước lùi này không khiến cho Trần Quốc Tuấn lệch hướng',
-        'Phạm Văn Hào 2 - 0 Trần Văn Trọng',
+        'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
+        '10/03/2026',
       ]),
     );
 
