@@ -36,6 +36,14 @@ describe('navigation contract', () => {
     expect(homeRoute).toBe('Home');
     expect(Object.values(MAIN_ROUTES)).toEqual([
       'Home',
+      'Shop',
+      'Tournaments',
+      'TournamentDetail',
+      'Athletes',
+      'AthleteJourney',
+      'Missions',
+      'Tickets',
+      'MyTickets',
       'Videos',
       'VideoPlayer',
     ]);

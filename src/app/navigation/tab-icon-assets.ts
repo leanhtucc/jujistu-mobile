@@ -17,6 +17,7 @@ export type TabIconAssetKey =
   | 'home'
   | 'tournament'
   | 'shop'
+  | 'athletes'
   | 'mission'
   | 'friends';
 
@@ -29,13 +30,10 @@ export type TabIconAssetKey =
  * FIXED_VISUAL glyphs (home, tournament, mission active/inactive) embed Figma
  * raster artwork — they ignore the `color` prop.
  *
- * MONOCHROME_VECTOR glyphs (shop, friends) receive `color` to distinguish
+ * MONOCHROME_VECTOR glyphs (shop, athletes, friends) receive `color` to distinguish
  * active (#FE8B33 orange) from inactive (#CCD5E6 grey).
  * Legacy PNG paths and assets have been removed; bottom nav uses SVG-backed AppIcon exclusively.
  */
-
-/** Brand active colour forwarded to MONOCHROME_VECTOR tab icons (#FE8B33). */
-const ACTIVE_COLOR = '#FE8B33';
 
 /** Inactive grey forwarded to MONOCHROME_VECTOR tab icons, matching text inactive color (#7D7F84). */
 const INACTIVE_COLOR = '#7D7F84';
@@ -44,23 +42,27 @@ export const TAB_ICON_ASSETS: Readonly<
   Record<TabIconAssetKey, ProductTabIconAsset>
 > = {
   home: {
-    active: { iconName: 'homeActive', size: 27 },
-    inactive: { iconName: 'homeInactive', size: 27 },
-  },
-  tournament: {
-    active: { iconName: 'tournamentActive', size: 36 },
-    inactive: { iconName: 'tournamentInactive', size: 36 },
+    active: { iconName: 'houseFill', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'house', size: 24, color: INACTIVE_COLOR },
   },
   shop: {
-    active: { iconName: 'shopActive', size: 20, color: ACTIVE_COLOR },
-    inactive: { iconName: 'shopInactive', size: 20, color: INACTIVE_COLOR },
+    active: { iconName: 'storefrontFill', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'storefront', size: 24, color: INACTIVE_COLOR },
+  },
+  tournament: {
+    active: { iconName: 'trophyFill', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'trophy', size: 24, color: INACTIVE_COLOR },
+  },
+  athletes: {
+    active: { iconName: 'pathFill', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'path', size: 24, color: INACTIVE_COLOR },
   },
   mission: {
-    active: { iconName: 'missionActive', size: 26 },
-    inactive: { iconName: 'missionInactive', size: 26 },
+    active: { iconName: 'targetFill', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'target', size: 24, color: INACTIVE_COLOR },
   },
   friends: {
-    active: { iconName: 'friendsActive', size: 24, color: ACTIVE_COLOR },
-    inactive: { iconName: 'friendsInactive', size: 24, color: INACTIVE_COLOR },
+    active: { iconName: 'usersThree', size: 24, color: '#FFFFFF' },
+    inactive: { iconName: 'usersThree', size: 24, color: INACTIVE_COLOR },
   },
 } as const;

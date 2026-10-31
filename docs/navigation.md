@@ -31,13 +31,15 @@ RootNavigator (NavigationContainer)
 │   └── Otp (transparent modal)
 │
 └── [authenticated] MainNavigator (Stack)
-    ├── Home
-    │   ├── HomeScreen (complete Home feature)
-    │   └── AppBottomNavigation (application navigation)
+    ├── Home (bottom-tab shell: Home, Shop, Tournament, Athletes, Mission
+    │         + NotificationCenter sheet; owns the wallet balance)
+    ├── Shop, Tournaments, Athletes, Missions      (stack copies with a back button)
+    ├── TournamentDetail  { tournamentId, initialTab? }
+    ├── AthleteJourney    { athleteId? }
+    ├── Tickets           { tournamentId?, zone? }
+    ├── MyTickets
     ├── Videos
-    │   └── VideoLibraryScreen
-    └── VideoPlayer
-        └── VideoPlayerScreen
+    └── VideoPlayer       { videoId }
 ```
 
 ## Rules

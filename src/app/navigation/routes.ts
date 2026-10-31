@@ -11,6 +11,14 @@ export const AUTH_ROUTES = {
 
 export const MAIN_ROUTES = {
   HOME: 'Home',
+  SHOP: 'Shop',
+  TOURNAMENTS: 'Tournaments',
+  TOURNAMENT_DETAIL: 'TournamentDetail',
+  ATHLETES: 'Athletes',
+  ATHLETE_JOURNEY: 'AthleteJourney',
+  MISSIONS: 'Missions',
+  TICKETS: 'Tickets',
+  MY_TICKETS: 'MyTickets',
   VIDEOS: 'Videos',
   VIDEO_PLAYER: 'VideoPlayer',
 } as const;

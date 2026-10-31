@@ -22,16 +22,16 @@ export const BOTTOM_NAVIGATION_ITEMS = [
     inactiveIcon: TAB_ICON_ASSETS.tournament.inactive,
   },
   {
+    key: 'athletes',
+    label: 'VĐV',
+    activeIcon: TAB_ICON_ASSETS.athletes.active,
+    inactiveIcon: TAB_ICON_ASSETS.athletes.inactive,
+  },
+  {
     key: 'mission',
     label: 'Nhiệm vụ',
     activeIcon: TAB_ICON_ASSETS.mission.active,
     inactiveIcon: TAB_ICON_ASSETS.mission.inactive,
-  },
-  {
-    key: 'friends',
-    label: 'Bạn bè',
-    activeIcon: TAB_ICON_ASSETS.friends.active,
-    inactiveIcon: TAB_ICON_ASSETS.friends.inactive,
   },
 ] as const satisfies ReadonlyArray<BottomNavigationItemData>;
 

@@ -13,6 +13,23 @@ export type AuthStackParamList = {
 
 export type MainStackParamList = {
   [MAIN_ROUTES.HOME]: undefined;
+  [MAIN_ROUTES.SHOP]: undefined;
+  [MAIN_ROUTES.TOURNAMENTS]: undefined;
+  [MAIN_ROUTES.TOURNAMENT_DETAIL]: {
+    tournamentId: string;
+    initialTab?: 'Lịch thi đấu' | 'Kết quả' | 'Tổng sắp' | 'Nhánh đấu';
+  };
+  [MAIN_ROUTES.ATHLETES]: undefined;
+  [MAIN_ROUTES.ATHLETE_JOURNEY]: {
+    athleteId?: string;
+  };
+  [MAIN_ROUTES.MISSIONS]: undefined;
+  [MAIN_ROUTES.TICKETS]: {
+    tournamentId?: string;
+    /** Stand preselected when opened from a shop ticket product. */
+    zone?: 'vip' | 'a';
+  };
+  [MAIN_ROUTES.MY_TICKETS]: undefined;
   [MAIN_ROUTES.VIDEOS]: undefined;
   [MAIN_ROUTES.VIDEO_PLAYER]: {
     videoId: string;

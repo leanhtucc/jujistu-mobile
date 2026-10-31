@@ -14,16 +14,16 @@ const EXPECTED_KEYS: readonly BottomNavigationProductKey[] = [
   'home',
   'shop',
   'tournament',
+  'athletes',
   'mission',
-  'friends',
 ];
 
 const EXPECTED_LABELS = [
   'Trang chủ',
   'Shop',
   'Giải đấu',
+  'VĐV',
   'Nhiệm vụ',
-  'Bạn bè',
 ] as const;
 
 describe('BOTTOM_NAVIGATION_ITEMS', () => {
