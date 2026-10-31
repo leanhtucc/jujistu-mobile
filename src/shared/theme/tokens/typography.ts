@@ -36,6 +36,21 @@ export const fontFamilies = {
       default: 'Esport Woglen',
     }),
   },
+  /** Jujitsu Mobile design system: titles, stats, buttons (ADR 0018). */
+  heading: {
+    bold: 'BricolageGrotesque-Bold',
+    extraBold: 'BricolageGrotesque-ExtraBold',
+  },
+  /** Jujitsu Mobile design system: body text with full Vietnamese diacritics. */
+  body: {
+    regular: 'BeVietnamPro-Regular',
+    medium: 'BeVietnamPro-Medium',
+    semiBold: 'BeVietnamPro-SemiBold',
+  },
+  /** Jujitsu Mobile design system: overlines, timers, counters. */
+  mono: {
+    medium: 'JetBrainsMono-Medium',
+  },
 } as const;
 
 export const fontSizes = {

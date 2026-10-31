@@ -1,8 +1,7 @@
 import { HomeScreen } from '@jujistu/features/home';
 import { GuestAccountHeader } from '@jujistu/features/home/components/GuestAccountHeader';
+import { HomeHeader } from '@jujistu/features/home/components/HomeHeader';
 import { HomeHeroCarousel } from '../src/features/home/components/HomeHeroCarousel';
-import { ProductAccountHeader } from '@jujistu/features/home/components/ProductAccountHeader';
-import { getHomeQuickActions } from '@jujistu/features/home/data/home-content';
 import { useRequireAuth } from '../src/app/navigation/use-require-auth';
 import { tokenManager } from '../src/shared/services/api/token-manager';
 import React from 'react';
@@ -24,6 +23,14 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('TEST-GUEST-01: renders HomeScreen in guest mode when user is null', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
@@ -35,10 +42,10 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
     });
 
     const guestHeaders = tree.root.findAllByType(GuestAccountHeader);
-    const productHeaders = tree.root.findAllByType(ProductAccountHeader);
+    const authHeaders = tree.root.findAllByType(HomeHeader);
 
     expect(guestHeaders.length).toBe(1);
-    expect(productHeaders.length).toBe(0);
+    expect(authHeaders.length).toBe(0);
 
     act(() => tree.unmount());
   });
@@ -115,23 +122,15 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       .map(t => t.props.children)
       .filter(v => typeof v === 'string');
 
-    expect(texts).toContain('Tin tức & Sự kiện');
+    expect(texts).toContain('Tin tức');
     expect(texts).toContain(
-      'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
+      'Thái Nguyên nhất toàn đoàn Giải vô địch Quốc gia 2026',
     );
 
     act(() => tree.unmount());
   });
 
-  it('TEST-GUEST-09 & 10: MMA academy keeps its product label in guest mode', () => {
-    const guestActions = getHomeQuickActions('guest');
-    expect(guestActions.find(action => action.key === 'mma-academy')).toEqual({
-      key: 'mma-academy',
-      label: 'Học viện MMA',
-      iconName: 'mmaAcademy',
-      iconSize: 24,
-    });
-
+  it('TEST-GUEST-09 & 10: Quick actions keep product labels in guest mode', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       tree = ReactTestRenderer.create(
@@ -146,26 +145,20 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       .map(t => t.props.children)
       .filter(v => typeof v === 'string');
 
-    expect(texts).toContain('Học viện MMA');
+    expect(texts).toContain('Vé');
     expect(texts).not.toContain('Coming Soon');
 
     act(() => tree.unmount());
   });
 
-  it('TEST-GUEST-11: Quick action item 3 is Học viện MMA in authenticated mode', () => {
-    const authActions = getHomeQuickActions('authenticated');
-    expect(authActions.find(action => action.key === 'mma-academy')).toEqual({
-      key: 'mma-academy',
-      label: 'Học viện MMA',
-      iconName: 'mmaAcademy',
-      iconSize: 24,
-    });
-
+  it('TEST-GUEST-11: Quick action item 3 is Đặt vé in authenticated mode', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       tree = ReactTestRenderer.create(
         <SafeAreaProvider initialMetrics={metrics}>
-          <HomeScreen user={{ displayName: 'Võ sĩ VIMMA', avatarUrl: null }} />
+          <HomeScreen
+            user={{ displayName: 'Võ sĩ Jujitsu', avatarUrl: null }}
+          />
         </SafeAreaProvider>,
       );
     });
@@ -175,7 +168,7 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       .map(t => t.props.children)
       .filter(v => typeof v === 'string');
 
-    expect(texts).toContain('Học viện MMA');
+    expect(texts).toContain('Vé');
     expect(texts).not.toContain('Coming Soon');
 
     act(() => tree.unmount());
@@ -210,7 +203,7 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
     expect(mockNavigate).toHaveBeenCalledWith('Auth', { screen: 'Login' });
   });
 
-  it('TEST-GUEST-14 & 16: Authenticated mode displays ProductAccountHeader with user info', () => {
+  it('TEST-GUEST-14 & 16: Authenticated mode displays HomeHeader', () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     act(() => {
       tree = ReactTestRenderer.create(
@@ -225,12 +218,11 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       );
     });
 
-    const productHeaders = tree.root.findAllByType(ProductAccountHeader);
+    const authHeaders = tree.root.findAllByType(HomeHeader);
     const guestHeaders = tree.root.findAllByType(GuestAccountHeader);
 
-    expect(productHeaders.length).toBe(1);
+    expect(authHeaders.length).toBe(1);
     expect(guestHeaders.length).toBe(0);
-    expect(productHeaders[0].props.username).toBe('Nguyễn Văn A');
 
     act(() => tree.unmount());
   });
@@ -250,7 +242,7 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       );
     });
 
-    expect(tree.root.findAllByType(ProductAccountHeader).length).toBe(1);
+    expect(tree.root.findAllByType(HomeHeader).length).toBe(1);
     expect(tree.root.findAllByType(GuestAccountHeader).length).toBe(0);
 
     // Simulate logout (user -> null)
@@ -262,7 +254,7 @@ describe('GuestHomeFlow — Complete Guest Home & Auth Flow', () => {
       );
     });
 
-    expect(tree.root.findAllByType(ProductAccountHeader).length).toBe(0);
+    expect(tree.root.findAllByType(HomeHeader).length).toBe(0);
     expect(tree.root.findAllByType(GuestAccountHeader).length).toBe(1);
 
     act(() => tree.unmount());

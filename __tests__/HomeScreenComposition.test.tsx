@@ -10,6 +10,14 @@ const metrics = {
 };
 
 describe('HomeScreen composition', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('composes the account header and the redesigned Home sections', () => {
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
@@ -33,23 +41,11 @@ describe('HomeScreen composition', () => {
 
     expect(text).toEqual(
       expect.arrayContaining([
-        'Mardust Vuong',
-        'Level 22',
-        '6253',
-        '8888',
-        'Vé sự kiện',
-        'Video nổi bật',
-        'Tin tức & Sự kiện',
-      ]),
-    );
-
-    const imageSources = tree!.root
-      .findAllByType(Image)
-      .map(node => node.props.source);
-
-    expect(imageSources).toEqual(
-      expect.arrayContaining([
-        require('../assets/image/avatars/avatar_default.png'),
+        'THỨ TƯ · 07/10',
+        '12.500',
+        'Lịch giải',
+        'Phát lại & highlight',
+        'Tin tức',
       ]),
     );
 
@@ -80,7 +76,7 @@ describe('HomeScreen composition', () => {
     const initialHero = images.find(
       image =>
         image.props.source ===
-          require('../assets/image/banners/banner_home_02.png') &&
+          require('../assets/image/banners/hero_shop_gi.jpg') &&
         typeof image.props.onLoad === 'function',
     )!;
     const background = images.find(

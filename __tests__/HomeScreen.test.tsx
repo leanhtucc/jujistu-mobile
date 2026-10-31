@@ -10,6 +10,14 @@ const metrics = {
 };
 
 describe('HomeScreen', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('renders the Figma home content with local assets', () => {
     let tree: ReturnType<typeof ReactTestRenderer.create> | null = null;
 
@@ -30,17 +38,21 @@ describe('HomeScreen', () => {
 
     expect(text).toEqual(
       expect.arrayContaining([
-        'Tin tức & Sự kiện',
-        'Video nổi bật',
-        'Vé sự kiện',
-        'Xem tất cả',
-        'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
-        'Trần Quốc Toản Vs Zakhar Dzmitrychenka',
-        'Câu lạc bộ',
-        'Leaderboard',
-        'Học viện MMA',
-        'Trực tiếp',
-        'Mini game',
+        'THỨ TƯ · 07/10',
+        '12.500',
+        'Lịch giải',
+        'Kết quả',
+        'Vé',
+        'Video',
+        'CLB',
+        'GIẢI TIẾP THEO · MỞ RỘNG',
+        'Cúp Jujitsu Hà Nội mở rộng 2026',
+        'Giải vô địch Jujitsu Quốc gia 2026',
+        'Gi Sen Vàng Pro đã lên kệ',
+        'Vé vào sân',
+        'Phát lại & highlight',
+        'Từ Shop',
+        'Tin tức',
       ]),
     );
 
@@ -50,11 +62,9 @@ describe('HomeScreen', () => {
 
     expect(imageSources).toEqual(
       expect.arrayContaining([
-        require('../assets/image/banners/banner_home_01.png'),
-        require('../assets/image/banners/banner_home_02.png'),
-        require('../assets/image/banners/banner_home_03.png'),
-        require('../assets/image/news/news_01.png'),
-        require('../assets/image/news/news_02.png'),
+        require('../assets/image/banners/hero_shop_gi.jpg'),
+        require('../assets/image/banners/hero_faceoff.jpg'),
+        require('../assets/image/events/cup_hanoi_arena.jpg'),
       ]),
     );
 

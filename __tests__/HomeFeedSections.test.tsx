@@ -1,9 +1,8 @@
 import React from 'react';
-import { Image, Text } from 'react-native';
+import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { AppIcon } from '@jujistu/ui';
 
-import { HOME_EVENT } from '../src/features/home/data/home-content';
 import { HomeEventTicketSection } from '../src/features/home/components/HomeEventTicketSection';
 import { HomeFeaturedVideoSection } from '../src/features/home/components/HomeFeaturedVideoSection';
 import { HomeNewsSection } from '../src/features/home/components/HomeNewsSection';
@@ -24,30 +23,32 @@ describe('Home feed sections', () => {
       .findAllByType(Text)
       .map(node => node.props.children);
     expect(labels).toEqual([
-      'Câu lạc bộ',
-      'Leaderboard',
-      'Vé sự kiện',
-      'Học viện MMA',
-      'Trực tiếp',
+      'Lịch giải',
+      'Kết quả',
+      'Vé',
+      'Video',
+      'CLB',
+      'BXH',
       'Mini game',
     ]);
     expect(
       tree.root.findAllByType(AppIcon).map(node => node.props.name),
     ).toEqual([
-      'club',
-      'leaderboard',
-      'gift',
-      'mmaAcademy',
-      'live',
-      'minigame',
+      'calendarCheck',
+      'medal',
+      'ticket',
+      'youtubeLogo',
+      'usersThree',
+      'ranking',
+      'gameController',
     ]);
 
     const eventAction = tree.root.findByProps({
-      accessibilityLabel: 'Vé sự kiện',
+      accessibilityLabel: 'Vé',
     });
     act(() => eventAction.props.onPress());
     expect(onPressAction).toHaveBeenCalledWith(
-      expect.objectContaining({ key: 'event-ticket' }),
+      expect.objectContaining({ key: 'tickets' }),
     );
 
     act(() => tree.unmount());
@@ -63,12 +64,13 @@ describe('Home feed sections', () => {
       );
     });
 
-    expect(tree.root.findAllByType(Image)).toHaveLength(2);
     const card = tree.root.findByProps({
-      accessibilityLabel: HOME_EVENT.title,
+      accessibilityLabel: 'Chọn chỗ cho Ngày 1 · Newaza Gi',
     });
     act(() => card.props.onPress());
-    expect(onPressEvent).toHaveBeenCalledWith(HOME_EVENT);
+    expect(onPressEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'sess-1' }),
+    );
 
     act(() => tree.unmount());
   });
@@ -88,11 +90,10 @@ describe('Home feed sections', () => {
     const text = tree.root.findAllByType(Text).map(node => node.props.children);
     expect(text).toEqual(
       expect.arrayContaining([
-        'Video nổi bật',
-        'Trần Quốc Toản Vs Zakhar Dzmitrychenka',
-        'Most Fiery Faceoffs of 2021',
-        'Tin tức & Sự kiện',
-        '10/03/2026',
+        'Phát lại & highlight',
+        'Chung kết NoGi 69 kg: Đức Anh vs Minh Khoa',
+        'Tin tức',
+        '30/09/2026',
       ]),
     );
 

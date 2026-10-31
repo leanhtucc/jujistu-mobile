@@ -137,6 +137,9 @@ export function BottomNavigationItem<Key extends string = string>({
       onPress={() => onPress(item.key)}
       style={styles.item}
     >
+      {/* Top indicator bar matching prototype */}
+      <View style={[styles.indicator, isActive && styles.indicatorActive]} />
+
       {/* Fixed 36×36 icon slot — centers icon and prevents layout shifts */}
       <View style={styles.iconSlot}>
         <BottomNavigationIconSlotRenderer slot={iconSlot} />
@@ -149,6 +152,16 @@ export function BottomNavigationItem<Key extends string = string>({
 }
 
 const styles = StyleSheet.create({
+  indicator: {
+    backgroundColor: 'transparent',
+    borderRadius: 2,
+    height: 3,
+    marginBottom: 2,
+    width: 20,
+  },
+  indicatorActive: {
+    backgroundColor: '#FF8A2E',
+  },
   iconSlot: {
     alignItems: 'center',
     height: BOTTOM_NAV_ICON_SLOT.height,

@@ -1,25 +1,27 @@
+import type { ResponsiveMetrics } from '@jujistu/shared/constants/responsive';
+import { primitiveColors } from '@jujistu/shared/theme';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  type ResponsiveMetrics,
-  useResponsive,
-} from '@jujistu/shared/constants/responsive';
-import { primitiveColors, radius } from '@jujistu/shared/theme';
-import React, { useCallback, useRef } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+  Animated,
+  Dimensions,
+  Easing,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 
-import { HOME_BANNERS } from '../data/home-content';
-import { useAutoCarousel } from '../hooks/useAutoCarousel';
+import { HOME_HERO_SLIDES, type HomeHeroSlide } from '../data/home-content';
 
-const BANNER_GAP = 8;
-const AUTO_PLAY_INTERVAL_MS = 4_000;
 const FIGMA_ACTIVE_WIDTH = 281;
 const FIGMA_ACTIVE_HEIGHT = 158.0625;
 const FIGMA_INACTIVE_WIDTH = 222;
 const FIGMA_INACTIVE_HEIGHT = 125;
-const INITIAL_INDEX = 1;
-
-export interface HomeHeroCarouselProps {
-  readonly onInitialImageSettled?: () => void;
-}
+const SLIDE_DURATION = 4500;
 
 export function resolveHomeHeroGeometry(
   responsive: Pick<ResponsiveMetrics, 'shortestSide' | 'width'> &
@@ -41,10 +43,10 @@ export function resolveHomeHeroGeometry(
     const inactiveHeight = inactiveWidth * (9 / 16);
 
     return {
-      activeWidth: Math.round(activeWidth),
       activeHeight: Math.round(activeHeight),
-      inactiveWidth: Math.round(inactiveWidth),
+      activeWidth: Math.round(activeWidth),
       inactiveHeight: Math.round(inactiveHeight),
+      inactiveWidth: Math.round(inactiveWidth),
     } as const;
   }
 
@@ -59,221 +61,320 @@ export function resolveHomeHeroGeometry(
     inactiveWidth * (FIGMA_INACTIVE_HEIGHT / FIGMA_INACTIVE_WIDTH);
 
   return {
-    activeWidth,
     activeHeight,
-    inactiveWidth,
+    activeWidth,
     inactiveHeight,
+    inactiveWidth,
   } as const;
+}
+
+export interface HomeHeroCarouselProps {
+  readonly onInitialImageSettled?: () => void;
+  readonly onPressSlide?: (slide: HomeHeroSlide) => void;
 }
 
 export function HomeHeroCarousel({
   onInitialImageSettled,
+  onPressSlide,
 }: HomeHeroCarouselProps) {
-  const responsive = useResponsive();
-  const { activeHeight, activeWidth, inactiveHeight, inactiveWidth } =
-    resolveHomeHeroGeometry(responsive);
-  const activeLeft = (responsive.width - activeWidth) / 2;
-  const inactiveTop = (activeHeight - inactiveHeight) / 2;
-  const initialImageSettledRef = useRef(false);
-  const carousel = useAutoCarousel({
-    initialIndex: INITIAL_INDEX,
-    intervalMs: AUTO_PLAY_INTERVAL_MS,
-    itemCount: HOME_BANNERS.length,
-    itemStride: responsive.width,
-  });
-  const handleInitialImageSettled = useCallback(() => {
-    if (initialImageSettledRef.current) {
-      return;
-    }
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(
+    Dimensions.get('window').width - 32,
+  );
+  const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(
+    null,
+  );
+  const progressAnim = useRef(new Animated.Value(0)).current;
 
-    initialImageSettledRef.current = true;
-    onInitialImageSettled?.();
+  const startProgressAnimation = useCallback(() => {
+    progressAnim.setValue(0);
+    Animated.timing(progressAnim, {
+      duration: SLIDE_DURATION,
+      easing: Easing.linear,
+      toValue: 1,
+      useNativeDriver: false,
+    }).start();
+  }, [progressAnim]);
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(offsetX / containerWidth);
+      if (
+        index >= 0 &&
+        index < HOME_HERO_SLIDES.length &&
+        index !== activeIndex
+      ) {
+        setActiveIndex(index);
+        startProgressAnimation();
+      }
+    },
+    [activeIndex, containerWidth, startProgressAnimation],
+  );
+
+  useEffect(() => {
+    startProgressAnimation();
+
+    const timer = setInterval(() => {
+      setActiveIndex(prev => {
+        const next = (prev + 1) % HOME_HERO_SLIDES.length;
+        scrollViewRef.current?.scrollTo({
+          animated: true,
+          x: next * containerWidth,
+        });
+        return next;
+      });
+      progressAnim.setValue(0);
+      Animated.timing(progressAnim, {
+        duration: SLIDE_DURATION,
+        easing: Easing.linear,
+        toValue: 1,
+        useNativeDriver: false,
+      }).start();
+    }, SLIDE_DURATION);
+
+    return () => {
+      clearInterval(timer);
+      progressAnim.stopAnimation();
+    };
+  }, [containerWidth, progressAnim, startProgressAnimation]);
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'],
+  });
+
+  const initialSettledRef = useRef(false);
+  const handleImageSettled = useCallback(() => {
+    if (!initialSettledRef.current) {
+      initialSettledRef.current = true;
+      onInitialImageSettled?.();
+    }
   }, [onInitialImageSettled]);
 
   return (
     <View
       accessibilityLabel="Banner sự kiện nổi bật"
       accessibilityValue={{
+        max: HOME_HERO_SLIDES.length,
         min: 1,
-        max: HOME_BANNERS.length,
-        now: carousel.activeIndex + 1,
+        now: activeIndex + 1,
       }}
-      accessible
-      style={[styles.viewport, { height: activeHeight + 16 }]}
+      onLayout={e => {
+        const w = e.nativeEvent.layout.width;
+        if (w > 0) setContainerWidth(w);
+      }}
+      style={styles.root}
     >
       <ScrollView
-        contentOffset={{ x: responsive.width * INITIAL_INDEX, y: 0 }}
-        decelerationRate="fast"
+        contentContainerStyle={{
+          width: containerWidth * HOME_HERO_SLIDES.length,
+        }}
         horizontal
-        onMomentumScrollEnd={carousel.handleMomentumScrollEnd}
-        onScrollBeginDrag={carousel.handleScrollBeginDrag}
-        onScrollEndDrag={carousel.handleScrollEndDrag}
-        ref={carousel.scrollRef}
+        nestedScrollEnabled
+        onMomentumScrollEnd={handleScroll}
+        pagingEnabled
+        ref={scrollViewRef}
         showsHorizontalScrollIndicator={false}
-        snapToInterval={responsive.width}
-        style={{ height: activeHeight }}
+        showsVerticalScrollIndicator={false}
+        style={[styles.scroll, { width: containerWidth }]}
       >
-        {HOME_BANNERS.map((source, index) => {
-          const previousIndex =
-            (index - 1 + HOME_BANNERS.length) % HOME_BANNERS.length;
-          const nextIndex = (index + 1) % HOME_BANNERS.length;
-
+        {HOME_HERO_SLIDES.map(slide => {
           return (
-            <View
-              key={index}
-              style={[
-                styles.page,
-                { width: responsive.width, height: activeHeight },
+            <Pressable
+              key={slide.id}
+              onPress={() => onPressSlide?.(slide)}
+              style={({ pressed }) => [
+                styles.card,
+                { width: containerWidth },
+                pressed && styles.cardPressed,
               ]}
             >
-              <View
-                style={[
-                  styles.banner,
-                  {
-                    left: activeLeft - BANNER_GAP - inactiveWidth,
-                    top: inactiveTop,
-                    width: inactiveWidth,
-                    height: inactiveHeight,
-                  },
-                ]}
-              >
-                <Image
-                  source={HOME_BANNERS[previousIndex]}
-                  resizeMode="cover"
-                  style={styles.image}
-                />
-                <View
-                  pointerEvents="none"
-                  style={styles.inactiveOverlayStrong}
-                />
-              </View>
+              <Image
+                fadeDuration={0}
+                onLoad={handleImageSettled}
+                resizeMode="cover"
+                source={slide.image}
+                style={[StyleSheet.absoluteFill, styles.cardImage]}
+              />
+              {/* Subtle top & bottom dark scrim gradients */}
+              <View style={styles.scrimTop} />
+              <View style={styles.scrimBottom} />
 
-              <View
-                style={[
-                  styles.banner,
-                  {
-                    left: activeLeft,
-                    width: activeWidth,
-                    height: activeHeight,
-                  },
-                ]}
-              >
-                <Image
-                  onError={
-                    index === INITIAL_INDEX
-                      ? handleInitialImageSettled
-                      : undefined
-                  }
-                  onLoad={
-                    index === INITIAL_INDEX
-                      ? handleInitialImageSettled
-                      : undefined
-                  }
-                  source={source}
-                  resizeMode="cover"
-                  style={styles.image}
-                />
-              </View>
-
-              <View
-                style={[
-                  styles.banner,
-                  {
-                    left: activeLeft + activeWidth + BANNER_GAP,
-                    top: inactiveTop,
-                    width: inactiveWidth,
-                    height: inactiveHeight,
-                  },
-                ]}
-              >
-                <Image
-                  source={HOME_BANNERS[nextIndex]}
-                  resizeMode="cover"
-                  style={styles.image}
-                />
+              {/* Slide text and tag details at bottom */}
+              <View style={styles.textContainer}>
                 <View
-                  pointerEvents="none"
-                  style={styles.inactiveOverlayLight}
-                />
+                  style={[
+                    styles.tagPill,
+                    slide.tagVariant === 'accent'
+                      ? styles.tagAccent
+                      : slide.tagVariant === 'solid'
+                      ? styles.tagSolid
+                      : styles.tagNeutral,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.tagText,
+                      slide.tagVariant === 'accent' && styles.tagAccentText,
+                    ]}
+                  >
+                    {slide.tag}
+                  </Text>
+                </View>
+
+                <Text numberOfLines={2} style={styles.titleText}>
+                  {slide.title}
+                </Text>
+                <Text numberOfLines={1} style={styles.metaText}>
+                  {slide.meta}
+                </Text>
               </View>
-            </View>
+            </Pressable>
           );
         })}
       </ScrollView>
 
-      <View accessibilityElementsHidden style={styles.pagination}>
-        {HOME_BANNERS.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              responsive.isTablet ? styles.tabletDot : undefined,
-              index === carousel.activeIndex ? styles.activeDot : undefined,
-            ]}
-          />
-        ))}
+      {/* Progress segment indicators at TOP */}
+      <View style={styles.indicatorsContainer}>
+        {HOME_HERO_SLIDES.map((slide, index) => {
+          const isActive = index === activeIndex;
+          const isPast = index < activeIndex;
+          return (
+            <View key={`indicator-${slide.id}`} style={styles.indicatorTrack}>
+              {isActive ? (
+                <Animated.View
+                  style={[styles.indicatorBar, { width: progressWidth }]}
+                />
+              ) : (
+                <View
+                  style={[
+                    styles.indicatorBar,
+                    isPast
+                      ? styles.indicatorBarFilled
+                      : styles.indicatorBarEmpty,
+                  ]}
+                />
+              )}
+            </View>
+          );
+        })}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  viewport: {
-    width: '100%',
-    alignItems: 'center',
+  root: {
+    marginHorizontal: 16,
+    borderRadius: 16,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
+    backgroundColor: primitiveColors.neutral[900],
+    height: 220,
   },
-  page: {
+  scroll: {
+    height: 220,
+  },
+  card: {
+    height: 220,
+    overflow: 'hidden',
     position: 'relative',
-    overflow: 'hidden',
+    backgroundColor: primitiveColors.neutral[850],
   },
-  banner: {
-    position: 'absolute',
-    overflow: 'hidden',
-    borderRadius: radius.sm,
+  cardPressed: {
+    opacity: 0.95,
   },
-  image: {
+  cardImage: {
     width: '100%',
     height: '100%',
-    borderRadius: radius.sm,
   },
-  inactiveOverlayStrong: {
+  scrimTop: {
     position: 'absolute',
     top: 0,
-    right: 0,
-    bottom: 0,
     left: 0,
-    borderRadius: radius.sm,
-    backgroundColor: primitiveColors.neutral[1000],
-    opacity: 0.4,
+    right: 0,
+    height: 50,
+    backgroundColor: 'rgba(5, 5, 5, 0.45)',
   },
-  inactiveOverlayLight: {
+  scrimBottom: {
     position: 'absolute',
-    top: 0,
-    right: 0,
     bottom: 0,
     left: 0,
-    borderRadius: radius.sm,
-    backgroundColor: primitiveColors.neutral[1000],
-    opacity: 0.2,
+    right: 0,
+    height: 120,
+    backgroundColor: 'rgba(5, 5, 5, 0.85)',
   },
-  pagination: {
-    height: 4,
-    marginTop: 12,
+  textContainer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    gap: 8,
+  },
+  tagPill: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  tagAccent: {
+    backgroundColor: 'rgba(254, 139, 51, 0.22)',
+    borderWidth: 1,
+    borderColor: 'rgba(254, 139, 51, 0.5)',
+  },
+  tagAccentText: {
+    color: primitiveColors.orange[500],
+  },
+  tagSolid: {
+    backgroundColor: primitiveColors.red[500],
+  },
+  tagNeutral: {
+    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+  },
+  tagText: {
+    color: primitiveColors.neutral[0],
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  titleText: {
+    color: primitiveColors.neutral[0],
+    fontSize: 18,
+    fontWeight: '700',
+    lineHeight: 24,
+    letterSpacing: -0.3,
+  },
+  metaText: {
+    color: primitiveColors.neutral[200],
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  indicatorsContainer: {
+    position: 'absolute',
+    top: 12,
+    left: 14,
+    right: 14,
     flexDirection: 'row',
     gap: 4,
   },
-  dot: {
-    width: 4,
-    height: 4,
-    borderRadius: radius.full,
-    backgroundColor: primitiveColors.neutral[300],
+  indicatorTrack: {
+    flex: 1,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.24)',
+    overflow: 'hidden',
   },
-  tabletDot: {
-    width: 6,
-    height: 6,
+  indicatorBar: {
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: primitiveColors.neutral[0],
   },
-  activeDot: {
-    backgroundColor: primitiveColors.red[500],
+  indicatorBarFilled: {
+    width: '100%',
+  },
+  indicatorBarEmpty: {
+    width: '0%',
   },
 });

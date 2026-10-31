@@ -9,6 +9,9 @@ export const spacing = {
   8: 16,
   12: 24,
   16: 32,
+  gutter: 20,
+  stack: 12,
+  section: 32,
 } as const;
 
 export type Spacing = typeof spacing;

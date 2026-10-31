@@ -1,5 +1,5 @@
-import { useResponsive } from '@jujistu/shared/constants/responsive';
-import { radius, semanticColors, typography } from '@jujistu/shared/theme';
+import { primitiveColors } from '@jujistu/shared/theme';
+import { AppIcon } from '@jujistu/ui';
 import React from 'react';
 import {
   Image,
@@ -33,181 +33,195 @@ export function resolveHomeFeaturedVideoGeometry(windowWidth: number) {
 }
 
 export interface HomeFeaturedVideoSectionProps {
+  readonly items?: ReadonlyArray<HomeVideoItem>;
   readonly onPressAll?: () => void;
   readonly onPressItem?: (item: HomeVideoItem) => void;
 }
 
-function SectionLink({
-  onPress,
-  scale,
-}: {
-  readonly onPress?: () => void;
-  readonly scale: number;
-}) {
-  const textStyle = {
-    fontSize: (typography.body.md.fontSize as number) * scale,
-    lineHeight: (typography.body.md.lineHeight as number) * scale,
-  };
-
-  if (!onPress) {
-    return <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>;
-  }
-
-  return (
-    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress}>
-      <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>
-    </Pressable>
-  );
-}
-
-function VideoCard({
-  cardHeight,
-  cardWidth,
-  item,
-  onPress,
-  scale,
-}: {
-  readonly cardHeight: number;
-  readonly cardWidth: number;
-  readonly item: HomeVideoItem;
-  readonly onPress?: (item: HomeVideoItem) => void;
-  readonly scale: number;
-}) {
-  const cardStyle = [styles.card, { width: cardWidth, gap: 8 * scale }];
-  const content = (
-    <>
-      <Image
-        accessibilityIgnoresInvertColors
-        resizeMode="cover"
-        source={item.image}
-        style={[styles.image, { height: cardHeight, width: cardWidth }]}
-      />
-      <Text
-        numberOfLines={1}
-        style={[
-          styles.title,
-          {
-            fontSize: (typography.subtitle.md.fontSize as number) * scale,
-            lineHeight: (typography.subtitle.md.lineHeight as number) * scale,
-            width: cardWidth,
-          },
-        ]}
-      >
-        {item.title}
-      </Text>
-    </>
-  );
-
-  if (!onPress) {
-    return <View style={cardStyle}>{content}</View>;
-  }
-
-  return (
-    <Pressable
-      accessibilityLabel={item.title}
-      accessibilityRole="button"
-      onPress={() => onPress(item)}
-      style={cardStyle}
-    >
-      {content}
-    </Pressable>
-  );
-}
-
 export function HomeFeaturedVideoSection({
+  items = HOME_FEATURED_VIDEOS,
   onPressAll,
   onPressItem,
 }: HomeFeaturedVideoSectionProps) {
-  const responsive = useResponsive();
-  const geometry = resolveHomeFeaturedVideoGeometry(responsive.width);
-  const cards = HOME_FEATURED_VIDEOS.map(item => (
-    <VideoCard
-      cardHeight={geometry.cardHeight}
-      cardWidth={geometry.cardWidth}
-      item={item}
-      key={item.id}
-      onPress={onPressItem}
-      scale={geometry.scale}
-    />
-  ));
-
   return (
-    <View
-      accessibilityLabel="Video nổi bật"
-      style={[styles.container, { width: geometry.sectionWidth }]}
-    >
-      <View style={[styles.headingRow, { minHeight: 20 * geometry.scale }]}>
-        <Text
-          accessibilityRole="header"
-          style={[
-            styles.heading,
-            {
-              fontSize:
-                (typography.heading.md.fontSize as number) * geometry.scale,
-              lineHeight:
-                (typography.heading.md.lineHeight as number) * geometry.scale,
-            },
-          ]}
+    <View style={styles.root}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Phát lại & highlight</Text>
+        <Pressable
+          accessibilityLabel="Xem tất cả trên YouTube"
+          accessibilityRole="button"
+          onPress={onPressAll}
+          style={styles.youtubeBadge}
         >
-          Video nổi bật
-        </Text>
-        <SectionLink onPress={onPressAll} scale={geometry.scale} />
+          <AppIcon color={primitiveColors.red[500]} name="play" size={12} />
+          <Text style={styles.youtubeText}>YOUTUBE</Text>
+        </Pressable>
       </View>
-      {HOME_FEATURED_VIDEOS.length > 2 ? (
-        <ScrollView
-          contentContainerStyle={[
-            styles.cards,
-            { gap: geometry.cardGap, marginTop: 6 * geometry.scale },
-          ]}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        >
-          {cards}
-        </ScrollView>
-      ) : (
-        <View
-          style={[
-            styles.cards,
-            { gap: geometry.cardGap, marginTop: 6 * geometry.scale },
-          ]}
-        >
-          {cards}
-        </View>
-      )}
+
+      {/* Video Horizontal List */}
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
+        {items.map(item => (
+          <Pressable
+            accessibilityLabel={item.title}
+            accessibilityRole="button"
+            key={item.id}
+            onPress={() => onPressItem?.(item)}
+            style={({ pressed }) => [
+              styles.card,
+              pressed && styles.cardPressed,
+            ]}
+          >
+            {/* Thumbnail */}
+            <View style={styles.thumbnailContainer}>
+              <Image
+                resizeMode="cover"
+                source={item.image}
+                style={styles.thumbnailImage}
+              />
+              <View style={styles.darkScrim} />
+
+              {/* Centered Glass Play button */}
+              <View style={styles.playButtonCircle}>
+                <AppIcon
+                  color={primitiveColors.neutral[0]}
+                  name="play"
+                  size={18}
+                />
+              </View>
+
+              {/* Duration badge at bottom right */}
+              {item.duration && (
+                <View style={styles.durationBadge}>
+                  <Text style={styles.durationText}>{item.duration}</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Video metadata */}
+            <View style={styles.infoCol}>
+              <Text numberOfLines={2} style={styles.videoTitle}>
+                {item.title}
+              </Text>
+              {item.meta && (
+                <Text numberOfLines={1} style={styles.videoMeta}>
+                  {item.meta}
+                </Text>
+              )}
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
+  root: {
+    gap: 12,
   },
-  headingRow: {
-    marginHorizontal: 1,
+  header: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'baseline',
     justifyContent: 'space-between',
+    paddingHorizontal: 16,
   },
-  heading: {
-    ...typography.heading.md,
-    color: semanticColors.text.primary,
+  headerTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
-  viewAll: {
-    ...typography.body.md,
-    color: semanticColors.text.tertiary,
-    textDecorationLine: 'underline',
-  },
-  cards: {
+  youtubeBadge: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  youtubeText: {
+    color: primitiveColors.neutral[300],
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    gap: 12,
   },
   card: {
-    flexShrink: 0,
+    width: 224,
+    gap: 8,
   },
-  image: {
-    borderRadius: radius.sm,
+  cardPressed: {
+    opacity: 0.85,
   },
-  title: {
-    ...typography.subtitle.md,
-    color: semanticColors.text.primary,
+  thumbnailContainer: {
+    height: 126,
+    borderRadius: 12,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: primitiveColors.neutral[850],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  darkScrim: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'rgba(11, 10, 10, 0.35)',
+  },
+  playButtonCircle: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 44,
+    height: 44,
+    marginLeft: -22,
+    marginTop: -22,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  durationBadge: {
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  durationText: {
+    color: primitiveColors.neutral[0],
+    fontSize: 11,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  infoCol: {
+    gap: 4,
+  },
+  videoTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 18,
+  },
+  videoMeta: {
+    color: primitiveColors.neutral[300],
+    fontSize: 11,
+    fontWeight: '500',
   },
 });

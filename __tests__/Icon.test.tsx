@@ -19,7 +19,6 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
   );
 
   const BLOCKED_CANDIDATE_GLYPHS = [
-    'trophy',
     'Search-o',
     'searchO',
     'close',
@@ -155,6 +154,20 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
         : false;
       const friendsInactiveAssignable: IsFriendsInactiveAssignable = true;
       expect(friendsInactiveAssignable).toBe(true);
+
+      type IsAthletesActiveAssignable = ['athletesActive'] extends [IconName]
+        ? true
+        : false;
+      const athletesActiveAssignable: IsAthletesActiveAssignable = true;
+      expect(athletesActiveAssignable).toBe(true);
+
+      type IsAthletesInactiveAssignable = ['athletesInactive'] extends [
+        IconName,
+      ]
+        ? true
+        : false;
+      const athletesInactiveAssignable: IsAthletesInactiveAssignable = true;
+      expect(athletesInactiveAssignable).toBe(true);
     });
 
     it('verifies blocked glyphs are not assignable to IconName', () => {
@@ -163,8 +176,8 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
       expect(searchAssignable).toBe(true);
 
       type IsTrophyAssignable = ['trophy'] extends [IconName] ? true : false;
-      const trophyAssignable: IsTrophyAssignable = false;
-      expect(trophyAssignable).toBe(false);
+      const trophyAssignable: IsTrophyAssignable = true;
+      expect(trophyAssignable).toBe(true);
 
       type IsSearchOAssignable = ['Search-o'] extends [IconName] ? true : false;
       const searchOAssignable: IsSearchOAssignable = false;
@@ -181,7 +194,7 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
     });
 
     it('keeps only the verified search spelling in the registry', () => {
-      expect('trophy' in glyphs).toBe(false);
+      expect('trophy' in glyphs).toBe(true);
       expect('search' in glyphs).toBe(true);
       expect('Search-o' in glyphs).toBe(false);
       expect('searchO' in glyphs).toBe(false);
@@ -189,7 +202,7 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
   });
 
   describe('C. Production registry contains exactly the verified glyphs', () => {
-    it('contains all 30 verified glyphs', () => {
+    it('contains all verified glyphs', () => {
       const keys = Object.keys(glyphs);
       expect(keys.sort()).toEqual(
         [
@@ -199,6 +212,8 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'settings',
           'gem',
           'coin',
+          'bell',
+          'arrowRight',
           'balanceAdd',
           'club',
           'gift',
@@ -216,6 +231,8 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'missionInactive',
           'friendsActive',
           'friendsInactive',
+          'athletesActive',
+          'athletesInactive',
           'search',
           'play',
           'volumeUp',
@@ -223,9 +240,37 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'fullscreenTopRight',
           'fullscreenBottomRight',
           'fullscreenBottomLeft',
+          // Phosphor vector glyphs
+          'house',
+          'houseFill',
+          'storefront',
+          'storefrontFill',
+          'trophy',
+          'trophyFill',
+          'path',
+          'pathFill',
+          'target',
+          'targetFill',
+          'calendarCheck',
+          'medal',
+          'ticket',
+          'youtubeLogo',
+          'usersThree',
+          'ranking',
+          'gameController',
+          'bellPhosphor',
+          'bellRinging',
+          'bellSlash',
+          'coinsPhosphor',
+          'playCirclePhosphor',
+          'clock',
+          'plus',
+          'minus',
+          'check',
+          'shoppingBag',
         ].sort(),
       );
-      expect(keys).toHaveLength(30);
+      expect(keys).toHaveLength(61);
       // Shared UI glyphs
       expect(typeof glyphs.chevronLeft).toBe('function');
       expect(typeof glyphs.logOut).toBe('function');
@@ -252,6 +297,8 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
       expect(typeof glyphs.missionInactive).toBe('function');
       expect(typeof glyphs.friendsActive).toBe('function');
       expect(typeof glyphs.friendsInactive).toBe('function');
+      expect(typeof glyphs.athletesActive).toBe('function');
+      expect(typeof glyphs.athletesInactive).toBe('function');
       // Video browsing and playback glyphs
       expect(typeof glyphs.search).toBe('function');
       expect(typeof glyphs.play).toBe('function');

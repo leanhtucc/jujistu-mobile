@@ -3,3 +3,7 @@ ios/
 node_modules/
 coverage/
 *.jsbundle
+*.html
+.agents/
+.tmp/
+scratch/

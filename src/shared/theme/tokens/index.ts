@@ -16,3 +16,9 @@ export {
   type LineHeights,
   type LetterSpacings,
 } from './typography';
+export {
+  motionDuration,
+  motionEasing,
+  type MotionDuration,
+  type MotionEasing,
+} from './motion';

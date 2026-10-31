@@ -9,6 +9,7 @@ import {
 
 import { componentTypography } from '@jujistu/shared/theme';
 
+import { AppBeltTip, BELT_TIP_WIDTH } from './app-belt-tip';
 import { AppIcon } from './icon';
 import { PrimaryGradientFill } from '../utils/primary-gradient-fill';
 import {
@@ -26,6 +27,7 @@ export function AppButton({
   iconPosition = 'leading',
   disabled = false,
   loading = false,
+  beltTip = false,
   onPress,
   accessibilityLabel,
   containerStyle,
@@ -77,12 +79,17 @@ export function AppButton({
             ]}
           >
             {visualRecipe.gradient ? <PrimaryGradientFill /> : null}
+            {beltTip && visualRecipe.gradient ? <AppBeltTip /> : null}
             <View
               style={[
                 styles.content,
                 {
                   gap: sizeRecipe.gap,
                   paddingHorizontal: sizeRecipe.paddingHorizontal,
+                  paddingRight:
+                    beltTip && visualRecipe.gradient
+                      ? sizeRecipe.paddingHorizontal + BELT_TIP_WIDTH
+                      : sizeRecipe.paddingHorizontal,
                   paddingVertical: sizeRecipe.paddingVertical,
                 },
               ]}

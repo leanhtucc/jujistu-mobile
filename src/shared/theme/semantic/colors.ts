@@ -9,6 +9,9 @@ export const semanticColors = {
     surfaceElevated: primitiveColors.neutral[750],
     eventSurface: primitiveColors.neutral[550],
     overlay: primitiveColors.alpha.black80,
+    accentTint: primitiveColors.orange[900],
+    dangerTint: primitiveColors.red[900],
+    gi: primitiveColors.gi[100],
   },
 
   text: {
@@ -35,6 +38,13 @@ export const semanticColors = {
     accent: primitiveColors.orange[500],
     error: primitiveColors.red[400],
   },
+
+  stitch: {
+    color: primitiveColors.alpha.white14,
+    accent: primitiveColors.alpha.orange55,
+  },
+
+  belt: primitiveColors.belt,
 
   action: {
     primary: primitiveColors.red[500],

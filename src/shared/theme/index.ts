@@ -5,6 +5,12 @@ export { borderWidth, type BorderWidth } from './tokens/border-width';
 export { opacity, type Opacity } from './tokens/opacity';
 export { elevation, type ElevationLevel } from './tokens/elevation';
 export {
+  motionDuration,
+  motionEasing,
+  type MotionDuration,
+  type MotionEasing,
+} from './tokens/motion';
+export {
   fontFamilies,
   fontSizes,
   fontWeights,
@@ -25,6 +31,8 @@ export {
 export {
   typography,
   componentTypography,
+  dsTypography,
+  type DsTypography,
   type Typography,
   type ComponentTypography,
 } from './semantic/typography';

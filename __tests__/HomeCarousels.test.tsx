@@ -27,19 +27,19 @@ describe('Home carousel behavior', () => {
           node => node.props.accessibilityLabel === 'Banner sự kiện nổi bật',
         )!;
 
+    expect(getCarousel().props.accessibilityValue.now).toBe(1);
+
+    act(() => {
+      jest.advanceTimersByTime(4_500);
+    });
+
     expect(getCarousel().props.accessibilityValue.now).toBe(2);
 
     act(() => {
-      jest.advanceTimersByTime(4_000);
+      jest.advanceTimersByTime(4_500);
     });
 
     expect(getCarousel().props.accessibilityValue.now).toBe(3);
-
-    act(() => {
-      jest.advanceTimersByTime(4_000);
-    });
-
-    expect(getCarousel().props.accessibilityValue.now).toBe(2);
 
     act(() => tree.unmount());
   });
@@ -57,8 +57,8 @@ describe('Home carousel behavior', () => {
     expect(tree.root.findAllByType(ScrollView)).toHaveLength(0);
     expect(titles).toEqual(
       expect.arrayContaining([
-        'Phạm Văn Hào 2 - 0 Trần Trọng, chiến thắng áp đảo trong trận đấu MMA đầy kịch tính',
-        '10/03/2026',
+        'Thái Nguyên nhất toàn đoàn Giải vô địch Quốc gia 2026',
+        '30/09/2026',
       ]),
     );
 

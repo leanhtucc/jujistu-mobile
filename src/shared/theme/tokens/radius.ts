@@ -4,6 +4,9 @@ export const radius = {
   sm: 6,
   md: 8,
   lg: 16,
+  card: 14,
+  banner: 20,
+  sheet: 28,
   full: 999,
 } as const;
 

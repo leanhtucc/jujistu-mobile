@@ -19,6 +19,11 @@ export interface ButtonProps {
   iconPosition?: ButtonIconPosition;
   disabled?: boolean;
   loading?: boolean;
+  /**
+   * Ends the primary button with a dark rank-bar segment (two stripes and an
+   * arrow), like the tip of a belt. Applies to the filled primary button only.
+   */
+  beltTip?: boolean;
   onPress: () => void;
   accessibilityLabel?: string;
   containerStyle?: StyleProp<ViewStyle>;

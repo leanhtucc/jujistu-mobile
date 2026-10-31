@@ -1,5 +1,4 @@
-import { useResponsive } from '@jujistu/shared/constants/responsive';
-import { radius, semanticColors, typography } from '@jujistu/shared/theme';
+import { primitiveColors } from '@jujistu/shared/theme';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -24,193 +23,152 @@ export function resolveHomeNewsGeometry(windowWidth: number) {
 }
 
 export interface HomeNewsSectionProps {
+  readonly news?: ReadonlyArray<HomeNewsItem>;
   readonly onPressAll?: () => void;
   readonly onPressItem?: (item: HomeNewsItem) => void;
 }
 
-function NewsItem({
-  contentGap,
-  imageHeight,
-  imageWidth,
-  item,
-  onPress,
-  scale,
-}: {
-  readonly contentGap: number;
-  readonly imageHeight: number;
-  readonly imageWidth: number;
-  readonly item: HomeNewsItem;
-  readonly onPress?: (item: HomeNewsItem) => void;
-  readonly scale: number;
-}) {
-  const content = (
-    <>
-      <Image
-        accessibilityIgnoresInvertColors
-        resizeMode="cover"
-        source={item.image}
-        style={[styles.image, { height: imageHeight, width: imageWidth }]}
-      />
-      <View style={[styles.copy, { minHeight: imageHeight }]}>
-        <Text
-          numberOfLines={3}
-          style={[
-            styles.description,
-            {
-              fontSize: (typography.subtitle.md.fontSize as number) * scale,
-              lineHeight: (typography.subtitle.md.lineHeight as number) * scale,
-            },
-          ]}
-        >
-          {item.description}
-        </Text>
-        <Text
-          style={[
-            styles.date,
-            {
-              fontSize: (typography.body.md.fontSize as number) * scale,
-              lineHeight: (typography.body.md.lineHeight as number) * scale,
-            },
-          ]}
-        >
-          {item.date}
-        </Text>
-      </View>
-    </>
-  );
-  const style = [
-    styles.item,
-    { columnGap: contentGap, minHeight: imageHeight },
-  ];
-
-  if (!onPress) {
-    return <View style={style}>{content}</View>;
-  }
-
-  return (
-    <Pressable
-      accessibilityLabel={`${item.description}, ${item.date}`}
-      accessibilityRole="button"
-      onPress={() => onPress(item)}
-      style={style}
-    >
-      {content}
-    </Pressable>
-  );
-}
-
-function ViewAllLink({
-  onPress,
-  scale,
-}: {
-  readonly onPress?: () => void;
-  readonly scale: number;
-}) {
-  const textStyle = {
-    fontSize: (typography.body.md.fontSize as number) * scale,
-    lineHeight: (typography.body.md.lineHeight as number) * scale,
-  };
-
-  if (!onPress) {
-    return <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>;
-  }
-
-  return (
-    <Pressable accessibilityRole="button" hitSlop={8} onPress={onPress}>
-      <Text style={[styles.viewAll, textStyle]}>Xem tất cả</Text>
-    </Pressable>
-  );
-}
-
 export function HomeNewsSection({
+  news = HOME_NEWS,
   onPressAll,
   onPressItem,
 }: HomeNewsSectionProps) {
-  const responsive = useResponsive();
-  const geometry = resolveHomeNewsGeometry(responsive.width);
-
   return (
-    <View
-      accessibilityLabel="Tin tức và sự kiện"
-      style={[styles.container, { width: geometry.sectionWidth }]}
-    >
-      <View style={[styles.headingRow, { minHeight: 20 * geometry.scale }]}>
-        <Text
-          accessibilityRole="header"
-          style={[
-            styles.heading,
-            {
-              fontSize:
-                (typography.heading.md.fontSize as number) * geometry.scale,
-              lineHeight:
-                (typography.heading.md.lineHeight as number) * geometry.scale,
-            },
-          ]}
-        >
-          Tin tức &amp; Sự kiện
-        </Text>
-        <ViewAllLink onPress={onPressAll} scale={geometry.scale} />
+    <View style={styles.root}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Tin tức</Text>
+        {onPressAll ? (
+          <Pressable
+            accessibilityLabel="Xem tất cả tin tức"
+            accessibilityRole="button"
+            onPress={onPressAll}
+          >
+            <Text style={styles.viewAllText}>XEM TẤT CẢ</Text>
+          </Pressable>
+        ) : null}
       </View>
-      <View
-        style={[
-          styles.items,
-          { gap: 12 * geometry.scale, marginTop: 6 * geometry.scale },
-        ]}
-      >
-        {HOME_NEWS.map(item => (
-          <NewsItem
-            contentGap={geometry.contentGap}
-            imageHeight={geometry.imageHeight}
-            imageWidth={geometry.imageWidth}
-            item={item}
-            key={item.id}
-            onPress={onPressItem}
-            scale={geometry.scale}
-          />
-        ))}
+
+      {/* Vertical News Items */}
+      <View style={styles.itemsList}>
+        {news.map((item, index) => {
+          const isLast = index === news.length - 1;
+          return (
+            <Pressable
+              accessibilityLabel={`${item.category ?? 'Tin tức'}: ${
+                item.title ?? item.description
+              }`}
+              accessibilityRole="button"
+              key={item.id}
+              onPress={() => onPressItem?.(item)}
+              style={({ pressed }) => [
+                styles.itemRow,
+                !isLast && styles.itemBorderBottom,
+                pressed && styles.itemPressed,
+              ]}
+            >
+              {/* Thumbnail */}
+              <View style={styles.thumbnailContainer}>
+                <Image
+                  resizeMode="cover"
+                  source={item.image}
+                  style={styles.thumbnailImage}
+                />
+              </View>
+
+              {/* Text metadata */}
+              <View style={styles.infoCol}>
+                {item.category ? (
+                  <Text style={styles.categoryOverline}>{item.category}</Text>
+                ) : null}
+                <Text numberOfLines={2} style={styles.newsTitle}>
+                  {item.title ?? item.description}
+                </Text>
+                <Text style={styles.dateText}>{item.date}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
+  root: {
+    paddingHorizontal: 16,
+    gap: 8,
   },
-  headingRow: {
+  header: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'baseline',
     justifyContent: 'space-between',
+    marginBottom: 4,
   },
-  heading: {
-    ...typography.heading.md,
-    color: semanticColors.text.primary,
+  headerTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
-  viewAll: {
-    ...typography.body.md,
-    color: semanticColors.text.tertiary,
-    textDecorationLine: 'underline',
+  viewAllText: {
+    color: primitiveColors.orange[500],
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1,
   },
-  items: {},
-  item: {
+  itemsList: {
+    gap: 0,
+  },
+  itemRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    gap: 12,
+    paddingVertical: 12,
   },
-  image: {
-    flexShrink: 0,
-    borderRadius: radius.sm,
+  itemBorderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+    borderStyle: 'dashed',
   },
-  copy: {
+  itemPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.985 }],
+  },
+  thumbnailContainer: {
+    width: 92,
+    height: 68,
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: primitiveColors.neutral[850],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  infoCol: {
     flex: 1,
-    minWidth: 0,
     justifyContent: 'space-between',
+    gap: 4,
+    minWidth: 0,
   },
-  description: {
-    ...typography.subtitle.md,
-    color: semanticColors.text.primary,
+  categoryOverline: {
+    color: primitiveColors.orange[500],
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
-  date: {
-    ...typography.body.md,
-    color: semanticColors.text.secondary,
+  newsTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 18,
+  },
+  dateText: {
+    color: primitiveColors.neutral[300],
+    fontSize: 11,
+    fontWeight: '500',
   },
 });

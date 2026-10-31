@@ -239,3 +239,47 @@ Ownership of screen insets follows a strict boundary:
 2. **Large SVG Glyph Sources**: High-complexity rasterized assets (e.g. `ic_gem.tsx` and `ic_coin.tsx`) contain detailed SVG vector definitions.
 3. **Missing Approved Status Colors**: `success`, `warning`, and `information` statuses fall back to neutral surfaces pending design approval of dedicated status tokens.
 4. **Runtime Font Assets**: Barlow font files (`Barlow-Regular.ttf`, `Barlow-Medium.ttf`, `Barlow-SemiBold.ttf`, `Barlow-Bold.ttf`) are mapped in `typography.ts` and configured for NativeWind, but require native platform font linking for pixel-perfect device rendering.
+
+---
+
+## 11. Jujitsu Mobile Design System foundation (ADR 0018)
+
+Sections 1–10 describe the original Barlow-based system. ADR 0018 adds the
+"Gi & Belt" foundation used by the v4 screens.
+
+### New components (`@jujistu/ui`)
+
+| Layer    | Component             | Notes                                                                       |
+| -------- | --------------------- | --------------------------------------------------------------------------- |
+| Atom     | `AppTag`              | Overline label; `neutral`, `accent`, `solid`, `outline`; 4px radius.        |
+| Atom     | `AppProgressBar`      | Gradient fill, value clamped to 0..1, `progressbar` semantics.              |
+| Atom     | `AppAvatar`           | Image or initials; optional belt strap via `AppBeltBar`.                    |
+| Atom     | `AppEmberGlow`        | Top-right radial orange/red wash; `intensity` 0..1; fills its parent.       |
+| Atom     | `AppStampIn`          | Lands its child like a stamp (spring, scale + tilt); honours reduce motion. |
+| Molecule | `AppCard`             | 14px radius, lapel cut (`lapel`), dashed seam (`stitched`), `selected`.     |
+| Molecule | `AppChip`             | 36px; selected chips tilt -2°.                                              |
+| Molecule | `AppSegmentedControl` | Pill track, controlled by `activeKey` / `onChange`.                         |
+| Molecule | `AppBottomSheet`      | Modal sheet, 28px top radius, safe-area aware, backdrop closes.             |
+| Molecule | `AppQuantityStepper`  | Minus/plus buttons around a count; controlled, with disabled limits.        |
+
+### New tokens (`@jujistu/shared/theme`)
+
+- `radius.card` 14, `radius.banner` 20, `radius.sheet` 28.
+- `spacing.gutter` 20, `spacing.stack` 12, `spacing.section` 32.
+- `motionDuration` (120 / 180 / 260 / 420 ms) and `motionEasing` (`grip`,
+  `release`, `sweep`, `spring` cubic-bezier control points).
+- `fontFamilies.heading`, `.body`, `.mono` and the `dsTypography` roles
+  (`display`, `title`, `stat`, `body`, `bodyStrong`, `overline`, `counter`).
+
+### Typography status
+
+`dsTypography` references Bricolage Grotesque (Bold, ExtraBold), Be Vietnam Pro
+(Regular, Medium, SemiBold) and JetBrains Mono (Medium). The files are in
+`assets/fonts/` and linked for Android and iOS; device rendering has not been
+verified. Uppercase is reserved for `overline`.
+
+### Belt tip
+
+`AppButton` accepts `beltTip`. On the filled primary button (not disabled, not
+`soft`/`outline`/`ghost`) it ends in a dark rank-bar segment with two gi-white
+stripes and an arrow. It is used on the main call to action of a screen only.

@@ -16,6 +16,12 @@
 		A10000000000000000000003 /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Barlow-SemiBold.ttf */; };
 		A10000000000000000000004 /* Barlow-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* Barlow-Bold.ttf */; };
 		A10000000000000000000005 /* EsportWoglen-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* EsportWoglen-Regular.ttf */; };
+		A10000000000000000000006 /* BricolageGrotesque-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* BricolageGrotesque-Bold.ttf */; };
+		A10000000000000000000007 /* BricolageGrotesque-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* BricolageGrotesque-ExtraBold.ttf */; };
+		A10000000000000000000008 /* BeVietnamPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* BeVietnamPro-Regular.ttf */; };
+		A10000000000000000000009 /* BeVietnamPro-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* BeVietnamPro-Medium.ttf */; };
+		A1000000000000000000000A /* BeVietnamPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* BeVietnamPro-SemiBold.ttf */; };
+		A1000000000000000000000B /* JetBrainsMono-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* JetBrainsMono-Medium.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +39,12 @@
 		A20000000000000000000003 /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
 		A20000000000000000000004 /* Barlow-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "Barlow-Bold.ttf"; sourceTree = "<group>"; };
 		A20000000000000000000005 /* EsportWoglen-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "EsportWoglen-Regular.ttf"; sourceTree = "<group>"; };
+		A20000000000000000000006 /* BricolageGrotesque-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "BricolageGrotesque-Bold.ttf"; sourceTree = "<group>"; };
+		A20000000000000000000007 /* BricolageGrotesque-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "BricolageGrotesque-ExtraBold.ttf"; sourceTree = "<group>"; };
+		A20000000000000000000008 /* BeVietnamPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "BeVietnamPro-Regular.ttf"; sourceTree = "<group>"; };
+		A20000000000000000000009 /* BeVietnamPro-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "BeVietnamPro-Medium.ttf"; sourceTree = "<group>"; };
+		A2000000000000000000000A /* BeVietnamPro-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "BeVietnamPro-SemiBold.ttf"; sourceTree = "<group>"; };
+		A2000000000000000000000B /* JetBrainsMono-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file.ttf; path = "JetBrainsMono-Medium.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -69,6 +81,12 @@
 				A20000000000000000000003 /* Barlow-SemiBold.ttf */,
 				A20000000000000000000004 /* Barlow-Bold.ttf */,
 				A20000000000000000000005 /* EsportWoglen-Regular.ttf */,
+				A20000000000000000000006 /* BricolageGrotesque-Bold.ttf */,
+				A20000000000000000000007 /* BricolageGrotesque-ExtraBold.ttf */,
+				A20000000000000000000008 /* BeVietnamPro-Regular.ttf */,
+				A20000000000000000000009 /* BeVietnamPro-Medium.ttf */,
+				A2000000000000000000000A /* BeVietnamPro-SemiBold.ttf */,
+				A2000000000000000000000B /* JetBrainsMono-Medium.ttf */,
 			);
 			name = Fonts;
 			path = JUJISTU/Fonts;
@@ -188,6 +206,12 @@
 				A10000000000000000000003 /* Barlow-SemiBold.ttf in Resources */,
 				A10000000000000000000004 /* Barlow-Bold.ttf in Resources */,
 				A10000000000000000000005 /* EsportWoglen-Regular.ttf in Resources */,
+				A10000000000000000000006 /* BricolageGrotesque-Bold.ttf in Resources */,
+				A10000000000000000000007 /* BricolageGrotesque-ExtraBold.ttf in Resources */,
+				A10000000000000000000008 /* BeVietnamPro-Regular.ttf in Resources */,
+				A10000000000000000000009 /* BeVietnamPro-Medium.ttf in Resources */,
+				A1000000000000000000000A /* BeVietnamPro-SemiBold.ttf in Resources */,
+				A1000000000000000000000B /* JetBrainsMono-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

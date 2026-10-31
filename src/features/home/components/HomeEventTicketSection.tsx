@@ -1,151 +1,393 @@
-import { useResponsive } from '@jujistu/shared/constants/responsive';
-import { radius, semanticColors, typography } from '@jujistu/shared/theme';
-import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { primitiveColors } from '@jujistu/shared/theme';
+import { AppIcon } from '@jujistu/ui';
+import React, { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { HOME_EVENT, type HomeEventItem } from '../data/home-content';
-
-const FIGMA_CARD_WIDTH = 359;
-const FIGMA_CARD_HEIGHT = 96;
-
-export interface HomeEventTicketSectionProps {
-  readonly onPressEvent?: (event: HomeEventItem) => void;
-}
+import {
+  HOME_TICKET_SESSIONS,
+  type HomeEventItem,
+  type TicketSession,
+} from '../data/home-content';
 
 export function resolveHomeEventCardWidth(windowWidth: number): number {
   return Math.min(715, Math.max(0, windowWidth - 31));
 }
 
+export interface HomeEventTicketSectionProps {
+  readonly sessions?: ReadonlyArray<TicketSession>;
+  readonly onPressChooseSeat?: (session: TicketSession) => void;
+  readonly onPressEvent?: (event: HomeEventItem) => void;
+}
+
 export function HomeEventTicketSection({
+  sessions = HOME_TICKET_SESSIONS,
+  onPressChooseSeat,
   onPressEvent,
 }: HomeEventTicketSectionProps) {
-  const responsive = useResponsive();
-  const cardWidth = resolveHomeEventCardWidth(responsive.width);
-  const sectionWidth = Math.min(720, Math.max(0, responsive.width - 26));
-  const scale = cardWidth / FIGMA_CARD_WIDTH;
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState(0);
+  const activeSession = sessions[selectedSessionIndex] ?? sessions[0];
+
+  const handleSelectSeat = () => {
+    if (activeSession) {
+      onPressChooseSeat?.(activeSession);
+      onPressEvent?.({
+        id: activeSession.id,
+        image: require('../../../../assets/image/events/cup_hanoi_arena.jpg'),
+        ticketImage: require('../../../../assets/image/events/event-ticket.png'),
+        title: activeSession.title,
+      });
+    }
+  };
 
   return (
-    <View
-      accessibilityLabel="Vé sự kiện"
-      style={[styles.container, { width: sectionWidth }]}
-    >
-      <Text
-        accessibilityRole="header"
-        style={[
-          styles.heading,
-          {
-            fontSize:
-              (typography.heading.md.fontSize as number) * Math.min(1.4, scale),
-            lineHeight:
-              (typography.heading.md.lineHeight as number) *
-              Math.min(1.4, scale),
-          },
-        ]}
+    <View style={styles.root}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Vé vào sân</Text>
+        <Text style={styles.headerSubtitle}>TRỊNH HOÀI ĐỨC · HÀ NỘI</Text>
+      </View>
+
+      {/* Date Sessions horizontal selector */}
+      <ScrollView
+        contentContainerStyle={styles.sessionsScrollContent}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.sessionsScroll}
       >
-        Vé sự kiện
-      </Text>
-      <Pressable
-        accessibilityLabel={HOME_EVENT.title}
-        accessibilityRole="button"
-        disabled={!onPressEvent}
-        onPress={onPressEvent ? () => onPressEvent(HOME_EVENT) : undefined}
-        style={[
-          styles.card,
-          {
-            height: FIGMA_CARD_HEIGHT * scale,
-            width: cardWidth,
-          },
-        ]}
-      >
-        <View style={styles.surface} />
-        <Image
-          accessibilityIgnoresInvertColors
-          resizeMode="cover"
-          source={HOME_EVENT.image}
-          style={[
-            styles.eventImage,
-            {
-              height: FIGMA_CARD_HEIGHT * scale,
-              width: 172 * scale,
-            },
-          ]}
-        />
-        <Text
-          numberOfLines={4}
-          style={[
-            styles.title,
-            {
-              left: 180 * scale,
-              top: 10 * scale,
-              width: 109 * scale,
-              fontSize:
-                (typography.heading.xs.fontSize as number) *
-                Math.min(1.5, scale),
-              lineHeight:
-                (typography.heading.xs.lineHeight as number) *
-                Math.min(1.5, scale),
-            },
-          ]}
-        >
-          {HOME_EVENT.title}
-        </Text>
-        <Image
-          accessible={false}
-          importantForAccessibility="no"
-          resizeMode="contain"
-          source={HOME_EVENT.ticketImage}
-          style={[
-            styles.ticketImage,
-            {
-              height: 91 * scale,
-              left: 260 * scale,
-              top: 2 * scale,
-              width: 129 * scale,
-            },
-          ]}
-        />
-      </Pressable>
+        {sessions.map((sess, index) => {
+          const isSelected = index === selectedSessionIndex;
+          return (
+            <Pressable
+              accessibilityLabel={`${sess.date} - ${sess.shortKind}`}
+              accessibilityRole="button"
+              key={sess.id}
+              onPress={() => setSelectedSessionIndex(index)}
+              style={({ pressed }) => [
+                styles.sessionChip,
+                isSelected && styles.sessionChipSelected,
+                pressed && styles.sessionChipPressed,
+                { transform: [{ rotate: isSelected ? '-1.2deg' : '0deg' }] },
+              ]}
+            >
+              <Text
+                style={[styles.chipDate, isSelected && styles.chipDateSelected]}
+              >
+                {sess.date} · {sess.dayOfWeek}
+              </Text>
+              <Text
+                style={[styles.chipKind, isSelected && styles.chipKindSelected]}
+              >
+                {sess.shortKind}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Voucher Ticket Card */}
+      {activeSession && (
+        <View style={styles.voucherContainer}>
+          <Pressable
+            accessibilityLabel={`Chọn chỗ cho ${activeSession.title}`}
+            accessibilityRole="button"
+            onPress={handleSelectSeat}
+            style={({ pressed }) => [
+              pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] },
+            ]}
+          >
+            <View style={styles.voucherCard}>
+              {/* Left section: Session details + Zone progress bars */}
+              <View style={styles.voucherLeft}>
+                <View>
+                  <Text style={styles.ticketOverline}>
+                    {activeSession.date} · MỞ CỬA {activeSession.openTime} · THI
+                    ĐẤU {activeSession.time}
+                  </Text>
+                  <Text numberOfLines={1} style={styles.ticketTitle}>
+                    {activeSession.title}
+                  </Text>
+                  <Text numberOfLines={1} style={styles.ticketMeta}>
+                    {activeSession.venue}
+                  </Text>
+                </View>
+
+                {/* Zones */}
+                <View style={styles.zonesList}>
+                  {activeSession.zones.map(zone => (
+                    <View key={zone.name} style={styles.zoneRow}>
+                      <Text numberOfLines={1} style={styles.zoneName}>
+                        {zone.name}
+                      </Text>
+                      {/* Progress track */}
+                      <View style={styles.progressTrack}>
+                        <View
+                          style={[
+                            styles.progressBar,
+                            {
+                              width: `${zone.percent}%`,
+                              backgroundColor: zone.isLow
+                                ? primitiveColors.red[500]
+                                : primitiveColors.neutral[300],
+                            },
+                          ]}
+                        />
+                      </View>
+                      <Text
+                        style={[
+                          styles.zoneCount,
+                          zone.isLow && styles.zoneCountLow,
+                        ]}
+                      >
+                        CÒN {zone.left}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+
+              {/* Right section: Price & Action */}
+              <View style={styles.voucherRight}>
+                <Text style={styles.fromLabel}>TỪ</Text>
+                <Text style={styles.priceAmount}>
+                  {activeSession.fromPrice.toLocaleString('vi-VN')}
+                </Text>
+                <Text style={styles.unitLabel}>đ / VÉ</Text>
+
+                <View style={styles.chooseAction}>
+                  <Text style={styles.chooseText}>CHỌN CHỖ</Text>
+                  <AppIcon
+                    color={primitiveColors.orange[500]}
+                    name="arrowRight"
+                    size={10}
+                  />
+                </View>
+              </View>
+
+              {/* Absolute dashed divider and notches */}
+              <View pointerEvents="none" style={styles.dashedLine} />
+              <View pointerEvents="none" style={styles.notchTop} />
+              <View pointerEvents="none" style={styles.notchBottom} />
+            </View>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'center',
+  root: {
+    gap: 12,
   },
-  heading: {
-    ...typography.heading.md,
-    height: 20,
-    marginLeft: 2,
-    color: semanticColors.text.primary,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
   },
-  card: {
-    marginTop: 7,
-    alignSelf: 'flex-start',
-    overflow: 'visible',
+  headerTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.3,
   },
-  surface: {
+  headerSubtitle: {
+    color: primitiveColors.neutral[300],
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+  },
+  sessionsScroll: {
+    flexGrow: 0,
+  },
+  sessionsScrollContent: {
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  sessionChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: primitiveColors.neutral[850],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
+    gap: 2,
+  },
+  sessionChipSelected: {
+    borderColor: primitiveColors.orange[500],
+    backgroundColor: primitiveColors.neutral[800],
+  },
+  sessionChipPressed: {
+    opacity: 0.85,
+  },
+  chipDate: {
+    color: primitiveColors.neutral[300],
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  chipDateSelected: {
+    color: primitiveColors.orange[500],
+  },
+  chipKind: {
+    color: primitiveColors.neutral[200],
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  chipKindSelected: {
+    color: primitiveColors.orange[500],
+  },
+  voucherContainer: {
+    paddingHorizontal: 16,
+  },
+  voucherCard: {
+    flexDirection: 'row',
+    borderRadius: 16,
+    backgroundColor: primitiveColors.neutral[850],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
+    overflow: 'hidden',
+    position: 'relative',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  voucherCardPressed: {
+    backgroundColor: primitiveColors.neutral[800],
+  },
+  voucherLeft: {
+    flex: 1,
+    padding: 14,
+    gap: 12,
+    minWidth: 0,
+  },
+  ticketOverline: {
+    color: primitiveColors.orange[500],
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+  ticketTitle: {
+    color: primitiveColors.neutral[0],
+    fontSize: 15,
+    fontWeight: '800',
+    lineHeight: 19,
+    marginTop: 2,
+  },
+  ticketMeta: {
+    color: primitiveColors.neutral[300],
+    fontSize: 11,
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  zonesList: {
+    gap: 6,
+  },
+  zoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  zoneName: {
+    width: 82,
+    color: primitiveColors.neutral[200],
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  progressTrack: {
+    flex: 1,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    overflow: 'hidden',
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  zoneCount: {
+    width: 50,
+    textAlign: 'right',
+    color: primitiveColors.neutral[200],
+    fontSize: 10,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+  },
+  zoneCountLow: {
+    color: primitiveColors.red[500],
+  },
+  dashedLine: {
     position: 'absolute',
-    top: 1,
-    right: 0,
-    bottom: 0,
-    left: 4,
-    borderRadius: radius.xs,
-    backgroundColor: semanticColors.background.eventSurface,
-    opacity: 0.81,
+    top: 14,
+    bottom: 14,
+    right: 104,
+    width: 1,
+    borderLeftWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderStyle: 'dashed',
   },
-  eventImage: {
+  notchTop: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    borderRadius: radius.sm,
+    top: -9,
+    right: 95,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: primitiveColors.neutral[900],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
   },
-  title: {
-    ...typography.heading.xs,
+  notchBottom: {
     position: 'absolute',
-    color: semanticColors.text.primary,
+    bottom: -9,
+    right: 95,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: primitiveColors.neutral[900],
+    borderWidth: 1,
+    borderColor: primitiveColors.alpha.white10,
   },
-  ticketImage: {
-    position: 'absolute',
+  voucherRight: {
+    width: 104,
+    backgroundColor: primitiveColors.neutral[800],
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    gap: 2,
+  },
+  fromLabel: {
+    color: primitiveColors.neutral[300],
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
+  priceAmount: {
+    color: primitiveColors.neutral[0],
+    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  unitLabel: {
+    color: primitiveColors.neutral[300],
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  chooseAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+  },
+  chooseText: {
+    color: primitiveColors.orange[500],
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });

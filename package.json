@@ -18,7 +18,7 @@
     "start:production": "cross-env JUJISTU_ENV=production react-native start --reset-cache",
     "start:staging": "cross-env JUJISTU_ENV=staging react-native start --reset-cache",
     "test": "jest",
-    "test:ci": "jest --ci --runInBand",
+    "test:ci": "jest --ci --runInBand --forceExit",
     "typecheck": "tsc --noEmit",
     "verify": "npm run format:check && npm run lint && npm run architecture:check && npm run typecheck && npm run test:ci"
   },

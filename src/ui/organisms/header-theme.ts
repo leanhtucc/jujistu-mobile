@@ -47,13 +47,15 @@ export const HEADER_ACTION_GRADIENT = {
   ] as const,
 } as const;
 
-export const HEADER_ICON_SIZES: Record<IconName, number> = {
+export const HEADER_ICON_SIZES: Partial<Record<IconName, number>> = {
   chevronLeft: 24,
   logOut: 20,
   mail: 20,
   settings: 24,
   gem: 20,
   coin: 20,
+  bell: 20,
+  arrowRight: 20,
   balanceAdd: 14,
   // Home quick-action icons — not used in the Header but IconName is exhaustive
   club: 34,
@@ -73,6 +75,8 @@ export const HEADER_ICON_SIZES: Record<IconName, number> = {
   missionInactive: 24,
   friendsActive: 24,
   friendsInactive: 24,
+  athletesActive: 24,
+  athletesInactive: 24,
   // Video browsing and playback icons
   search: 20,
   play: 20,
@@ -84,7 +88,7 @@ export const HEADER_ICON_SIZES: Record<IconName, number> = {
 };
 
 export function resolveHeaderIconSize(icon: IconName): number {
-  return HEADER_ICON_SIZES[icon] ?? HEADER_ICON_SIZES.chevronLeft;
+  return HEADER_ICON_SIZES[icon] ?? HEADER_ICON_SIZES.chevronLeft ?? 24;
 }
 
 export function resolveHeaderBackgroundColor(
