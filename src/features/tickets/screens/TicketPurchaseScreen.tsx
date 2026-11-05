@@ -1,7 +1,13 @@
 import { dsTypography, semanticColors, spacing } from '@jujistu/shared/theme';
 import { AppButton, AppHeader, AppToast } from '@jujistu/ui';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import {
+  ScrollView,
+  type ScrollViewInstance,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TicketConfirmSheet } from '../components/TicketConfirmSheet';
@@ -39,6 +45,14 @@ export function TicketPurchaseScreen({
   const hasTicket = usePurchasedTicket() !== null;
   const done = purchase.stage === 'done';
   const notice = purchase.notice ?? pass.notice;
+  const scrollRef = useRef<ScrollViewInstance>(null);
+
+  // The pass is shorter than the seat map; start it from the top.
+  useEffect(() => {
+    if (done) {
+      scrollRef.current?.scrollTo({ animated: false, y: 0 });
+    }
+  }, [done]);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -59,6 +73,7 @@ export function TicketPurchaseScreen({
 
       <ScrollView
         contentContainerStyle={styles.content}
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
         testID="ticket-scroll"
       >

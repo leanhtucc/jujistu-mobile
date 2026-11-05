@@ -304,7 +304,14 @@ export function MainNavigator({ onLogin, onReady, user }: MainNavigatorProps) {
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name={MAIN_ROUTES.TOURNAMENT_DETAIL}>
+      {/* A distinct id per tournament and tab: navigating with new params must
+          open a fresh screen, because the detail keeps its tab in state. */}
+      <Stack.Screen
+        getId={({ params }) =>
+          `${params.tournamentId}:${params.initialTab ?? ''}`
+        }
+        name={MAIN_ROUTES.TOURNAMENT_DETAIL}
+      >
         {({ navigation, route }) => (
           <TournamentDetailScreen
             initialTab={route.params.initialTab}
@@ -327,7 +334,10 @@ export function MainNavigator({ onLogin, onReady, user }: MainNavigatorProps) {
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name={MAIN_ROUTES.ATHLETE_JOURNEY}>
+      <Stack.Screen
+        getId={({ params }) => params?.athleteId}
+        name={MAIN_ROUTES.ATHLETE_JOURNEY}
+      >
         {({ navigation, route }) => (
           <AthleteJourneyScreen
             athleteId={route.params?.athleteId}

@@ -40,7 +40,9 @@ export function ShopProductCard({
         <Text style={styles.subtitle}>{product.subtitle}</Text>
         <View style={styles.footer}>
           <View style={styles.prices}>
-            <Text style={styles.price}>{formatVnd(product.price)}</Text>
+            <Text adjustsFontSizeToFit numberOfLines={1} style={styles.price}>
+              {formatVnd(product.price)}
+            </Text>
             {product.oldPrice ? (
               <Text style={styles.oldPrice}>{formatVnd(product.oldPrice)}</Text>
             ) : null}
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     paddingTop: 8,
   },
-  prices: { gap: 3 },
+  prices: { flexShrink: 1, gap: 3, minWidth: 0 },
   price: {
     ...dsTypography.counter,
     color: semanticColors.text.primary,

@@ -54,7 +54,10 @@ export function AthleteJourneyScreen({
   return (
     <View style={styles.root}>
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: 48 + insets.bottom },
+        ]}
         showsVerticalScrollIndicator={false}
         testID="athlete-journey-scroll"
       >
