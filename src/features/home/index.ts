@@ -32,14 +32,6 @@ export {
   type HomeAthleteSpotlightCardProps,
 } from './components/HomeAthleteSpotlightCard';
 export {
-  HomeMatchCard,
-  type HomeMatchCardProps,
-} from './components/HomeMatchCard';
-export {
-  HomeTournamentSection,
-  type HomeTournamentSectionProps,
-} from './components/HomeTournamentSection';
-export {
   HomeProductsSection,
   type HomeProductsSectionProps,
 } from './components/HomeProductsSection';

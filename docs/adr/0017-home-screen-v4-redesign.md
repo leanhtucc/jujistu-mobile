@@ -49,3 +49,10 @@ The canonical product design has been updated in `Jujitsu App v4 - offline.html`
 - The Home screen matches the verified v4 HTML specification.
 - Architecture boundaries (`app -> features -> ui -> shared`) remain strictly preserved.
 - Existing startup coordination (ADR 0009) and responsive layouts (ADR 0010) are maintained.
+
+## Amendment (2026-11-05)
+
+`HomeMatchCard` and `HomeTournamentSection` (item 4) were never composed into
+`HomeScreen`, which uses `HomeUpcomingTournamentCard` and `HomeRecentRecapCard`
+instead. They, the legacy `ProductAccountHeader`, the unused `useAutoCarousel`
+hook, their data in `home-content.ts` and the images only they used were removed.

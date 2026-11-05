@@ -3,19 +3,6 @@ import type { IconName } from '@jujistu/ui';
 
 export type HomeMode = 'guest' | 'authenticated';
 
-export interface HomeQuickAction {
-  readonly key:
-    | 'club'
-    | 'leaderboard'
-    | 'event-ticket'
-    | 'mma-academy'
-    | 'live'
-    | 'minigame';
-  readonly label: string;
-  readonly iconName: IconName;
-  readonly iconSize: number;
-}
-
 export interface HomeEventItem {
   readonly id: string;
   readonly image: ImageSourcePropType;
@@ -109,34 +96,6 @@ export interface HomeAthleteSpotlight {
   readonly image: ImageSourcePropType;
 }
 
-export interface HomeAthleteInfo {
-  readonly name: string;
-  readonly team: string;
-  readonly belt: string;
-  readonly weight: string;
-  readonly image: ImageSourcePropType;
-}
-
-export interface HomeFeaturedMatch {
-  readonly id: string;
-  readonly title: string;
-  readonly tournamentName: string;
-  readonly timeText: string;
-  readonly arenaImage: ImageSourcePropType;
-  readonly athleteA: HomeAthleteInfo;
-  readonly athleteB: HomeAthleteInfo;
-  readonly secondsRemaining: number;
-}
-
-export interface HomeTournamentFocus {
-  readonly id: string;
-  readonly name: string;
-  readonly location: string;
-  readonly days: string;
-  readonly stats: ReadonlyArray<[string, string]>;
-  readonly poster: ImageSourcePropType;
-}
-
 export interface HomeProductHighlight {
   readonly id: string;
   readonly name: string;
@@ -163,67 +122,6 @@ export interface HomeNewsItem {
   readonly description: string;
   readonly date: string;
   readonly image: ImageSourcePropType;
-}
-
-export const HOME_OVERLINE = 'THỨ TƯ · 07/10';
-export const USER_GREETING = 'Chào, Minh';
-
-export const HOME_BANNERS: ReadonlyArray<ImageSourcePropType> = [
-  require('../../../../assets/image/banners/banner_home_01.png'),
-  require('../../../../assets/image/banners/banner_home_02.png'),
-  require('../../../../assets/image/banners/banner_home_03.png'),
-];
-
-export const HOME_QUICK_ACTIONS: ReadonlyArray<HomeQuickAction> = [
-  {
-    key: 'club',
-    label: 'Câu lạc bộ',
-    iconName: 'club',
-    iconSize: 25,
-  },
-  {
-    key: 'leaderboard',
-    label: 'Leaderboard',
-    iconName: 'leaderboard',
-    iconSize: 24,
-  },
-  {
-    key: 'event-ticket',
-    label: 'Vé sự kiện',
-    iconName: 'gift',
-    iconSize: 24,
-  },
-  {
-    key: 'mma-academy',
-    label: 'Học viện MMA',
-    iconName: 'mmaAcademy',
-    iconSize: 24,
-  },
-  {
-    key: 'live',
-    label: 'Trực tiếp',
-    iconName: 'live',
-    iconSize: 24,
-  },
-  {
-    key: 'minigame',
-    label: 'Mini game',
-    iconName: 'minigame',
-    iconSize: 24,
-  },
-];
-
-export const HOME_EVENT: HomeEventItem = {
-  id: 'vo-dai-vinh-quang-2026',
-  image: require('../../../../assets/image/news/news_01.png'),
-  ticketImage: require('../../../../assets/image/events/event-ticket.png'),
-  title: 'Võ đài vinh quang - 15/10/2026',
-};
-
-export function getHomeQuickActions(
-  _mode: HomeMode = 'authenticated',
-): ReadonlyArray<HomeQuickAction> {
-  return HOME_QUICK_ACTIONS;
 }
 
 export const HOME_SHORTCUTS: ReadonlyArray<HomeShortcut> = [
@@ -397,42 +295,6 @@ export const HOME_ATHLETE_SPOTLIGHT: HomeAthleteSpotlight = {
   belt: 'brown',
   degrees: 2,
   image: require('../../../../assets/image/avatars/athlete_ducanh_action.jpg'),
-};
-
-export const HOME_FEATURED_MATCH: HomeFeaturedMatch = {
-  id: 'match-nat26-nogi-69',
-  title: 'Chung kết Newaza NoGi · Nam 69 kg',
-  tournamentName: 'Giải vô địch Jujitsu Quốc gia 2026 · Đà Nẵng',
-  timeText: 'Chung kết · 20:00',
-  arenaImage: require('../../../../assets/image/events/match_finals_arena.jpg'),
-  athleteA: {
-    name: 'Trần Đức Anh',
-    team: 'Đoàn Hà Nội',
-    belt: 'Đai Nâu',
-    weight: '69 kg',
-    image: require('../../../../assets/image/avatars/athlete_tran_duc_anh.jpg'),
-  },
-  athleteB: {
-    name: 'Đặng Minh Khoa',
-    team: 'Đoàn TP.HCM',
-    belt: 'Đai Nâu',
-    weight: '69 kg',
-    image: require('../../../../assets/image/avatars/athlete_dang_minh_khoa.jpg'),
-  },
-  secondsRemaining: 1694,
-};
-
-export const HOME_TOURNAMENT_FOCUS: HomeTournamentFocus = {
-  id: 'nat26',
-  name: 'Giải vô địch Jujitsu Quốc gia 2026',
-  location: 'Cung thể thao Tiên Sơn · Đà Nẵng',
-  days: '24–30/09/2026',
-  stats: [
-    ['17', 'đoàn'],
-    ['312', 'VĐV'],
-    ['96', 'bộ huy chương'],
-  ],
-  poster: require('../../../../assets/image/events/national_championship_2026.jpg'),
 };
 
 export const HOME_FEATURED_PRODUCTS: ReadonlyArray<HomeProductHighlight> = [

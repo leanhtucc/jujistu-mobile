@@ -6,7 +6,6 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   HOME_SHORTCUTS,
   type HomeMode,
-  type HomeQuickAction,
   type HomeShortcut,
 } from '../data/home-content';
 
@@ -32,7 +31,6 @@ export interface HomeQuickActionsProps {
   readonly mode?: HomeMode;
   readonly shortcuts?: ReadonlyArray<HomeShortcut>;
   readonly onPressAction?: (shortcut: HomeShortcut) => void;
-  readonly onPressLegacyAction?: (action: HomeQuickAction) => void;
 }
 
 export function HomeQuickActions({

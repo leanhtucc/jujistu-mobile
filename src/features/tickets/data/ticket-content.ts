@@ -2,7 +2,6 @@ import type {
   PaymentMethod,
   TicketEvent,
   TicketZone,
-  ZoneId,
 } from '../types/ticket.types';
 
 /**
@@ -80,8 +79,6 @@ export const ZONES: readonly TicketZone[] = [
     note: 'Ghế tự do · vào cửa theo thứ tự',
   },
 ];
-
-export const ZONE_IDS: readonly ZoneId[] = ZONES.map(zone => zone.id);
 
 export const SEATS_PER_SIDE = 4;
 export const SERVICE_FEE = 5000;

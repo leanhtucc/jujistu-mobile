@@ -39,7 +39,7 @@ import {
 } from '@jujistu/ui';
 ```
 
-`ProductAccountHeader` is a Home-specific screen component and lives with the other
+`HomeHeader` is a Home-specific screen component and lives with the other
 Home regions under `src/features/home/components/`. It composes `@jujistu/ui`
 primitives without moving product-specific content into the reusable UI layer.
 
@@ -201,7 +201,7 @@ The JUJISTU design system does not currently have approved semantic tokens for:
 
 Ownership of screen insets follows a strict boundary:
 
-1. **`ProductAccountHeader` does NOT own top safe area**: The component renders at a fixed 64px height. `HomeScreen` applies `insets.top` above it.
+1. **`HomeHeader` does NOT own top safe area**: The component renders at a fixed 64px height. `HomeScreen` applies `insets.top` above it.
 2. **`AppBottomNavigation` does NOT own bottom safe area**: The component renders at a fixed 64px height. The main navigator shell must apply `insets.bottom` padding below it.
 3. **Screen Shells Own Insets**: Screens and root layout containers use `react-native-safe-area-context` (`useSafeAreaInsets`) to manage status bar and home indicator padding.
 
