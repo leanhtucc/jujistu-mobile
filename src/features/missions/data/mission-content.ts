@@ -36,7 +36,7 @@ export const DAILY_MISSIONS: readonly MissionDefinition[] = [
   },
   {
     id: 'live5',
-    icon: 'live',
+    icon: 'youtubeLogo',
     title: 'Xem livestream giải 5 phút',
     reward: 100,
     target: 0,

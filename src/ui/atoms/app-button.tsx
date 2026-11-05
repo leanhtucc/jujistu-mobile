@@ -103,6 +103,7 @@ export function AppButton({
                 renderedIcon
               ) : null}
               <Text
+                numberOfLines={1}
                 style={[
                   componentTypography.button,
                   styles.label,

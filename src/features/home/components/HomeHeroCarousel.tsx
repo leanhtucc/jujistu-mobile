@@ -1,12 +1,12 @@
 import type { ResponsiveMetrics } from '@jujistu/shared/constants/responsive';
 import { primitiveColors } from '@jujistu/shared/theme';
+import { AppPressable, AppScrim } from '@jujistu/ui';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
   Easing,
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -181,7 +181,7 @@ export function HomeHeroCarousel({
       >
         {HOME_HERO_SLIDES.map(slide => {
           return (
-            <Pressable
+            <AppPressable
               key={slide.id}
               onPress={() => onPressSlide?.(slide)}
               style={({ pressed }) => [
@@ -198,8 +198,8 @@ export function HomeHeroCarousel({
                 style={[StyleSheet.absoluteFill, styles.cardImage]}
               />
               {/* Subtle top & bottom dark scrim gradients */}
-              <View style={styles.scrimTop} />
-              <View style={styles.scrimBottom} />
+              <AppScrim edge="top" height={64} strength={0.5} />
+              <AppScrim edge="bottom" height="72%" />
 
               {/* Slide text and tag details at bottom */}
               <View style={styles.textContainer}>
@@ -230,7 +230,7 @@ export function HomeHeroCarousel({
                   {slide.meta}
                 </Text>
               </View>
-            </Pressable>
+            </AppPressable>
           );
         })}
       </ScrollView>
@@ -289,22 +289,6 @@ const styles = StyleSheet.create({
   cardImage: {
     width: '100%',
     height: '100%',
-  },
-  scrimTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 50,
-    backgroundColor: 'rgba(5, 5, 5, 0.45)',
-  },
-  scrimBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 120,
-    backgroundColor: 'rgba(5, 5, 5, 0.85)',
   },
   textContainer: {
     position: 'absolute',

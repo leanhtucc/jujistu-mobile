@@ -1,6 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
+import { AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { HOME_NEWS, type HomeNewsItem } from '../data/home-content';
 
@@ -39,13 +40,13 @@ export function HomeNewsSection({
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Tin tức</Text>
         {onPressAll ? (
-          <Pressable
+          <AppPressable
             accessibilityLabel="Xem tất cả tin tức"
             accessibilityRole="button"
             onPress={onPressAll}
           >
             <Text style={styles.viewAllText}>XEM TẤT CẢ</Text>
-          </Pressable>
+          </AppPressable>
         ) : null}
       </View>
 
@@ -54,7 +55,7 @@ export function HomeNewsSection({
         {news.map((item, index) => {
           const isLast = index === news.length - 1;
           return (
-            <Pressable
+            <AppPressable
               accessibilityLabel={`${item.category ?? 'Tin tức'}: ${
                 item.title ?? item.description
               }`}
@@ -86,7 +87,7 @@ export function HomeNewsSection({
                 </Text>
                 <Text style={styles.dateText}>{item.date}</Text>
               </View>
-            </Pressable>
+            </AppPressable>
           );
         })}
       </View>

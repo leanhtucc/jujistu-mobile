@@ -60,3 +60,6 @@ export { AppEmberGlow } from './app-ember-glow';
 export type { EmberGlowProps } from './app-ember-glow';
 export { AppStampIn } from './app-stamp-in';
 export type { StampInProps } from './app-stamp-in';
+export { AppPressable } from './app-pressable';
+export { AppScrim } from './app-scrim';
+export type { ScrimProps } from './app-scrim';

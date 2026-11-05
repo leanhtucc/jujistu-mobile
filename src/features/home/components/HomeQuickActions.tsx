@@ -1,7 +1,13 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import {
   HOME_SHORTCUTS,
@@ -11,6 +17,7 @@ import {
 
 const FIGMA_ITEM_WIDTH = 104;
 const MIN_COLUMN_GAP = 12;
+const TILE_GAP = 10;
 
 export function resolveHomeQuickActionGeometry(windowWidth: number) {
   const gridWidth = Math.min(600, Math.max(0, windowWidth - 32));
@@ -37,6 +44,10 @@ export function HomeQuickActions({
   shortcuts = HOME_SHORTCUTS,
   onPressAction,
 }: HomeQuickActionsProps) {
+  const { width } = useWindowDimensions();
+  // Four tiles share the row exactly; more than four scroll sideways.
+  const tileSize = Math.min(76, Math.floor((width - 32 - TILE_GAP * 3) / 4));
+
   return (
     <ScrollView
       contentContainerStyle={styles.scrollContent}
@@ -45,12 +56,16 @@ export function HomeQuickActions({
       style={styles.root}
     >
       {shortcuts.map(shortcut => (
-        <Pressable
+        <AppPressable
           accessibilityLabel={shortcut.label}
           accessibilityRole="button"
           key={shortcut.key}
           onPress={() => onPressAction?.(shortcut)}
-          style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+          style={({ pressed }) => [
+            styles.card,
+            { height: tileSize, width: tileSize },
+            pressed && styles.cardPressed,
+          ]}
         >
           <View style={styles.iconContainer}>
             <AppIcon
@@ -62,7 +77,7 @@ export function HomeQuickActions({
           <Text numberOfLines={1} style={styles.label}>
             {shortcut.label}
           </Text>
-        </Pressable>
+        </AppPressable>
       ))}
     </ScrollView>
   );
@@ -76,7 +91,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     flexDirection: 'row',
-    gap: 10,
+    gap: TILE_GAP,
   },
   card: {
     width: 76,

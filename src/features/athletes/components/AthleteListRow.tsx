@@ -1,7 +1,7 @@
 import { dsTypography, semanticColors } from '@jujistu/shared/theme';
-import { AppAvatar, AppIcon } from '@jujistu/ui';
+import { AppAvatar, AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { AthleteSummary } from '../types/athlete.types';
 
@@ -12,7 +12,7 @@ export interface AthleteListRowProps {
 
 export function AthleteListRow({ athlete, onPress }: AthleteListRowProps) {
   return (
-    <Pressable
+    <AppPressable
       accessibilityLabel={`${athlete.name}, ${athlete.team}, ${athlete.division}, ${athlete.goldMedals} huy chương vàng`}
       accessibilityRole="button"
       onPress={() => onPress?.(athlete)}
@@ -36,7 +36,7 @@ export function AthleteListRow({ athlete, onPress }: AthleteListRowProps) {
         name="arrowRight"
         size={16}
       />
-    </Pressable>
+    </AppPressable>
   );
 }
 

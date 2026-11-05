@@ -14,5 +14,7 @@ export interface IconButtonProps {
   appearance?: ButtonAppearance;
   disabled?: boolean;
   loading?: boolean;
+  /** `pill` rounds the button fully, as the design system's icon buttons. */
+  shape?: 'square' | 'pill';
   containerStyle?: StyleProp<ViewStyle>;
 }

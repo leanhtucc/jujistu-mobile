@@ -59,7 +59,21 @@ export function AthleteJourneyScreen({
         testID="athlete-journey-scroll"
       >
         <View style={styles.column}>
-          <AthleteProfileHero athlete={athlete} profile={profile} />
+          <View>
+            <AthleteProfileHero athlete={athlete} profile={profile} />
+            {/* Inside the scroll content, so it leaves with the hero. */}
+            <View
+              pointerEvents="box-none"
+              style={[styles.headerOverlay, { paddingTop: insets.top }]}
+            >
+              <AppHeader
+                background="transparent"
+                backAccessibilityLabel="Quay lại"
+                onBackPress={onBack}
+                title=""
+              />
+            </View>
+          </View>
 
           <View style={styles.body}>
             <AthleteStatsSection profile={profile} />
@@ -110,18 +124,6 @@ export function AthleteJourneyScreen({
           </View>
         </View>
       </ScrollView>
-
-      <View
-        pointerEvents="box-none"
-        style={[styles.headerOverlay, { paddingTop: insets.top }]}
-      >
-        <AppHeader
-          background="transparent"
-          backAccessibilityLabel="Quay lại"
-          onBackPress={onBack}
-          title=""
-        />
-      </View>
     </View>
   );
 }

@@ -36,7 +36,10 @@ export function AppProgressBar({
         ]}
         testID={`${testID}-fill`}
       >
-        {fraction > 0 ? <PrimaryGradientFill /> : null}
+        {/* The key remounts the SVG: on Android it keeps its first size when the fill grows. */}
+        {fraction > 0 ? (
+          <PrimaryGradientFill key={Math.round(fraction * 1000)} />
+        ) : null}
       </View>
     </View>
   );

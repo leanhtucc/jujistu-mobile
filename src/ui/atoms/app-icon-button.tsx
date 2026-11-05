@@ -26,6 +26,7 @@ export function AppIconButton({
   appearance = 'filled',
   disabled = false,
   loading = false,
+  shape = 'square',
   containerStyle,
 }: IconButtonProps) {
   const unavailable = disabled || loading;
@@ -56,7 +57,7 @@ export function AppIconButton({
               {
                 backgroundColor: visualRecipe.backgroundColor,
                 borderColor: visualRecipe.borderColor,
-                borderRadius: radius.xs,
+                borderRadius: shape === 'pill' ? radius.full : radius.xs,
                 borderWidth: visualRecipe.borderWidth ?? 0,
                 height: sizeRecipe.control,
                 opacity: visualRecipe.opacity,

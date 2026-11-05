@@ -7,7 +7,7 @@ import type { NotificationItem } from '../types/notification.types';
 export const NOTIFICATIONS: readonly NotificationItem[] = [
   {
     id: 'final-starts',
-    icon: 'live',
+    icon: 'playCirclePhosphor',
     title: 'Chung kết NoGi 69 kg bắt đầu lúc 20:00 · Thảm 1',
     timeLabel: 'Vừa xong',
     target: {

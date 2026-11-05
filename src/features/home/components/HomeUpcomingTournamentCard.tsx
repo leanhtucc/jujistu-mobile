@@ -1,14 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React, { useRef, useState } from 'react';
-import {
-  Animated,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, Image, StyleSheet, Text, View } from 'react-native';
 
 import {
   HOME_UPCOMING_TOURNAMENT,
@@ -81,7 +74,7 @@ export function HomeUpcomingTournamentCard({
 
   return (
     <View style={styles.root}>
-      <Pressable
+      <AppPressable
         accessibilityLabel={tournament.name}
         accessibilityRole="button"
         onPress={() => onPressTournament?.(tournament)}
@@ -123,7 +116,7 @@ export function HomeUpcomingTournamentCard({
             <Text style={styles.ticketNotice}>{tournament.ticketNotice}</Text>
 
             <Animated.View style={{ transform: [{ scale: remindScale }] }}>
-              <Pressable
+              <AppPressable
                 accessibilityLabel={isReminded ? 'Đã bật nhắc' : 'Nhắc tôi'}
                 accessibilityRole="button"
                 onPress={handleRemindToggle}
@@ -150,11 +143,11 @@ export function HomeUpcomingTournamentCard({
                 >
                   {isReminded ? 'Đã bật nhắc' : 'Nhắc tôi'}
                 </Text>
-              </Pressable>
+              </AppPressable>
             </Animated.View>
           </View>
         </View>
-      </Pressable>
+      </AppPressable>
     </View>
   );
 }

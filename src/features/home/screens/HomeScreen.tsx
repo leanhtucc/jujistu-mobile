@@ -131,7 +131,12 @@ export function HomeScreen({
 
   const handleShortcutPress = useCallback(
     (shortcut: HomeShortcut) => {
-      onPressShortcut?.(shortcut);
+      // A generic shortcut handler owns navigation; calling the specific
+      // handlers as well would push the destination twice.
+      if (onPressShortcut) {
+        onPressShortcut(shortcut);
+        return;
+      }
       if (shortcut.key === 'tournaments') onPressSchedule?.();
       else if (shortcut.key === 'results') onPressResults?.();
       else if (shortcut.key === 'tickets') onPressTickets?.();

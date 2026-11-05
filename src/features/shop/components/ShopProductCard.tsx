@@ -46,6 +46,7 @@ export function ShopProductCard({
             ) : null}
           </View>
           <AppIconButton
+            shape="pill"
             accessibilityLabel={`Thêm ${product.name} vào giỏ`}
             icon="plus"
             onPress={() => onQuickAdd(product)}

@@ -268,9 +268,11 @@ describe('AppIcon Infrastructure & Registry Safety', () => {
           'minus',
           'check',
           'shoppingBag',
+          'giftMono',
+          'mapPin',
         ].sort(),
       );
-      expect(keys).toHaveLength(61);
+      expect(keys).toHaveLength(63);
       // Shared UI glyphs
       expect(typeof glyphs.chevronLeft).toBe('function');
       expect(typeof glyphs.logOut).toBe('function');

@@ -31,6 +31,7 @@ export function AppQuantityStepper({
   return (
     <View style={styles.root} testID={testID}>
       <AppIconButton
+        shape="pill"
         accessibilityLabel={decrementLabel}
         appearance="soft"
         disabled={decrementDisabled}
@@ -48,6 +49,7 @@ export function AppQuantityStepper({
         {value}
       </Text>
       <AppIconButton
+        shape="pill"
         accessibilityLabel={incrementLabel}
         appearance="soft"
         disabled={incrementDisabled}

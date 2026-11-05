@@ -1,7 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppBeltBar, AppIcon } from '@jujistu/ui';
+import { AppBeltBar, AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import {
   HOME_ATHLETE_SPOTLIGHT,
@@ -19,7 +19,7 @@ export function HomeAthleteSpotlightCard({
 }: HomeAthleteSpotlightCardProps) {
   return (
     <View style={styles.root}>
-      <Pressable
+      <AppPressable
         accessibilityLabel={`Hành trình VĐV ${spotlight.name}`}
         accessibilityRole="button"
         onPress={() => onPressJourney?.(spotlight)}
@@ -65,7 +65,7 @@ export function HomeAthleteSpotlightCard({
             />
           </View>
         </View>
-      </Pressable>
+      </AppPressable>
     </View>
   );
 }

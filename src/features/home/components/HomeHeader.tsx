@@ -1,7 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React, { useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 
 export interface HomeHeaderProps {
   readonly dateText?: string;
@@ -53,7 +53,7 @@ export function HomeHeader({
       {/* Right actions: Coin pill + Bell notification */}
       <View style={styles.rightActions}>
         <Animated.View style={{ transform: [{ scale: coinScale }] }}>
-          <Pressable
+          <AppPressable
             accessibilityLabel={`Số dư ${formattedCoins} xu`}
             accessibilityRole="button"
             onPress={handleCoinPress}
@@ -68,10 +68,10 @@ export function HomeHeader({
               size={16}
             />
             <Text style={styles.coinText}>{formattedCoins}</Text>
-          </Pressable>
+          </AppPressable>
         </Animated.View>
 
-        <Pressable
+        <AppPressable
           accessibilityLabel="Thông báo"
           accessibilityRole="button"
           onPress={onOpenNotifications}
@@ -88,7 +88,7 @@ export function HomeHeader({
           {hasUnreadNotifications ? (
             <View style={styles.unreadBadge} testID="home-unread-badge" />
           ) : null}
-        </Pressable>
+        </AppPressable>
       </View>
     </View>
   );

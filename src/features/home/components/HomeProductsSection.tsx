@@ -1,13 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
+import { AppPressable } from '@jujistu/ui';
 import React from 'react';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
   HOME_FEATURED_PRODUCTS,
@@ -32,13 +26,13 @@ export function HomeProductsSection({
       {/* Section Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Từ Shop</Text>
-        <Pressable
+        <AppPressable
           accessibilityLabel="Xem tất cả sản phẩm"
           accessibilityRole="button"
           onPress={onOpenShop}
         >
           <Text style={styles.seeAllText}>XEM TẤT CẢ</Text>
-        </Pressable>
+        </AppPressable>
       </View>
 
       {/* Horizontal Product List */}
@@ -52,7 +46,7 @@ export function HomeProductsSection({
           const isNew = product.tag === 'MỚI';
 
           return (
-            <Pressable
+            <AppPressable
               accessibilityLabel={product.name}
               accessibilityRole="button"
               key={product.id}
@@ -99,7 +93,7 @@ export function HomeProductsSection({
                 </Text>
                 <Text style={styles.productPrice}>{vnd(product.price)}</Text>
               </View>
-            </Pressable>
+            </AppPressable>
           );
         })}
       </ScrollView>

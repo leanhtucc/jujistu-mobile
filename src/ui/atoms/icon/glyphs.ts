@@ -59,6 +59,8 @@ import { PlusGlyph } from './glyphs/common/ic_plus';
 import { MinusGlyph } from './glyphs/common/ic_minus';
 import { CheckGlyph } from './glyphs/common/ic_check';
 import { ShoppingBagGlyph } from './glyphs/common/ic_shopping_bag';
+import { GiftMonoGlyph } from './glyphs/common/ic_gift_mono';
+import { MapPinGlyph } from './glyphs/common/ic_map_pin';
 
 /**
  * Immutable production registry of verified glyph components.
@@ -102,6 +104,8 @@ export const glyphs = {
   minus: MinusGlyph,
   check: CheckGlyph,
   shoppingBag: ShoppingBagGlyph,
+  giftMono: GiftMonoGlyph,
+  mapPin: MapPinGlyph,
   // ── Home quick-action glyphs ──────────────────────────────────────
   club: ClubGlyph,
   gift: GiftGlyph,

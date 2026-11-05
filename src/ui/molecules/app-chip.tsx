@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { AppPressable } from '../atoms/app-pressable';
+import { StyleSheet, Text } from 'react-native';
 
 import { dsTypography, radius, semanticColors } from '@jujistu/shared/theme';
 
@@ -19,7 +20,7 @@ export function AppChip({
   testID,
 }: ChipProps) {
   return (
-    <Pressable
+    <AppPressable
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityRole="button"
       accessibilityState={{ selected }}
@@ -35,6 +36,7 @@ export function AppChip({
       testID={testID}
     >
       <Text
+        numberOfLines={1}
         style={[
           styles.label,
           {
@@ -46,7 +48,7 @@ export function AppChip({
       >
         {label}
       </Text>
-    </Pressable>
+    </AppPressable>
   );
 }
 
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
     borderRadius: radius.md,
+    flexShrink: 0,
     borderWidth: 1,
     height: 36,
     justifyContent: 'center',

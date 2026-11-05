@@ -1,14 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { HOME_FEATURED_VIDEOS, type HomeVideoItem } from '../data/home-content';
 
@@ -48,7 +41,7 @@ export function HomeFeaturedVideoSection({
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Phát lại & highlight</Text>
-        <Pressable
+        <AppPressable
           accessibilityLabel="Xem tất cả trên YouTube"
           accessibilityRole="button"
           onPress={onPressAll}
@@ -56,7 +49,7 @@ export function HomeFeaturedVideoSection({
         >
           <AppIcon color={primitiveColors.red[500]} name="play" size={12} />
           <Text style={styles.youtubeText}>YOUTUBE</Text>
-        </Pressable>
+        </AppPressable>
       </View>
 
       {/* Video Horizontal List */}
@@ -66,7 +59,7 @@ export function HomeFeaturedVideoSection({
         showsHorizontalScrollIndicator={false}
       >
         {items.map(item => (
-          <Pressable
+          <AppPressable
             accessibilityLabel={item.title}
             accessibilityRole="button"
             key={item.id}
@@ -113,7 +106,7 @@ export function HomeFeaturedVideoSection({
                 </Text>
               )}
             </View>
-          </Pressable>
+          </AppPressable>
         ))}
       </ScrollView>
     </View>

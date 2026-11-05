@@ -1,7 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { HOME_RECENT_RECAP, type HomeRecentRecap } from '../data/home-content';
 
@@ -16,7 +16,7 @@ export function HomeRecentRecapCard({
 }: HomeRecentRecapCardProps) {
   return (
     <View style={styles.root}>
-      <Pressable
+      <AppPressable
         accessibilityLabel={`${recap.name} - Xem kết quả`}
         accessibilityRole="button"
         onPress={onPressResults}
@@ -66,7 +66,7 @@ export function HomeRecentRecapCard({
             size={12}
           />
         </View>
-      </Pressable>
+      </AppPressable>
     </View>
   );
 }

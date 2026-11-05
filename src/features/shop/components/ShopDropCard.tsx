@@ -81,7 +81,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     marginTop: 4,
   },
-  prices: { alignItems: 'baseline', flexDirection: 'row', gap: 8 },
+  prices: {
+    alignItems: 'baseline',
+    columnGap: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   price: {
     ...dsTypography.counter,
     color: semanticColors.text.inverse,

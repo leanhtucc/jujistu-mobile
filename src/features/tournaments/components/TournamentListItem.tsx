@@ -1,7 +1,7 @@
 import { dsTypography, radius, semanticColors } from '@jujistu/shared/theme';
-import { AppEmberGlow, AppTag } from '@jujistu/ui';
+import { AppEmberGlow, AppIcon, AppPressable, AppTag } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type {
   TournamentListEntry,
@@ -28,7 +28,7 @@ export function TournamentListItem({
   const live = status === 'live';
 
   return (
-    <Pressable
+    <AppPressable
       accessibilityLabel={`${tournament.name}, ${statusLabel}, ${tournament.place}`}
       accessibilityRole="button"
       onPress={() => onPress?.(tournament.id)}
@@ -51,7 +51,15 @@ export function TournamentListItem({
           <TournamentStatusLabel label={statusLabel} status={status} />
         </View>
         <Text style={styles.name}>{tournament.name}</Text>
-        <Text style={styles.place}>{tournament.place}</Text>
+        <View style={styles.placeRow}>
+          <AppIcon
+            accessible={false}
+            color={semanticColors.text.tertiary}
+            name="mapPin"
+            size={12}
+          />
+          <Text style={styles.place}>{tournament.place}</Text>
+        </View>
         <View style={styles.disciplines}>
           {tournament.disciplines.map(discipline => (
             <Text key={discipline} style={styles.discipline}>
@@ -60,7 +68,7 @@ export function TournamentListItem({
           ))}
         </View>
       </View>
-    </Pressable>
+    </AppPressable>
   );
 }
 
@@ -111,7 +119,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   name: { ...dsTypography.bodyStrong, color: semanticColors.text.primary },
+  placeRow: { alignItems: 'center', flexDirection: 'row', gap: 4 },
   place: {
+    flexShrink: 1,
     ...dsTypography.body,
     color: semanticColors.text.tertiary,
     fontSize: 12,

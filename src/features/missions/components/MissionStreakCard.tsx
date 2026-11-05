@@ -80,7 +80,7 @@ export function MissionStreakCard({
                 <AppIcon
                   accessible={false}
                   color={semanticColors.text.accent}
-                  name="gift"
+                  name="giftMono"
                   size={18}
                 />
               </Pressable>

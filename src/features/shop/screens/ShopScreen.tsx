@@ -57,6 +57,7 @@ export function ShopScreen({ onBack, onOpenTicket }: ShopScreenProps) {
             </View>
             <View>
               <AppIconButton
+                shape="pill"
                 accessibilityLabel={`Giỏ hàng, ${shop.cartCount} món`}
                 appearance="soft"
                 icon="shoppingBag"

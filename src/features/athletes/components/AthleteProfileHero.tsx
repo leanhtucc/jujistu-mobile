@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: semanticColors.background.eventSurface,
     height: ATHLETE_HERO_HEIGHT,
     justifyContent: 'flex-end',
+    overflow: 'hidden',
   },
   info: { gap: 8, paddingBottom: 18, paddingHorizontal: 20 },
   overline: { ...dsTypography.overline, color: semanticColors.text.accent },

@@ -58,11 +58,13 @@ export function AthleteSpotlightCard({
 
 const styles = StyleSheet.create({
   card: { minHeight: 160 },
-  row: { flexDirection: 'row', minHeight: 160 },
+  // A fixed height keeps the photo's intrinsic size from stretching the card.
+  row: { flexDirection: 'row', height: 168 },
   photo: {
     backgroundColor: semanticColors.background.eventSurface,
     borderRightColor: semanticColors.border.subtle,
     borderRightWidth: 1,
+    height: '100%',
     width: 118,
   },
   body: {

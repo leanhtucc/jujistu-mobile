@@ -1,7 +1,7 @@
 import { dsTypography, semanticColors } from '@jujistu/shared/theme';
-import { AppBottomSheet, AppIcon } from '@jujistu/ui';
+import { AppBottomSheet, AppIcon, AppPressable } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { NotificationItem } from '../types/notification.types';
 
@@ -32,7 +32,7 @@ export function NotificationCenter({
       ) : (
         <View>
           {items.map(item => (
-            <Pressable
+            <AppPressable
               accessibilityLabel={`${item.title}, ${item.timeLabel}`}
               accessibilityRole="button"
               key={item.id}
@@ -55,7 +55,7 @@ export function NotificationCenter({
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.time}>{item.timeLabel}</Text>
               </View>
-            </Pressable>
+            </AppPressable>
           ))}
         </View>
       )}

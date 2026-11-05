@@ -1,7 +1,7 @@
 import { primitiveColors } from '@jujistu/shared/theme';
-import { AppIcon } from '@jujistu/ui';
+import { AppIcon, AppPressable } from '@jujistu/ui';
 import React, { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
   HOME_TICKET_SESSIONS,
@@ -57,7 +57,7 @@ export function HomeEventTicketSection({
         {sessions.map((sess, index) => {
           const isSelected = index === selectedSessionIndex;
           return (
-            <Pressable
+            <AppPressable
               accessibilityLabel={`${sess.date} - ${sess.shortKind}`}
               accessibilityRole="button"
               key={sess.id}
@@ -79,7 +79,7 @@ export function HomeEventTicketSection({
               >
                 {sess.shortKind}
               </Text>
-            </Pressable>
+            </AppPressable>
           );
         })}
       </ScrollView>
@@ -87,7 +87,7 @@ export function HomeEventTicketSection({
       {/* Voucher Ticket Card */}
       {activeSession && (
         <View style={styles.voucherContainer}>
-          <Pressable
+          <AppPressable
             accessibilityLabel={`Chọn chỗ cho ${activeSession.title}`}
             accessibilityRole="button"
             onPress={handleSelectSeat}
@@ -168,7 +168,7 @@ export function HomeEventTicketSection({
               <View pointerEvents="none" style={styles.notchTop} />
               <View pointerEvents="none" style={styles.notchBottom} />
             </View>
-          </Pressable>
+          </AppPressable>
         </View>
       )}
     </View>

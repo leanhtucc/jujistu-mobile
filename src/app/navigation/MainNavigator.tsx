@@ -28,7 +28,7 @@ import { AppBottomNavigation } from '@jujistu/ui';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -70,6 +70,27 @@ function MainNavigationContent({
   const [activeTab, setActiveTab] =
     useState<BottomNavigationProductKey>('home');
   const notifications = useNotifications();
+  // A tab stays mounted once visited and is only hidden, so its state (mission
+  // progress, cart, scroll position, filters) survives switching tabs.
+  const [visited, setVisited] = useState<
+    ReadonlySet<BottomNavigationProductKey>
+  >(() => new Set(['home']));
+
+  useEffect(() => {
+    setVisited(current =>
+      current.has(activeTab) ? current : new Set(current).add(activeTab),
+    );
+  }, [activeTab]);
+
+  const renderPane = (key: BottomNavigationProductKey, node: React.ReactNode) =>
+    visited.has(key) || activeTab === key ? (
+      <View
+        key={key}
+        style={[styles.pane, activeTab === key ? null : styles.paneHidden]}
+      >
+        {node}
+      </View>
+    ) : null;
 
   const handleNotificationTarget = useCallback(
     (target: NotificationTarget) => {
@@ -103,12 +124,37 @@ function MainNavigationContent({
   return (
     <View style={styles.root}>
       <View style={styles.screenContainer}>
-        {activeTab === 'home' ? (
+        {renderPane(
+          'home',
           <HomeScreen
             coinBalance={coins}
             hasUnreadNotifications={notifications.hasUnread}
             onLogin={handleLogin}
+            onPressNews={item => {
+              if (item.id === 'news-ath-da') {
+                mainNavigation.navigate(MAIN_ROUTES.ATHLETE_JOURNEY, {
+                  athleteId: 'Trần Đức Anh',
+                });
+              } else {
+                mainNavigation.navigate(MAIN_ROUTES.TOURNAMENT_DETAIL, {
+                  tournamentId: item.id === 'news-hn26' ? 'hn' : 'nat26',
+                  initialTab: item.id === 'news-hn26' ? undefined : 'Tổng sắp',
+                });
+              }
+            }}
             onPressNotifications={notifications.open}
+            onPressProduct={() => setActiveTab('shop')}
+            onPressResults={() =>
+              mainNavigation.navigate(MAIN_ROUTES.TOURNAMENT_DETAIL, {
+                tournamentId: 'nat26',
+                initialTab: 'Kết quả',
+              })
+            }
+            onPressTournament={() =>
+              mainNavigation.navigate(MAIN_ROUTES.TOURNAMENT_DETAIL, {
+                tournamentId: 'hn',
+              })
+            }
             onPressAllVideos={() => mainNavigation.navigate(MAIN_ROUTES.VIDEOS)}
             onPressAthlete={() =>
               mainNavigation.navigate(MAIN_ROUTES.ATHLETE_JOURNEY, {
@@ -158,15 +204,11 @@ function MainNavigationContent({
               })
             }
             onReady={onReady}
-            user={
-              user ?? {
-                displayName: 'Minh',
-                avatarUrl: null,
-              }
-            }
-          />
-        ) : null}
-        {activeTab === 'shop' ? (
+            user={user}
+          />,
+        )}
+        {renderPane(
+          'shop',
           <ShopScreen
             onOpenTicket={zone =>
               mainNavigation.navigate(MAIN_ROUTES.TICKETS, {
@@ -174,29 +216,29 @@ function MainNavigationContent({
                 zone,
               })
             }
-          />
-        ) : null}
-        {activeTab === 'tournament' ? (
+          />,
+        )}
+        {renderPane(
+          'tournament',
           <TournamentListScreen
             onSelectTournament={tournamentId =>
               mainNavigation.navigate(MAIN_ROUTES.TOURNAMENT_DETAIL, {
                 tournamentId,
               })
             }
-          />
-        ) : null}
-        {activeTab === 'athletes' ? (
+          />,
+        )}
+        {renderPane(
+          'athletes',
           <AthleteListScreen
             onSelectAthlete={athleteId =>
               mainNavigation.navigate(MAIN_ROUTES.ATHLETE_JOURNEY, {
                 athleteId,
               })
             }
-          />
-        ) : null}
-        {activeTab === 'mission' ? (
-          <MissionScreen coins={coins} onEarn={onEarn} />
-        ) : null}
+          />,
+        )}
+        {renderPane('mission', <MissionScreen coins={coins} onEarn={onEarn} />)}
       </View>
       <AppBottomNavigation
         activeKey={activeTab}
@@ -355,6 +397,12 @@ const styles = StyleSheet.create({
   },
   screenContainer: {
     flex: 1,
+  },
+  pane: {
+    flex: 1,
+  },
+  paneHidden: {
+    display: 'none',
   },
   bottomInset: {
     backgroundColor: primitiveColors.neutral[1000],
