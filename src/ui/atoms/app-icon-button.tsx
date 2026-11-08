@@ -61,6 +61,7 @@ export function AppIconButton({
                 borderWidth: visualRecipe.borderWidth ?? 0,
                 height: sizeRecipe.control,
                 opacity: visualRecipe.opacity,
+                transform: [{ scale: pressed ? 0.92 : 1 }],
                 width: sizeRecipe.control,
               },
             ]}

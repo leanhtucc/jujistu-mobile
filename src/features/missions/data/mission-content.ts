@@ -35,6 +35,13 @@ export const DAILY_MISSIONS: readonly MissionDefinition[] = [
     target: 2,
   },
   {
+    id: 'predict',
+    icon: 'target',
+    title: 'Dự đoán 1 trận chung kết Quốc gia',
+    reward: 80,
+    target: 1,
+  },
+  {
     id: 'live5',
     icon: 'youtubeLogo',
     title: 'Xem livestream giải 5 phút',
@@ -76,6 +83,7 @@ export const MISSIONS_BY_TAB: Record<MissionTab, readonly MissionDefinition[]> =
 export const INITIAL_MISSION_PROGRESS: Record<string, MissionProgress> = {
   login: { progress: 1, status: 'claimable', busy: false },
   video: { progress: 1, status: 'todo', busy: false },
+  predict: { progress: 1, status: 'claimable', busy: false },
   live5: { progress: 0, status: 'pending', busy: false },
   rules: { progress: 1, status: 'claimed', busy: false },
   w1: { progress: 3, status: 'todo', busy: false },

@@ -122,6 +122,20 @@ export function LoginScreen({ onBack, onOtpRequested }: LoginScreenProps) {
               onPress={handleSubmit}
               size="md"
             />
+
+            {/* vn-law-check: Điều 5 khoản 2 42/VBHN-BCT & Luật 91/2025/QH15 */}
+            <View style={styles.legalFooter}>
+              <Text style={styles.legalNotice}>
+                Bằng việc đăng nhập, bạn đồng ý với{' '}
+                <Text style={styles.legalLink}>Điều khoản</Text> &{' '}
+                <Text style={styles.legalLink}>
+                  Chính sách bảo vệ dữ liệu cá nhân
+                </Text>
+              </Text>
+              <Text style={styles.operatorInfo}>
+                Đơn vị vận hành: JUJISTU Vietnam · support@jujistu.vn
+              </Text>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -132,6 +146,27 @@ export function LoginScreen({ onBack, onOtpRequested }: LoginScreenProps) {
 const styles = StyleSheet.create({
   button: {
     width: '100%',
+  },
+  legalFooter: {
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 18,
+  },
+  legalNotice: {
+    color: semanticColors.text.tertiary,
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: 'center',
+  },
+  legalLink: {
+    color: semanticColors.text.secondary,
+    textDecorationLine: 'underline',
+  },
+  operatorInfo: {
+    color: semanticColors.text.tertiary,
+    fontSize: 10,
+    marginTop: 4,
+    textAlign: 'center',
   },
   buttonLabel: {
     fontSize: 18,

@@ -75,6 +75,7 @@ export function AppButton({
                 borderWidth: visualRecipe.borderWidth ?? 0,
                 height: sizeRecipe.height,
                 opacity: visualRecipe.opacity,
+                transform: [{ scale: pressed ? 0.97 : 1 }],
               },
             ]}
           >

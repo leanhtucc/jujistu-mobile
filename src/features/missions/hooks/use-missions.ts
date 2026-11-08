@@ -57,6 +57,7 @@ export interface UseMissionsResult {
   readonly weekFraction: number;
   readonly refreshLabel: string;
   readonly toast: MissionToast | null;
+  readonly shakingId: string | null;
 }
 
 export function useMissions({
@@ -72,9 +73,11 @@ export function useMissions({
   const [streakClaimed, setStreakClaimed] = useState(false);
   const [refreshSeconds, setRefreshSeconds] = useState(INITIAL_REFRESH_SECONDS);
   const [toast, setToast] = useState<MissionToast | null>(null);
+  const [shakingId, setShakingId] = useState<string | null>(null);
 
   const timers = useRef(new Set<ReturnType<typeof setTimeout>>());
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const shakeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastKey = useRef(0);
 
   useEffect(() => {
@@ -90,6 +93,9 @@ export function useMissions({
       pending.clear();
       if (toastTimer.current) {
         clearTimeout(toastTimer.current);
+      }
+      if (shakeTimer.current) {
+        clearTimeout(shakeTimer.current);
       }
     };
   }, []);
@@ -133,6 +139,11 @@ export function useMissions({
       }
 
       if (current.status === 'claimable') {
+        setShakingId(missionId);
+        if (shakeTimer.current) {
+          clearTimeout(shakeTimer.current);
+        }
+        shakeTimer.current = setTimeout(() => setShakingId(null), 600);
         earn(definition.reward);
         setProgress(state => ({
           ...state,
@@ -198,5 +209,6 @@ export function useMissions({
     weekFraction: weekDone / WEEK_MISSION_TOTAL,
     refreshLabel: formatCountdown(refreshSeconds),
     toast,
+    shakingId,
   };
 }

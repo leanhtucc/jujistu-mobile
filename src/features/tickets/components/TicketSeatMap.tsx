@@ -62,12 +62,13 @@ function ZoneButton({
       accessibilityRole="button"
       accessibilityState={{ selected: item.selected, disabled: item.soldOut }}
       onPress={() => onPress(item.zone.id)}
-      style={[
+      style={({ pressed }) => [
         styles.zone,
         style,
         {
           backgroundColor: colors.backgroundColor,
           borderColor: colors.borderColor,
+          transform: [{ scale: pressed ? 0.96 : item.selected ? 1.02 : 1 }],
         },
         item.soldOut ? styles.zoneSoldOut : null,
       ]}

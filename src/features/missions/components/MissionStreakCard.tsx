@@ -1,11 +1,8 @@
-import {
-  dsTypography,
-  primitiveColors,
-  semanticColors,
-} from '@jujistu/shared/theme';
-import { AppCard, AppIcon, AppStampIn } from '@jujistu/ui';
+import { dsTypography, semanticColors } from '@jujistu/shared/theme';
+import { AppCard, AppIcon, AppPressable, AppStampIn } from '@jujistu/ui';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import Svg, { Path, Rect } from 'react-native-svg';
 
 import { STREAK_BASE_DONE } from '../data/mission-content';
 import type { StreakDay } from '../types/mission.types';
@@ -31,9 +28,43 @@ function StampWhenNew({
   return animate ? <AppStampIn>{children}</AppStampIn> : <>{children}</>;
 }
 
-/** A check mark drawn from two borders, since the icon set has no check. */
+/** A check mark drawn from two borders, matching the jiu-jitsu stamp style. */
 function CheckMark() {
   return <View style={styles.check} />;
+}
+
+/** Phosphor lock-simple vector icon for future locked days. */
+function LockIcon({
+  size = 16,
+  color,
+}: {
+  readonly size?: number;
+  readonly color: string;
+}) {
+  return (
+    <Svg fill="none" height={size} viewBox="0 0 256 256" width={size}>
+      <Rect
+        fill="none"
+        height={128}
+        rx={20}
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={18}
+        width={176}
+        x={40}
+        y={88}
+      />
+      <Path
+        d="M88 88V56a40 40 0 0 1 80 0v32"
+        fill="none"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={18}
+      />
+    </Svg>
+  );
 }
 
 export function MissionStreakCard({
@@ -68,13 +99,16 @@ export function MissionStreakCard({
               </StampWhenNew>
             ) : null}
             {day.state === 'today' ? (
-              <Pressable
+              <AppPressable
                 accessibilityLabel={`Nhận thưởng đăng nhập ngày ${
                   day.index + 1
                 }, ${day.reward} Xu`}
                 accessibilityRole="button"
                 onPress={onClaim}
-                style={styles.today}
+                style={({ pressed }) => [
+                  styles.today,
+                  pressed && styles.todayPressed,
+                ]}
                 testID="mission-streak-claim"
               >
                 <AppIcon
@@ -83,7 +117,7 @@ export function MissionStreakCard({
                   name="giftMono"
                   size={18}
                 />
-              </Pressable>
+              </AppPressable>
             ) : null}
             {day.state === 'locked' ? (
               <View
@@ -98,7 +132,9 @@ export function MissionStreakCard({
                     name="trophy"
                     size={16}
                   />
-                ) : null}
+                ) : (
+                  <LockIcon color={semanticColors.text.tertiary} size={15} />
+                )}
               </View>
             ) : null}
             <Text
@@ -140,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: semanticColors.background.dangerTint,
     borderColor: semanticColors.action.primary,
     borderRadius: 9,
-    borderWidth: 2,
+    borderWidth: 1.5,
     height: CELL,
     justifyContent: 'center',
     transform: [{ rotate: '-7deg' }],
@@ -148,29 +184,30 @@ const styles = StyleSheet.create({
   },
   check: {
     borderBottomColor: semanticColors.action.primary,
-    borderBottomWidth: 3,
-    borderLeftColor: semanticColors.action.primary,
-    borderLeftWidth: 3,
-    height: 8,
-    marginTop: -3,
-    transform: [{ rotate: '-45deg' }],
-    width: 15,
+    borderBottomWidth: 2.5,
+    borderRightColor: semanticColors.action.primary,
+    borderRightWidth: 2.5,
+    height: 14,
+    transform: [{ rotate: '45deg' }, { translateY: -1 }],
+    width: 8,
   },
   today: {
     alignItems: 'center',
-    backgroundColor: semanticColors.background.accentTint,
+    backgroundColor: 'rgba(254, 139, 51, 0.14)',
     borderColor: semanticColors.border.accent,
     borderRadius: 9,
-    borderWidth: 1,
+    borderWidth: 1.5,
     height: CELL,
     justifyContent: 'center',
-    shadowColor: primitiveColors.orange[500],
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
     width: CELL,
+  },
+  todayPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.94 }],
   },
   locked: {
     alignItems: 'center',
+    backgroundColor: 'transparent',
     borderColor: semanticColors.border.default,
     borderRadius: 9,
     borderStyle: 'dashed',
@@ -179,5 +216,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: CELL,
   },
-  reward: { ...dsTypography.counter, fontSize: 10, lineHeight: 12 },
+  reward: {
+    ...dsTypography.counter,
+    fontSize: 10,
+    lineHeight: 12,
+  },
 });

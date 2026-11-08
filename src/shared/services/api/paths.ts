@@ -13,6 +13,7 @@ export const AUTH_API_PATHS = {
   refreshToken: '/api/auth/refresh-token',
   me: '/api/auth/me',
   logout: '/api/auth/logout',
+  deleteAccount: '/api/auth/delete-account',
   forgotPassword: '/api/auth/forgot-password',
 } as const;
 

@@ -11,8 +11,8 @@ import {
   AppSegmentedControl,
   AppToast,
 } from '@jujistu/ui';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { MissionRow } from '../components/MissionRow';
@@ -33,6 +33,27 @@ export interface MissionScreenProps {
 export function MissionScreen({ onBack, coins, onEarn }: MissionScreenProps) {
   const insets = useSafeAreaInsets();
   const missions = useMissions({ coins, onEarn });
+
+  const coinScale = useRef(new Animated.Value(1)).current;
+  const prevCoins = useRef(missions.coins);
+
+  useEffect(() => {
+    if (missions.coins > prevCoins.current) {
+      Animated.sequence([
+        Animated.timing(coinScale, {
+          duration: 90,
+          toValue: 1.25,
+          useNativeDriver: true,
+        }),
+        Animated.spring(coinScale, {
+          bounciness: 14,
+          toValue: 1,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+    prevCoins.current = missions.coins;
+  }, [missions.coins, coinScale]);
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -56,20 +77,22 @@ export function MissionScreen({ onBack, coins, onEarn }: MissionScreenProps) {
                 Tích Xu mỗi ngày
               </Text>
             </View>
-            <View
-              accessibilityLabel={`Số dư ${missions.coinsLabel} Xu`}
-              accessible
-              style={styles.coinChip}
-              testID="mission-coins"
-            >
-              <AppIcon
-                accessible={false}
-                color={semanticColors.text.accent}
-                name="coinsPhosphor"
-                size={16}
-              />
-              <Text style={styles.coinText}>{missions.coinsLabel}</Text>
-            </View>
+            <Animated.View style={{ transform: [{ scale: coinScale }] }}>
+              <View
+                accessibilityLabel={`Số dư ${missions.coinsLabel} Xu`}
+                accessible
+                style={styles.coinChip}
+                testID="mission-coins"
+              >
+                <AppIcon
+                  accessible={false}
+                  color={semanticColors.text.accent}
+                  name="coinsPhosphor"
+                  size={16}
+                />
+                <Text style={styles.coinText}>{missions.coinsLabel}</Text>
+              </View>
+            </Animated.View>
           </View>
 
           <View style={styles.gutter}>
@@ -90,6 +113,8 @@ export function MissionScreen({ onBack, coins, onEarn }: MissionScreenProps) {
             </View>
             <AppProgressBar
               accessibilityLabel={`Đã hoàn thành ${missions.weekDone} trên ${missions.weekTotal} nhiệm vụ tuần`}
+              height={6}
+              segments={missions.weekTotal}
               value={missions.weekFraction}
             />
           </View>
@@ -103,17 +128,27 @@ export function MissionScreen({ onBack, coins, onEarn }: MissionScreenProps) {
             />
           </View>
 
-          <Text style={[styles.gutter, styles.refresh]}>
-            Làm mới sau{' '}
-            <Text style={styles.refreshTime}>{missions.refreshLabel}</Text>
-          </Text>
+          <View style={[styles.gutter, styles.refreshRow]}>
+            <AppIcon
+              accessible={false}
+              color={semanticColors.text.tertiary}
+              name="clock"
+              size={13}
+            />
+            <Text style={styles.refresh}>
+              Làm mới sau{' '}
+              <Text style={styles.refreshTime}>{missions.refreshLabel}</Text>
+            </Text>
+          </View>
 
           <View style={[styles.gutter, styles.list]}>
-            {missions.missions.map(mission => (
+            {missions.missions.map((mission, index) => (
               <MissionRow
+                index={index}
                 key={mission.id}
                 mission={mission}
                 onPress={missions.onPressMission}
+                shaking={missions.shakingId === mission.id}
               />
             ))}
           </View>
@@ -172,12 +207,17 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   weekCount: { ...dsTypography.counter, color: semanticColors.text.primary },
+  refreshRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: -8,
+  },
   refresh: {
     ...dsTypography.body,
     color: semanticColors.text.tertiary,
     fontSize: 12,
     lineHeight: 16,
-    marginTop: -8,
   },
   refreshTime: {
     ...dsTypography.counter,

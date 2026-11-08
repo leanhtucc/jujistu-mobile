@@ -9,6 +9,8 @@ export interface ProgressBarProps {
   /** Completed fraction, clamped to 0..1. */
   readonly value: number;
   readonly height?: number;
+  /** When segments > 1, renders discrete pill segments matching the prototype. */
+  readonly segments?: number;
   readonly accessibilityLabel?: string;
   readonly testID?: string;
 }
@@ -16,10 +18,52 @@ export interface ProgressBarProps {
 export function AppProgressBar({
   value,
   height = 6,
+  segments,
   accessibilityLabel,
   testID = 'app-progress-bar',
 }: ProgressBarProps) {
   const fraction = Math.min(1, Math.max(0, Number.isFinite(value) ? value : 0));
+
+  if (segments && segments > 1) {
+    const filledCount = Math.round(fraction * segments);
+    return (
+      <View
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole="progressbar"
+        accessibilityValue={{
+          min: 0,
+          max: 100,
+          now: Math.round(fraction * 100),
+        }}
+        style={[styles.segmentContainer, { height }]}
+        testID={testID}
+      >
+        {Array.from({ length: segments }).map((_, index) => {
+          const isFilled = index < filledCount;
+          return (
+            <View
+              key={index}
+              style={[
+                styles.segment,
+                {
+                  borderRadius: height / 2,
+                  backgroundColor: isFilled
+                    ? primitiveColors.ember[600]
+                    : semanticColors.background.surfaceElevated,
+                  borderColor: isFilled
+                    ? primitiveColors.orange[500]
+                    : primitiveColors.alpha.white06,
+                },
+              ]}
+              testID={`${testID}-segment-${index}`}
+            >
+              {isFilled ? <PrimaryGradientFill /> : null}
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
 
   return (
     <View
@@ -46,6 +90,17 @@ export function AppProgressBar({
 }
 
 const styles = StyleSheet.create({
+  segmentContainer: {
+    flexDirection: 'row',
+    gap: 3.5,
+    width: '100%',
+  },
+  segment: {
+    borderWidth: 0.5,
+    flex: 1,
+    height: '100%',
+    overflow: 'hidden',
+  },
   track: {
     backgroundColor: semanticColors.background.surfaceElevated,
     borderColor: primitiveColors.alpha.white06,

@@ -23,6 +23,25 @@ export function HomeHeader({
 }: HomeHeaderProps) {
   const formattedCoins = coinBalance.toLocaleString('vi-VN');
   const coinScale = useRef(new Animated.Value(1)).current;
+  const prevCoins = useRef(coinBalance);
+
+  React.useEffect(() => {
+    if (coinBalance > prevCoins.current) {
+      Animated.sequence([
+        Animated.timing(coinScale, {
+          duration: 90,
+          toValue: 1.25,
+          useNativeDriver: true,
+        }),
+        Animated.spring(coinScale, {
+          bounciness: 14,
+          toValue: 1,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+    prevCoins.current = coinBalance;
+  }, [coinBalance, coinScale]);
 
   const handleCoinPress = () => {
     Animated.sequence([

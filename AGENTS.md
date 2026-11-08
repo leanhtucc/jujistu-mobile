@@ -193,3 +193,18 @@ Screen or feature component
   ran successfully.
 - Report pre-existing failures separately from failures caused by the current
   change; do not hide, reset, or overwrite unrelated user changes.
+
+## Vietnam Legal Compliance (vn-law-check)
+
+- For any feature involving authentication, user data, e-commerce, tickets, in-app
+  purchases, permissions, or public-facing content, check against Vietnamese legal
+  requirements via the `vn-law-check` skill (`~/.gemini/config/skills/vn-law-check`).
+- Key compliance mandates:
+  - Personal Data Protection (Luật 91/2025/QH15, NĐ 356/2025): explicit opt-in
+    consent (never pre-checked), clear privacy policy link, account deletion
+    mechanism within 20 days.
+  - Mobile App Permissions (NĐ 147/2024, Checklist 09): only request permissions
+    at the time of use with clear purpose descriptions; do not request unneeded
+    system privileges.
+  - E-commerce / Transactions (Luật 122/2025, NĐ 52/2013, TT 59/2015): clear
+    price display, order confirmation/cancellation, and operator contact info.

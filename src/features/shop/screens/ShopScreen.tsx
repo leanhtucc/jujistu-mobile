@@ -7,8 +7,8 @@ import {
   AppInputField,
   AppToast,
 } from '@jujistu/ui';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ShopCartSheet } from '../components/ShopCartSheet';
@@ -29,6 +29,27 @@ export interface ShopScreenProps {
 export function ShopScreen({ onBack, onOpenTicket }: ShopScreenProps) {
   const insets = useSafeAreaInsets();
   const shop = useShop({ onOpenTicket });
+
+  const cartScale = useRef(new Animated.Value(1)).current;
+  const prevCount = useRef(shop.cartCount);
+
+  useEffect(() => {
+    if (shop.cartCount > prevCount.current) {
+      Animated.sequence([
+        Animated.timing(cartScale, {
+          duration: 90,
+          toValue: 1.25,
+          useNativeDriver: true,
+        }),
+        Animated.spring(cartScale, {
+          bounciness: 14,
+          toValue: 1,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+    prevCount.current = shop.cartCount;
+  }, [cartScale, shop.cartCount]);
 
   const rows = chunk(shop.products, 2);
 
@@ -55,7 +76,7 @@ export function ShopScreen({ onBack, onOpenTicket }: ShopScreenProps) {
                 Shop
               </Text>
             </View>
-            <View>
+            <Animated.View style={{ transform: [{ scale: cartScale }] }}>
               <AppIconButton
                 shape="pill"
                 accessibilityLabel={`Giỏ hàng, ${shop.cartCount} món`}
@@ -69,7 +90,7 @@ export function ShopScreen({ onBack, onOpenTicket }: ShopScreenProps) {
                   <Text style={styles.badgeText}>{shop.cartCount}</Text>
                 </View>
               ) : null}
-            </View>
+            </Animated.View>
           </View>
 
           <View style={styles.gutter}>

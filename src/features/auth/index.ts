@@ -5,6 +5,8 @@ export { useRequestOtp } from './hooks/use-request-otp';
 export { useVerifyOtp } from './hooks/use-verify-otp';
 export { useCurrentUser } from './hooks/use-current-user';
 export { useLogout } from './hooks/use-logout';
+export { useDeleteAccount } from './hooks/use-delete-account';
+export type { UseDeleteAccountResult } from './hooks/use-delete-account';
 export { useLogin } from './hooks/use-login';
 export { useRegister } from './hooks/use-register';
 export { AuthBackground } from './components/AuthBackground';
