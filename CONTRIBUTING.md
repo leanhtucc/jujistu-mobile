@@ -18,6 +18,56 @@
 - Rebase or update the branch with main before final approval.
 - Use squash merge after all required checks and reviews pass.
 
+## Commit messages
+
+Format: `type(scope): subject`, enforced by commitlint (`commit-msg` hook and
+local `.gitmessage` template).
+
+- `type`: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`, `ci`, `build`,
+  `revert`.
+- `scope`: the owning area in kebab-case, for example `auth`, `missions`, `shop`,
+  `ui`, `shared`, `navigation`, `deps`. Several scopes: `feat(auth,missions): ...`.
+- Subject: imperative, about 72 characters, no trailing period.
+- Body (when useful): explain why the change was needed and what it affects, not a
+  recap of the diff.
+- One commit, one logical change. A `feat` or `fix` commit includes its tests.
+
+The `pre-commit` hook runs `lint-staged` (eslint + prettier on staged files). Do not
+bypass hooks with `--no-verify`.
+
+## Code comments
+
+Comments exist so a new reader can follow the logic flow without asking the author.
+Use three levels, each with one purpose:
+
+1. **File header** (screens, hooks, services, and any non-trivial module): what the
+   file does, where it sits in the flow, and what it deliberately does not do.
+
+   ```ts
+   /**
+    * Login flow, hook layer.
+    * Flow: LoginScreen -> useLogin (this file) -> auth-service.login -> apiRequest.
+    * Responsibility: persist tokens via tokenManager and seed the currentUser cache.
+    * Not here: HTTP calls (service) and error display (screen).
+    */
+   ```
+
+2. **JSDoc on exports** (hooks, services, public components, shared utilities):
+   purpose, notable params, return value, and side effects (tokens saved, cache
+   invalidated, navigation triggered). ESLint (`jsdoc/require-jsdoc`) warns when an
+   exported function in those folders has none.
+
+3. **Inline comments** explain _why_, never _what_: workarounds, ordering
+   constraints, legal requirements, magic numbers, links to the ADR. Mark the main
+   steps of a long function with `// FLOW: <step>` so it reads as an outline.
+
+Rules:
+
+- Do not restate code, leave commented-out code, or comment obvious JSX.
+- `TODO(owner): message (issue)` and `FIXME(owner): message`; never an anonymous TODO.
+- Comments are written in English, like the code and docs.
+- Update the comment in the same change that alters the behavior it describes.
+
 ## Dependency changes
 
 - npm is the only package manager.

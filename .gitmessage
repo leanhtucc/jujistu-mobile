@@ -1,0 +1,7 @@
+# <type>(<scope>): <subject>   (imperative, max ~72 chars, no trailing period)
+#
+# Why this change was needed and what it affects (not a diff recap).
+#
+# type : feat fix refactor perf docs test chore ci build revert
+# scope: auth home videos missions shop tickets tournaments athletes
+#        notifications ui shared app navigation deps

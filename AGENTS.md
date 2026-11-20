@@ -194,6 +194,14 @@ Screen or feature component
 - Report pre-existing failures separately from failures caused by the current
   change; do not hide, reset, or overwrite unrelated user changes.
 
+## Commits and comments
+
+- Commit messages follow `type(scope): subject` (see `CONTRIBUTING.md` > "Commit
+  messages"); commitlint rejects other formats. Never use `--no-verify`.
+- Write comments per `CONTRIBUTING.md` > "Code comments": file header with the flow,
+  JSDoc on exported hooks/services/components, inline comments for _why_ only.
+  Keep them in English and update them with the code they describe.
+
 ## Vietnam Legal Compliance (vn-law-check)
 
 - For any feature involving authentication, user data, e-commerce, tickets, in-app

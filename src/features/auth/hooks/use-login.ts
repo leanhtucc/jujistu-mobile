@@ -1,3 +1,9 @@
+/**
+ * Login flow, hook layer.
+ * Flow: login screen -> useLogin (this file) -> auth-service.login -> apiRequest.
+ * Responsibility: persist tokens via tokenManager and seed the currentUser cache.
+ * Not here: HTTP calls (service) and error display (screen).
+ */
 import { tokenManager } from '@jujistu/shared/services/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';

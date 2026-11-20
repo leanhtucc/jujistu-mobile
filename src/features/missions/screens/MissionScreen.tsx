@@ -1,3 +1,10 @@
+/**
+ * Missions screen (route entry).
+ * Flow: MissionScreen -> useMissions (progress, streak, rewards) -> MissionRow /
+ * MissionStreakCard for rendering.
+ * Responsibility: layout, coin-counter animation and toast; all mission state and
+ * reward rules live in the hook. Rewards are reported to the app wallet via `onEarn`.
+ */
 import {
   dsTypography,
   radius,
@@ -30,6 +37,9 @@ export interface MissionScreenProps {
   readonly onEarn?: (amount: number) => void;
 }
 
+/**
+ *
+ */
 export function MissionScreen({ onBack, coins, onEarn }: MissionScreenProps) {
   const insets = useSafeAreaInsets();
   const missions = useMissions({ coins, onEarn });
