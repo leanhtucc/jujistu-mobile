@@ -20,6 +20,10 @@ export interface UseNotificationsResult {
   ) => void;
 }
 
+/**
+ * Open/close state of the notification centre. `hasUnread` starts true and clears on `open`;
+ * `select` closes the centre and reports the target so the app shell can navigate.
+ */
 export function useNotifications(): UseNotificationsResult {
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);

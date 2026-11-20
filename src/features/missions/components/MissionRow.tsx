@@ -19,6 +19,7 @@ export interface MissionRowProps {
   readonly shaking?: boolean;
 }
 
+/** One mission line with its progress and action state. `shaking` plays the reward animation; `index` staggers the entrance. */
 export function MissionRow({
   mission,
   onPress,

@@ -1,3 +1,9 @@
+/**
+ * Missions feature, hook layer.
+ * Flow: MissionScreen -> useMissions (this file) -> MissionRow / MissionStreakCard.
+ * Owns tab, per-mission progress, streak claim, refresh countdown, toast and shake.
+ * Mock seam (ADR-0019): progress is simulated locally; rewards leave through `onEarn`.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -60,6 +66,11 @@ export interface UseMissionsResult {
   readonly shakingId: string | null;
 }
 
+/**
+ * Mission state machine: `todo` -> (open content, busy) -> `claimable` -> `claimed`.
+ * With `coins` + `onEarn` the wallet is owned by the app shell; without them the hook
+ * keeps a local balance. All timers are tracked and cleared on unmount.
+ */
 export function useMissions({
   coins: controlledCoins,
   onEarn,
@@ -138,6 +149,7 @@ export function useMissions({
         return;
       }
 
+      // FLOW: claimable -> grant the reward, mark claimed, shake the row.
       if (current.status === 'claimable') {
         setShakingId(missionId);
         if (shakeTimer.current) {
@@ -153,6 +165,8 @@ export function useMissions({
         return;
       }
 
+      // FLOW: todo -> lock the row (busy) while the content "opens", then advance
+      // the progress after OPEN_CONTENT_MS and show how far the mission got.
       if (current.status === 'todo') {
         setProgress(state => ({
           ...state,

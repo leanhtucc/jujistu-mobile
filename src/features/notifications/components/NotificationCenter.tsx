@@ -12,6 +12,7 @@ export interface NotificationCenterProps {
   readonly onSelect: (item: NotificationItem) => void;
 }
 
+/** Bottom sheet listing notifications, with an empty state. Pure view: selection is reported via `onSelect`. */
 export function NotificationCenter({
   visible,
   items,

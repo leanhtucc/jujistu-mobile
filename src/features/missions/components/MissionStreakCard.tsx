@@ -67,6 +67,7 @@ function LockIcon({
   );
 }
 
+/** Weekly streak card: the days done so far and the claim button for today's reward. */
 export function MissionStreakCard({
   days,
   label,
