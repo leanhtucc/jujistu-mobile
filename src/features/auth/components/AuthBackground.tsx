@@ -15,6 +15,11 @@ type AuthBackgroundProps = PropsWithChildren<{
   onReady?: () => void;
 }>;
 
+/**
+ * Full-screen background shared by auth screens.
+ * Calls `onReady` once the image has settled and the layout is measured, so the
+ * startup splash (ADR-0009) can hide without a flash. `dimmed` darkens it for forms.
+ */
 export function AuthBackground({
   children,
   dimmed = false,

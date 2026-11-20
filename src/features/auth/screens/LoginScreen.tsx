@@ -1,3 +1,10 @@
+/**
+ * Login screen (step 1 of the passwordless email-OTP flow, ADR-0007).
+ * Flow: LoginScreen -> useRequestOtp -> auth-service.requestOtp -> onOtpRequested
+ * (navigator opens OtpScreen with the challenge).
+ * Responsibility: email input, client-side format check, hardware back handling.
+ * Not here: the HTTP call (service) or the OTP entry (OtpScreen).
+ */
 import {
   getResponsiveContentWidth,
   useResponsive,
@@ -27,6 +34,10 @@ type LoginScreenProps = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Collects the email, validates its format and asks the backend to send an OTP.
+ * On success it hands `{ challengeId, email }` to `onOtpRequested`.
+ */
 export function LoginScreen({ onBack, onOtpRequested }: LoginScreenProps) {
   const responsive = useResponsive();
   const contentWidth = getResponsiveContentWidth(responsive);

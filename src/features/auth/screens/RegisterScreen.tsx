@@ -1,3 +1,9 @@
+/**
+ * Registration screen (display name, email, password, explicit consent).
+ * Flow: RegisterScreen -> useRegister -> auth-service.register.
+ * Legal: the submit button stays disabled until the consent box is ticked by the user
+ * (never pre-checked) and the privacy policy is readable in a modal (Luật 91/2025).
+ */
 import { useAppTheme } from '@jujistu/shared/theme/useAppTheme';
 import {
   getResponsiveContentWidth,
@@ -21,6 +27,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useRegister } from '../hooks/use-register';
 
+/**
+ * Creates an account. Submission needs all fields filled and consent accepted;
+ * errors surface through the `error` state of useRegister.
+ */
 export function RegisterScreen() {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');

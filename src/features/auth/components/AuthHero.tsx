@@ -13,6 +13,7 @@ type AuthHeroProps = {
   compact?: boolean;
 };
 
+/** Logo and tagline block, sized per responsive breakpoint. `compact` shrinks it when a form shares the screen. */
 export function AuthHero({ compact = false }: AuthHeroProps) {
   const responsive = useResponsive();
   const layout = selectResponsiveValue(responsive, {

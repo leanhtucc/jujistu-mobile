@@ -1,3 +1,9 @@
+/**
+ * OTP screen (step 2 of the passwordless email-OTP flow, ADR-0007).
+ * Flow: OtpScreen -> useVerifyOtp -> auth-service.verifyOtp -> session saved by the hook.
+ * Responsibility: code entry, auto-submit when the code is complete, resend with a
+ * countdown. Not here: token storage or navigation after login (hook / app shell).
+ */
 import {
   getResponsiveContentWidth,
   selectResponsiveValue,
@@ -28,6 +34,11 @@ type OtpScreenProps = {
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 30;
 
+/**
+ * Verifies the emailed code and lets the user request a new one.
+ * The code is submitted automatically once it reaches OTP_LENGTH; `lastSubmittedCode`
+ * stops the same code from being sent twice. Resending replaces the challenge id.
+ */
 export function OtpScreen({
   challengeId: initialChallengeId,
   email,

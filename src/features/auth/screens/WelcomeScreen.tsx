@@ -13,6 +13,7 @@ type WelcomeScreenProps = {
   onLogin: () => void;
 };
 
+/** Entry screen of the auth stack: brand hero and a single call to action that calls `onLogin`. */
 export function WelcomeScreen({ onLogin }: WelcomeScreenProps) {
   const responsive = useResponsive();
   const contentWidth = getResponsiveContentWidth(responsive);
