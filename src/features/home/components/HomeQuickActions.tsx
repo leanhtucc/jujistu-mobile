@@ -41,7 +41,7 @@ export interface HomeQuickActionsProps {
   readonly onPressAction?: (shortcut: HomeShortcut) => void;
 }
 
-/** Shortcut grid (tickets, missions, shop...). `mode` is `guest` or `authenticated`. */
+/** Shortcut grid (tickets, missions, shop...). `mode` is `guest` or `authenticated` (not used yet). */
 export function HomeQuickActions({
   shortcuts = HOME_SHORTCUTS,
   onPressAction,
