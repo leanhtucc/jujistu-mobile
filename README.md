@@ -85,6 +85,15 @@ The iOS pipeline currently resolves gems from `Gemfile`. Generate and commit a
 verified `Gemfile.lock` from macOS before dependency versions are changed or the
 project is released.
 
+## Feature guides
+
+Each feature explains its own flow in a short README (screens, hooks, mock seams):
+[auth](src/features/auth/README.md), [home](src/features/home/README.md),
+[videos](src/features/videos/README.md), [tournaments](src/features/tournaments/README.md),
+[athletes](src/features/athletes/README.md), [tickets](src/features/tickets/README.md),
+[shop](src/features/shop/README.md), [missions](src/features/missions/README.md),
+[notifications](src/features/notifications/README.md).
+
 ## Contribution workflow
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing code. Project-generation and
