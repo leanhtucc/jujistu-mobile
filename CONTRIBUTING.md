@@ -115,6 +115,7 @@ Every pull request must pass these GitHub Actions checks before merge:
 - `Quality`
 - `Android debug build`
 - `iOS simulator build`
+- `Commit messages`
 
 If a check is skipped because its prerequisite failed, fix the first failure and
 rerun the workflow. Do not merge by bypassing a required check.

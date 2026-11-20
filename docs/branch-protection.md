@@ -18,6 +18,8 @@ Create a branch protection rule or repository ruleset targeting `main` with:
   - `Quality`
   - `Android debug build`
   - `iOS simulator build`
+  - `Commit messages` (runs commitlint on the pull request's commits, so the
+    `type(scope): subject` format cannot be skipped with `--no-verify`)
 - force pushes and branch deletion blocked;
 - linear history required; and
 - the rule applied to administrators as well as contributors.
