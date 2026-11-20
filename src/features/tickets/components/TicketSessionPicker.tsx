@@ -11,6 +11,7 @@ export interface TicketSessionPickerProps {
   readonly onSelect: (index: number) => void;
 }
 
+/** Horizontal picker for the event session (day); `onSelect` receives the index. */
 export function TicketSessionPicker({
   sessions,
   activeIndex,

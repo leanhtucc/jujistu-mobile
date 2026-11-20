@@ -1,3 +1,10 @@
+/**
+ * Shop feature, hook layer.
+ * Flow: ShopScreen -> useShop (this file) -> ShopProductCard / ShopProductSheet /
+ * ShopCartSheet.
+ * Owns category filter, search, cart, product sheet, checkout status and toast.
+ * Mock seam (ADR-0019): checkout is simulated with a timer; no payment is taken.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -71,6 +78,10 @@ export interface UseShopResult {
   readonly toast: string | null;
 }
 
+/**
+ * Local shop state. Opening a ticket product calls `onOpenTicket` instead of the sheet,
+ * so the app shell can route to ticket purchase. Timers are cleared on unmount.
+ */
 export function useShop({ onOpenTicket }: UseShopOptions = {}): UseShopResult {
   const [category, setCategory] = useState<ShopCategoryFilter>('Tất cả');
   const [query, setQuery] = useState('');

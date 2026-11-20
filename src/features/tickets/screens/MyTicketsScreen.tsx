@@ -15,6 +15,7 @@ export interface MyTicketsScreenProps {
   readonly onBuyTicket?: () => void;
 }
 
+/** Route entry that shows the purchased ticket pass (TicketPass) with its actions. */
 export function MyTicketsScreen({ onBack, onBuyTicket }: MyTicketsScreenProps) {
   const insets = useSafeAreaInsets();
   const pass = useTicketPass();

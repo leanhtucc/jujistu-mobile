@@ -105,6 +105,7 @@ function SideZone({
   );
 }
 
+/** Venue map; each zone shows availability and calls `onSelectZone` when pressed. */
 export function TicketSeatMap({ zones, onSelectZone }: TicketSeatMapProps) {
   const a = find(zones, 'a');
   const b = find(zones, 'b');

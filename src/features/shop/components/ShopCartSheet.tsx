@@ -29,6 +29,7 @@ export interface ShopCartSheetProps {
   readonly onFinish: () => void;
 }
 
+/** Cart bottom sheet: line quantities, totals and the checkout / finished states. */
 export function ShopCartSheet({
   visible,
   lines,

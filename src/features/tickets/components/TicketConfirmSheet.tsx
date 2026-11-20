@@ -20,6 +20,10 @@ export interface TicketConfirmSheetProps {
   readonly onPay: () => void;
 }
 
+/**
+ * Bottom sheet that summarises the order (rows, total), lets the user pick a payment
+ * method and confirm. Shows the paying state while `paying` is true.
+ */
 export function TicketConfirmSheet({
   visible,
   rows,

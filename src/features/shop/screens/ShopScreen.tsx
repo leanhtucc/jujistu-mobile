@@ -26,6 +26,10 @@ export interface ShopScreenProps {
   readonly onOpenTicket?: (zone: 'vip' | 'a') => void;
 }
 
+/**
+ * Route entry for the shop: search, category filter, drop banner, product grid, and the
+ * product and cart sheets, all driven by useShop.
+ */
 export function ShopScreen({ onBack, onOpenTicket }: ShopScreenProps) {
   const insets = useSafeAreaInsets();
   const shop = useShop({ onOpenTicket });

@@ -29,6 +29,10 @@ export interface UseTicketPassResult {
   readonly notice: string | null;
 }
 
+/**
+ * View model for the purchased ticket pass: event info rows, seat selection, QR cells.
+ * `save` and `openMap` only show a transient notice for now (mock seam, ADR-0019).
+ */
 export function useTicketPass(): UseTicketPassResult {
   const ticket = usePurchasedTicket();
   const [seatIndex, setSeatIndex] = useState(0);

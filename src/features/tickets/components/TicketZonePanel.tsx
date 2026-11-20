@@ -43,6 +43,7 @@ function SeatButton({
   );
 }
 
+/** Seat grid for numbered zones, or a quantity stepper for general admission. */
 export function TicketZonePanel({
   zone,
   seatRows,

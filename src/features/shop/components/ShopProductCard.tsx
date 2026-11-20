@@ -12,6 +12,7 @@ export interface ShopProductCardProps {
   readonly onQuickAdd: (product: Product) => void;
 }
 
+/** Grid card for a product. Press opens details; the quick-add button adds it to the cart. */
 export function ShopProductCard({
   product,
   onPress,

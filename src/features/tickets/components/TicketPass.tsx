@@ -42,6 +42,7 @@ function Qr({ cells }: { readonly cells: readonly boolean[] }) {
   );
 }
 
+/** The ticket card: event, seat selector, QR-style code and info rows. */
 export function TicketPass({ pass }: TicketPassProps) {
   const { ticket } = pass;
   if (!ticket) {
@@ -122,6 +123,7 @@ export function TicketPass({ pass }: TicketPassProps) {
   );
 }
 
+/** Action buttons under the pass (save image, open venue map). */
 export function TicketPassActions({ pass }: TicketPassProps) {
   return (
     <View style={styles.actions}>

@@ -1,3 +1,10 @@
+/**
+ * Ticket purchase flow, hook layer.
+ * Flow: TicketPurchaseScreen -> useTicketPurchase (this file) -> TicketSeatMap /
+ * TicketZonePanel / TicketConfirmSheet.
+ * Stages: pick (session, zone, seats) -> confirm sheet -> pay -> done.
+ * Mock seam (ADR-0019): payment is simulated with a timer; no real transaction yet.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTransientMessage } from '@jujistu/shared/hooks/use-transient-message';
@@ -75,6 +82,11 @@ export interface UseTicketPurchaseResult {
   readonly notice: string | null;
 }
 
+/**
+ * Owns the purchase state: chosen session, zone, seats or general quantity, payment
+ * method and stage. `pay` simulates a payment with a timer (cleared on unmount) and
+ * moves the stage to `done`.
+ */
 export function useTicketPurchase({
   initialZone = 'vip',
 }: UseTicketPurchaseOptions = {}): UseTicketPurchaseResult {

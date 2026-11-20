@@ -32,6 +32,10 @@ export interface TicketPurchaseScreenProps {
   readonly onGoHome?: () => void;
 }
 
+/**
+ * Route entry for buying tickets. Orchestrates the picker, seat map, zone panel and
+ * confirm sheet from useTicketPurchase; navigation goes out via the `on*` callbacks.
+ */
 export function TicketPurchaseScreen({
   tournamentId: _tournamentId,
   initialZone,

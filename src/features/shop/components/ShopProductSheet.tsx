@@ -20,6 +20,7 @@ export interface ShopProductSheetProps {
   readonly onAdd: () => void;
 }
 
+/** Bottom sheet to choose size and quantity before adding to the cart. Hidden when `sheet` is null. */
 export function ShopProductSheet({
   sheet,
   onClose,
