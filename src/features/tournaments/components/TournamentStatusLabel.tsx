@@ -15,6 +15,7 @@ const STATUS_COLORS: Record<TournamentStatus, string> = {
   done: semanticColors.text.tertiary,
 };
 
+/** Coloured status pill (ongoing, upcoming, finished) with its label. */
 export function TournamentStatusLabel({
   status,
   label,

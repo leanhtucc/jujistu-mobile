@@ -36,6 +36,7 @@ export interface UseAthleteProfileResult {
 /** Event expanded when the journey opens: the live national championship. */
 const INITIALLY_EXPANDED = 'nat26n';
 
+/** Profile view model for one athlete: career filter, expanded events and follow toggle. */
 export function useAthleteProfile({
   athleteId,
   finalPlayed = false,

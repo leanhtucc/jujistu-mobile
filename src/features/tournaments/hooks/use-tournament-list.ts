@@ -1,3 +1,9 @@
+/**
+ * Tournaments feature, list hook.
+ * Flow: TournamentListScreen -> useTournamentList (this file) -> TournamentListItem.
+ * Sections (ongoing / upcoming / finished) are derived from `today`, which defaults
+ * to a fixed reference day while data is static (ADR-0019 mock seam).
+ */
 import { useMemo, useState } from 'react';
 
 import {
@@ -25,6 +31,7 @@ export interface UseTournamentListResult {
   readonly sections: readonly TournamentSection[];
 }
 
+/** Level filter plus the tournament sections computed for `today` (injectable for tests). */
 export function useTournamentList({
   today = TOURNAMENT_MOCK_TODAY,
 }: UseTournamentListOptions = {}): UseTournamentListResult {

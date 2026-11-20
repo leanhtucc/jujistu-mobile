@@ -99,6 +99,10 @@ function resolveCta(
   return { kind: 'replay', label: 'Xem video phát lại' };
 }
 
+/**
+ * Detail view model: active tab, schedule day, results, medal table and the call to action.
+ * `today` / `nowMinutes` are injectable so tests do not depend on the real clock.
+ */
 export function useTournamentDetail({
   tournamentId,
   initialTab,

@@ -20,6 +20,7 @@ export interface AthleteJourneyScreenProps {
   readonly onPressVideo?: () => void;
 }
 
+/** Route entry for one athlete: hero, stats, rivals and the career timeline (data from useAthleteProfile). */
 export function AthleteJourneyScreen({
   athleteId = FEATURED_ATHLETE_ID,
   onBack,

@@ -9,6 +9,7 @@ export interface AthleteStatsSectionProps {
   readonly profile: AthleteProfile;
 }
 
+/** Statistics block of an athlete profile. */
 export function AthleteStatsSection({ profile }: AthleteStatsSectionProps) {
   return (
     <View style={styles.root} testID="athlete-stats">

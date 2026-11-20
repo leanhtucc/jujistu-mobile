@@ -8,6 +8,7 @@ export interface TournamentMedalTableTabProps {
   readonly rows: readonly MedalTableRow[];
 }
 
+/** Medal table tab. */
 export function TournamentMedalTableTab({
   rows,
 }: TournamentMedalTableTabProps) {

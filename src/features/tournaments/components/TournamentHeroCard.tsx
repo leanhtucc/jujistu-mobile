@@ -13,6 +13,7 @@ export interface TournamentHeroCardProps {
   readonly dateRange: string;
 }
 
+/** Hero card with name, status and date range. */
 export function TournamentHeroCard({
   tournament,
   status,

@@ -17,6 +17,7 @@ const MEDAL_VARIANTS: Record<MedalKind, TagVariant> = {
   HCĐ: 'outline',
 };
 
+/** Results tab grouped by division; athlete names open their profile via `onPressAthlete`. */
 export function TournamentResultsTab({
   results,
   onPressAthlete,

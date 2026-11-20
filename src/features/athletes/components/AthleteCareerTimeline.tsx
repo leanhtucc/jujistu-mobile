@@ -170,6 +170,7 @@ function MilestoneCard({ milestone }: { readonly milestone: CareerMilestone }) {
   );
 }
 
+/** Career grouped by year with expandable events and their matches; `onPressVideo` opens a replay. */
 export function AthleteCareerTimeline({
   career,
   isExpanded,

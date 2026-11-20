@@ -9,6 +9,7 @@ export interface AthleteRivalsListProps {
   readonly rivals: readonly AthleteRival[];
 }
 
+/** List of the athlete's main rivals. */
 export function AthleteRivalsList({ rivals }: AthleteRivalsListProps) {
   return (
     <View testID="athlete-rivals">

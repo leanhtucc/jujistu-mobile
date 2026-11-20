@@ -37,6 +37,7 @@ const STATUS_TEXT_COLORS: Record<SessionStatus, string> = {
   later: semanticColors.text.tertiary,
 };
 
+/** Schedule tab: day selector (highlights today) and the sessions of the active day. */
 export function TournamentScheduleTab({
   days,
   activeDay,

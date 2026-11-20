@@ -20,6 +20,7 @@ const GLOW_BY_STATUS: Record<TournamentStatus, number> = {
   done: 0,
 };
 
+/** One tournament row; press reports its id via `onPress`. */
 export function TournamentListItem({
   entry,
   onPress,

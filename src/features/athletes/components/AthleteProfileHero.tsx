@@ -13,6 +13,7 @@ export interface AthleteProfileHeroProps {
   readonly profile: AthleteProfile;
 }
 
+/** Top banner of the profile (photo, name, record), sized by ATHLETE_HERO_HEIGHT. */
 export function AthleteProfileHero({
   athlete,
   profile,

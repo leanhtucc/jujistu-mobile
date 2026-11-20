@@ -1,3 +1,8 @@
+/**
+ * Athletes feature, list hook.
+ * Flow: AthleteListScreen -> useAthleteList (this file) -> AthleteSpotlightCard / AthleteListRow.
+ * Data is static (ADR-0019 mock seam); filtering is done locally by query and discipline.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -36,6 +41,10 @@ export interface UseAthleteListResult {
 
 const NOTICE_DURATION_MS = 2400;
 
+/**
+ * Search text, discipline filter and the resulting list. The spotlight athlete shows only
+ * while no filter is active. `openAthlete` raises a timed notice when the athlete has no journey.
+ */
 export function useAthleteList(): UseAthleteListResult {
   const [query, setQuery] = useState('');
   const [activeDiscipline, setActiveDiscipline] =

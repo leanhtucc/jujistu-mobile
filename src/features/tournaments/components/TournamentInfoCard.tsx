@@ -10,6 +10,7 @@ export interface TournamentInfoCardProps {
   readonly note: string;
 }
 
+/** Key facts (rows) and a note about the tournament. */
 export function TournamentInfoCard({ rows, note }: TournamentInfoCardProps) {
   return (
     <View style={styles.root} testID="tournament-info">

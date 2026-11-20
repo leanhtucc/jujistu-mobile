@@ -14,6 +14,7 @@ export interface TournamentListScreenProps {
   readonly onBack?: () => void;
 }
 
+/** Route entry listing tournaments by level; selection goes out via `onSelectTournament`. */
 export function TournamentListScreen({
   onSelectTournament,
   onBack,

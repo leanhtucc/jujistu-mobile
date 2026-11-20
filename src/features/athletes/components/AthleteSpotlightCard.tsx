@@ -12,6 +12,7 @@ export interface AthleteSpotlightCardProps {
   readonly onPress?: (athlete: AthleteSummary) => void;
 }
 
+/** Large featured-athlete card with a short teaser. */
 export function AthleteSpotlightCard({
   athlete,
   teaser,

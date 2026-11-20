@@ -15,6 +15,7 @@ export interface AthleteListScreenProps {
   readonly onBack?: () => void;
 }
 
+/** Route entry listing athletes with search and discipline chips. Selection goes out via `onSelectAthlete`. */
 export function AthleteListScreen({
   onSelectAthlete,
   onBack,

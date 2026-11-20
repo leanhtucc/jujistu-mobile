@@ -23,6 +23,7 @@ export interface TournamentDetailScreenProps {
   readonly onPressWatch?: () => void;
 }
 
+/** Route entry for one tournament: hero, info and tabs (schedule, results, medals, bracket). */
 export function TournamentDetailScreen({
   tournamentId,
   initialTab,

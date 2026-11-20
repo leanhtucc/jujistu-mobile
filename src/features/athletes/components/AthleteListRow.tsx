@@ -10,6 +10,7 @@ export interface AthleteListRowProps {
   readonly onPress?: (athlete: AthleteSummary) => void;
 }
 
+/** One athlete row in the list. */
 export function AthleteListRow({ athlete, onPress }: AthleteListRowProps) {
   return (
     <AppPressable
