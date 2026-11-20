@@ -12,6 +12,7 @@ export interface VideoListItemProps {
   readonly onPress: (videoId: string) => void;
 }
 
+/** One video row (thumbnail, title, duration). */
 export function VideoListItem({
   compact = false,
   item,

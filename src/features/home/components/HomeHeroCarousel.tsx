@@ -23,6 +23,7 @@ const FIGMA_INACTIVE_WIDTH = 222;
 const FIGMA_INACTIVE_HEIGHT = 125;
 const SLIDE_DURATION = 4500;
 
+/** Pure layout maths for the hero carousel: derives card sizes from the window width so the layout adapts to phones and tablets (ADR-0010). Kept separate so it is unit-tested without rendering. */
 export function resolveHomeHeroGeometry(
   responsive: Pick<ResponsiveMetrics, 'shortestSide' | 'width'> &
     Partial<
@@ -73,6 +74,10 @@ export interface HomeHeroCarouselProps {
   readonly onPressSlide?: (slide: HomeHeroSlide) => void;
 }
 
+/**
+ * Top carousel of hero slides. `onInitialImageSettled` tells the screen the first image is
+ * ready, which the startup splash waits for (ADR-0009).
+ */
 export function HomeHeroCarousel({
   onInitialImageSettled,
   onPressSlide,

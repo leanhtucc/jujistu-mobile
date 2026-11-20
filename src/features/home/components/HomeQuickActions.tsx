@@ -19,6 +19,7 @@ const FIGMA_ITEM_WIDTH = 104;
 const MIN_COLUMN_GAP = 12;
 const TILE_GAP = 10;
 
+/** Pure layout maths for the quick-action grid: derives card sizes from the window width so the layout adapts to phones and tablets (ADR-0010). Kept separate so it is unit-tested without rendering. */
 export function resolveHomeQuickActionGeometry(windowWidth: number) {
   const gridWidth = Math.min(600, Math.max(0, windowWidth - 32));
   const columnGap = Math.min(
@@ -40,6 +41,7 @@ export interface HomeQuickActionsProps {
   readonly onPressAction?: (shortcut: HomeShortcut) => void;
 }
 
+/** Shortcut grid (tickets, missions, shop...). `mode` is `guest` or `authenticated`. */
 export function HomeQuickActions({
   shortcuts = HOME_SHORTCUTS,
   onPressAction,

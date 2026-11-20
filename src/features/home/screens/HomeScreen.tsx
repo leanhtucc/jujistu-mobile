@@ -65,6 +65,10 @@ export interface HomeScreenProps {
   } | null;
 }
 
+/**
+ * Home route entry (ADR-0011/0017). Composes the Home sections; it holds no remote state and
+ * reports every tap upward through the `onPress*` callbacks, so the app shell owns navigation.
+ */
 export function HomeScreen({
   coinBalance = 12500,
   hasUnreadNotifications,

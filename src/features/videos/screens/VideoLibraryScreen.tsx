@@ -19,6 +19,7 @@ export interface VideoLibraryScreenProps {
   readonly onSelectVideo: (videoId: string) => void;
 }
 
+/** Route entry for video discovery: search header, category tabs and the video list. */
 export function VideoLibraryScreen({
   onBack,
   onSelectVideo,

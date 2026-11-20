@@ -13,6 +13,7 @@ export interface GuestAccountHeaderProps {
   readonly onLogin?: () => void;
 }
 
+/** Header shown to guests; the login button calls `onLogin`. */
 export function GuestAccountHeader({ onLogin }: GuestAccountHeaderProps) {
   const responsive = useResponsive();
   const layout = selectResponsiveValue(responsive, {

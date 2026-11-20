@@ -14,6 +14,7 @@ export interface HomeUpcomingTournamentCardProps {
   readonly onToggleRemind?: (reminded: boolean) => void;
 }
 
+/** Next tournament card with a remind-me toggle (reported via `onToggleRemind`). */
 export function HomeUpcomingTournamentCard({
   tournament = HOME_UPCOMING_TOURNAMENT,
   onPressTournament,

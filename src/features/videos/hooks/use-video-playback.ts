@@ -1,3 +1,10 @@
+/**
+ * Video playback lifecycle (ADR-0015).
+ * Flow: VideoPlayerScreen -> VideoPlaybackSurface -> useVideoPlayback (this file) ->
+ * react-native-video callbacks.
+ * Owns paused/muted/rate, buffering, progress and error state. Playback pauses when
+ * the app leaves the foreground; `retry` remounts the player through `reloadKey`.
+ */
 import { createLogger } from '@jujistu/shared/logger/logger';
 import { useCallback, useEffect, useState } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
@@ -37,6 +44,10 @@ export interface VideoPlaybackController {
 
 const PLAYBACK_RATES = [1, 1.25, 1.5, 0.75] as const;
 
+/**
+ * Playback controller for one `react-native-video` instance, given its ref.
+ * Returns state plus handlers to wire straight onto the player props.
+ */
 export function useVideoPlayback(
   videoRef: React.RefObject<VideoRef | null>,
 ): VideoPlaybackController {

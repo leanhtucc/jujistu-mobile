@@ -9,6 +9,7 @@ export interface VideoSearchHeaderProps {
   readonly value: string;
 }
 
+/** Header with the search field of the video library. */
 export function VideoSearchHeader({
   onBack,
   onChangeText,

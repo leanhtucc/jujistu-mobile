@@ -3,6 +3,7 @@ import { AppIcon } from '@jujistu/ui';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+/** Fullscreen icon drawn locally for the player controls. */
 export function FullscreenGlyph() {
   return (
     <View accessible={false} importantForAccessibility="no" style={styles.root}>

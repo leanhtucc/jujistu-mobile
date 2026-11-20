@@ -10,6 +10,7 @@ const FIGMA_IMAGE_WIDTH = 156;
 const FIGMA_IMAGE_HEIGHT = 87;
 const FIGMA_CONTENT_GAP = 19;
 
+/** Pure layout maths for the news row: derives card sizes from the window width so the layout adapts to phones and tablets (ADR-0010). Kept separate so it is unit-tested without rendering. */
 export function resolveHomeNewsGeometry(windowWidth: number) {
   const sectionWidth = Math.min(720, Math.max(0, windowWidth - 30));
   const scale = Math.min(1.6, sectionWidth / FIGMA_SECTION_WIDTH);
@@ -29,6 +30,7 @@ export interface HomeNewsSectionProps {
   readonly onPressItem?: (item: HomeNewsItem) => void;
 }
 
+/** News row with a "see all" link. */
 export function HomeNewsSection({
   news = HOME_NEWS,
   onPressAll,

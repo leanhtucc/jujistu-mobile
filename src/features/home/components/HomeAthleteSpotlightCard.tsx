@@ -13,6 +13,7 @@ export interface HomeAthleteSpotlightCardProps {
   readonly onPressJourney?: (athlete: HomeAthleteSpotlight) => void;
 }
 
+/** Featured athlete card; `onPressJourney` opens the athlete journey. */
 export function HomeAthleteSpotlightCard({
   spotlight = HOME_ATHLETE_SPOTLIGHT,
   onPressJourney,

@@ -10,6 +10,7 @@ const VIDEO_WIDTH = 166;
 const VIDEO_HEIGHT = 92;
 const VIDEO_GAP = 19;
 
+/** Pure layout maths for the featured video row: derives card sizes from the window width so the layout adapts to phones and tablets (ADR-0010). Kept separate so it is unit-tested without rendering. */
 export function resolveHomeFeaturedVideoGeometry(windowWidth: number) {
   const sectionWidth = Math.min(720, Math.max(0, windowWidth - 26));
   const scale = Math.min(1.5, sectionWidth / FIGMA_SECTION_WIDTH);
@@ -31,6 +32,7 @@ export interface HomeFeaturedVideoSectionProps {
   readonly onPressItem?: (item: HomeVideoItem) => void;
 }
 
+/** Featured videos row with a "see all" link. */
 export function HomeFeaturedVideoSection({
   items = HOME_FEATURED_VIDEOS,
   onPressAll,

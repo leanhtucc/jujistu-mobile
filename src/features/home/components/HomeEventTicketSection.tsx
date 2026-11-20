@@ -9,6 +9,7 @@ import {
   type TicketSession,
 } from '../data/home-content';
 
+/** Pure layout maths for event cards: derives card sizes from the window width so the layout adapts to phones and tablets (ADR-0010). Kept separate so it is unit-tested without rendering. */
 export function resolveHomeEventCardWidth(windowWidth: number): number {
   return Math.min(715, Math.max(0, windowWidth - 31));
 }
@@ -19,6 +20,7 @@ export interface HomeEventTicketSectionProps {
   readonly onPressEvent?: (event: HomeEventItem) => void;
 }
 
+/** Carousel of upcoming events with a "choose seat" action that leads to ticket purchase. */
 export function HomeEventTicketSection({
   sessions = HOME_TICKET_SESSIONS,
   onPressChooseSeat,

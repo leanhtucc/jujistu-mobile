@@ -13,6 +13,7 @@ export interface HomeHeaderProps {
   readonly onOpenNotifications?: () => void;
 }
 
+/** Signed-in header: date, user name, coin balance and the notification bell (with unread dot). */
 export function HomeHeader({
   dateText = 'THỨ TƯ · 07/10',
   userName = 'Minh',

@@ -45,6 +45,10 @@ export interface VideoPlaybackSurfaceProps {
   readonly video: FeaturedVideo;
 }
 
+/**
+ * Player view with controls, buffering indicator and an error state with retry. The player
+ * is keyed by `reloadKey`, so retry creates a fresh instance.
+ */
 export function VideoPlaybackSurface({ video }: VideoPlaybackSurfaceProps) {
   const videoRef = useRef<VideoRef>(null);
   const playback = useVideoPlayback(videoRef);

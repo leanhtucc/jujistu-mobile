@@ -19,6 +19,7 @@ export interface VideoPlayerScreenProps {
   readonly videoId: string;
 }
 
+/** Route entry that plays the video identified by `videoId` inside VideoPlaybackSurface. */
 export function VideoPlayerScreen({ onBack, videoId }: VideoPlayerScreenProps) {
   const insets = useSafeAreaInsets();
   const responsive = useResponsive();

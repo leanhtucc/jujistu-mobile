@@ -10,6 +10,7 @@ export interface HomeRecentRecapCardProps {
   readonly onPressResults?: () => void;
 }
 
+/** Recap of the latest finished tournament with a link to its results. */
 export function HomeRecentRecapCard({
   recap = HOME_RECENT_RECAP,
   onPressResults,

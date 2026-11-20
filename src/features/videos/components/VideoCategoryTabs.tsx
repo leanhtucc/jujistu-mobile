@@ -10,6 +10,7 @@ export interface VideoCategoryTabsProps {
   readonly onChange: (category: VideoCategory) => void;
 }
 
+/** Horizontal category tabs that filter the video list. */
 export function VideoCategoryTabs({
   activeCategory,
   onChange,

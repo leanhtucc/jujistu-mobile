@@ -14,6 +14,7 @@ export interface HomeProductsSectionProps {
   readonly onSelectProduct?: (product: HomeProductHighlight) => void;
 }
 
+/** Highlighted shop products; opens the shop or a selected product. */
 export function HomeProductsSection({
   products = HOME_FEATURED_PRODUCTS,
   onOpenShop,

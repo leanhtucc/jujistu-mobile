@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
+/** Decorative ember-glow background behind the Home content. */
 export function HomeEmberGlowBackground() {
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
