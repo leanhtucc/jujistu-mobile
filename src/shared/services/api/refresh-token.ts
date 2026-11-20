@@ -25,6 +25,10 @@ type RefreshFn = (
 
 let inflightRefresh: Promise<string> | null = null;
 
+/**
+ * Single-flight token refresh: concurrent callers share one request. On failure the local
+ * session is cleared and the error rethrown, so there is no retry loop.
+ */
 export async function refreshAccessToken(
   refreshFn: RefreshFn,
 ): Promise<string> {

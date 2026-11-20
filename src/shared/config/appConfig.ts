@@ -35,6 +35,7 @@ const settings: Record<AppEnvironment, EnvironmentSettings> = {
   },
 };
 
+/** Validates `JUJISTU_ENV`; throws on anything but development, staging or production so a typo fails fast. */
 export function parseAppEnvironment(value: string | undefined): AppEnvironment {
   switch (value) {
     case 'development':
@@ -50,6 +51,10 @@ export function parseAppEnvironment(value: string | undefined): AppEnvironment {
   );
 }
 
+/**
+ * Builds the typed runtime config for one environment. The API base URL must be HTTPS
+ * outside development and is stripped of trailing slashes.
+ */
 export function createAppConfig(
   environment: AppEnvironment,
   environmentSettings: EnvironmentSettings,

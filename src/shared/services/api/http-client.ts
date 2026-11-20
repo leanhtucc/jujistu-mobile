@@ -34,22 +34,26 @@ let unauthorizedHandler: UnauthorizedHandler | null = null;
 export const SKIP_ACCESS_TOKEN_HEADER = 'x-skip-access-token';
 export const SKIP_UNAUTHORIZED_HANDLER_HEADER = 'x-skip-unauthorized-handler';
 
+/** Overrides how the access token is obtained (default: tokenManager). App providers use this to inject auth. */
 export function setApiAccessTokenProvider(
   provider: AccessTokenProvider | null,
 ): void {
   accessTokenProvider = provider;
 }
 
+/** Registers the callback run after a 401 that cannot be recovered by a token refresh. */
 export function setApiUnauthorizedHandler(
   handler: UnauthorizedHandler | null,
 ): void {
   unauthorizedHandler = handler;
 }
 
+/** Configured API base URL without a trailing slash. */
 export function getApiBaseUrl(): string {
   return (appConfig.apiBaseUrl ?? '').replace(/\/$/, '');
 }
 
+/** Joins the base URL and a path; absolute http(s) URLs are returned unchanged. */
 export function buildApiUrl(path: string): string {
   if (/^https?:\/\//.test(path)) {
     return path;

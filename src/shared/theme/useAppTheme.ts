@@ -2,6 +2,7 @@ import { useColorScheme } from 'react-native';
 
 import { darkColors, lightColors } from './colors';
 
+/** Semantic colours for the current system colour scheme, plus `isDark` and the status-bar style. */
 export function useAppTheme() {
   const isDark = useColorScheme() === 'dark';
 

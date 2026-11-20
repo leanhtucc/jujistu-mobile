@@ -60,6 +60,10 @@ export const responsiveBreakpoints = Object.freeze({
   largeTabletShortestSide: 900,
 });
 
+/**
+ * Classifies the window (compactPhone ... largeTablet) and orientation from its size.
+ * Pure, so it is testable without React Native.
+ */
 export function resolveResponsiveMetrics(
   window: Pick<ScaledSize, 'width' | 'height' | 'scale' | 'fontScale'>,
 ): ResponsiveMetrics {
@@ -104,6 +108,7 @@ export function resolveResponsiveMetrics(
   };
 }
 
+/** Hook returning the metrics for the current window; recomputed when size or font scale change. */
 export function useResponsive(): ResponsiveMetrics {
   const { fontScale, height, scale, width } = useWindowDimensions();
 
@@ -113,6 +118,10 @@ export function useResponsive(): ResponsiveMetrics {
   );
 }
 
+/**
+ * Picks the value for the current size class. Missing classes inherit from the nearest
+ * smaller one, so only `compactPhone` is required.
+ */
 export function selectResponsiveValue<T>(
   metrics: Pick<ResponsiveMetrics, 'sizeClass'>,
   values: ResponsiveValues<T>,
@@ -137,6 +146,7 @@ export function selectResponsiveValue<T>(
   return selected;
 }
 
+/** Picks the portrait or landscape value. */
 export function selectOrientationValue<T>(
   metrics: Pick<ResponsiveMetrics, 'orientation'>,
   values: Readonly<{ portrait: T; landscape: T }>,
@@ -167,6 +177,10 @@ export function scaleResponsiveValue(
   return roundToPixel ? PixelRatio.roundToNearestPixel(result) : result;
 }
 
+/**
+ * Width of the centred content column: window minus gutters, capped per size class
+ * (520 phone ... 960 large tablet).
+ */
 export function getResponsiveContentWidth(
   metrics: Pick<ResponsiveMetrics, 'width' | 'sizeClass'>,
   horizontalGutter = 16,

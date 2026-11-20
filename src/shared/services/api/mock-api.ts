@@ -50,6 +50,10 @@ const MOCK_TOKENS: MockAuthTokens = {
   auth_type: 'Bearer',
 };
 
+/**
+ * True when the path has a canned response (auth and system endpoints). http-client uses
+ * the mock only when no API base URL is configured.
+ */
 export function hasMockApiResponse(path: string): boolean {
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
@@ -68,6 +72,7 @@ export function hasMockApiResponse(path: string): boolean {
   }
 }
 
+/** Returns the canned response for a path after a simulated latency. Mock seam only, not production data. */
 export async function mockApiRequest<TResponse>(
   path: string,
   options: ApiRequestOptions = {},

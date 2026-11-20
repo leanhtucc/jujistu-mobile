@@ -85,6 +85,7 @@ export class InMemoryTokenStorage implements TokenStorage {
 
 let storage: TokenStorage = new KeychainTokenStorage();
 
+/** Swaps the token storage backend. Default is the keychain; tests inject an in-memory one. */
 export function setTokenStorage(impl: TokenStorage): void {
   storage = impl;
 }
